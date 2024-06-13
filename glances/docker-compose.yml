@@ -6,8 +6,6 @@ services:
     privileged: true
     pid: host
     restart: unless-stopped
-    depends_on:
-      - nginx-proxy-manager
     networks:
       proxy: null
     volumes:

@@ -1,0 +1,38 @@
+log-queries
+# don't forward requests for names without domains
+domain-needed
+# don't forward requests for non-routed addresses
+bogus-priv
+# don't read resolv.conf
+no-resolv
+# windows :/
+filterwin2k
+
+domain=ctrlh
+expand-hosts
+
+address=/backrest.ctrlh/192.168.13.2
+address=/dnsmasq.ctrlh/192.168.13.2
+address=/dumpster.ctrlh/192.168.13.2
+address=/calibre/192.168.13.2
+address=/calibre.ctrlh/192.168.13.2
+address=/cyberchef.ctrlh/192.168.13.2
+address=/esphome/192.168.13.2
+address=/esphome.ctrlh/192.168.13.2
+address=/frigate.ctrlh/192.168.13.2
+address=/glances/192.168.13.2
+address=/glances.ctrlh/192.168.13.2
+address=/hass/192.168.13.2
+address=/hass.ctrlh/192.168.13.2
+address=/invidious/192.168.13.2
+address=/invidious.ctrlh/192.168.13.2
+address=/mopidy.ctrlh/192.168.13.2
+address=/mqtt.ctrlh/192.168.13.2
+address=/ntp.ctrlh/192.168.13.2
+address=/weather.ctrlh/192.168.13.2
+address=/wiki.ctrlh/192.168.13.2
+address=/zig.ctrlh/192.168.13.2
+#address=//192.168.13.2
+
+#server=1.1.1.1
+server=9.9.9.9

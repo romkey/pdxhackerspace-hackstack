@@ -5,8 +5,6 @@ services:
     container_name: mariadb
     command: --max-allowed-packet=64MB
     restart: always
-    depends_on:
-      - nginx-proxy-manager
     volumes:
       - ../../lib/mariadb:/var/lib/mysql:Z
     networks:

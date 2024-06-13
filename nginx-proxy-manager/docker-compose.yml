@@ -12,13 +12,9 @@ services:
       - 81:81
       - 443:443
     volumes:
-      - ./config:/data
-      - ../../log/nginx-proxy-manager:/opt/log/nginx-proxy-manager
-      - ../../lib/nginx-proxy-manager/access:/data/access
-      - ../../lib/nginx-proxy-manager/custom_ssl:/data/custom_ssl
-      - ../../lib/nginx-proxy-manager/database.sqlite:/data/database.sqlite
-      - ../../lib/nginx-proxy-manager/nginx:/data/nginx
+      - ../../lib/nginx-proxy-manager/data:/data
       - ../../lib/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+      - ../../log/nginx-proxy-manager:/data/logs
     env_file:
       - .env
 networks:

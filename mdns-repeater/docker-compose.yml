@@ -7,11 +7,13 @@ services:
     networks:
       - ipvlan_net
       - mdns-net
+    env_file:
+      - .env
 networks:
   ipvlan_net:
     driver: ipvlan
     driver_opts:
-      parent: eno1
+      parent: "${NETWORK_INTERFACE}"
 #    ipam:
 #      config:
 #        - subnet: 192.168.1.0/24
