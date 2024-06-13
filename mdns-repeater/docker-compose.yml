@@ -1,0 +1,20 @@
+services:
+  mdns-repeater:
+    image: monstrenyatko/mdns-repeater
+    container_name: mdns-repeater
+    restart: unless-stopped
+    command: mdns-repeater-app -f -d eth0 eth1
+    networks:
+      - ipvlan_net
+      - mdns-net
+networks:
+  ipvlan_net:
+    driver: ipvlan
+    driver_opts:
+      parent: eno1
+#    ipam:
+#      config:
+#        - subnet: 192.168.1.0/24
+#          gateway: 192.168.1.1
+  mdns-net:
+    name: mdns-net

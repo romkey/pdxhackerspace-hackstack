@@ -1,0 +1,28 @@
+services:
+  backrest:
+    image: garethgeorge/backrest
+    container_name: backrest
+    hostname: backrest
+    depends_on:
+      - nginx-proxy-manager
+    volumes:
+      - ./backrest/data:/data
+      - ./backrest/config:/config
+      - /backups/chaos/backrest/cache:/cache
+      - /backups/chaos/backrest/repos:/repos
+      - /opt:/userdata
+      - /etc:/useretc
+      - /home:/userhome
+#    environment:
+#      - BACKREST_DATA=/data # path for backrest data. restic binary and the database are placed here.
+#      - BACKREST_CONFIG=/config/config.json # path for the backrest config file.
+#      - XDG_CACHE_HOME=/cache # path for the restic cache which greatly improves performance.
+    env_file:
+      - .env
+    restart: unless-stopped
+#    ports:
+#      - 9898:9898
+networks:
+  default:
+    external: true
+    name: nginx-proxy-net

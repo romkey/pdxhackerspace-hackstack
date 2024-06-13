@@ -1,0 +1,14 @@
+services:
+  avahi
+    image: ydkn/avahi
+    hostname: avahi
+    container_name: avahi
+    restart: unless-stopped
+    depends_on:
+      - mdns_repeater
+    volumes:
+      - ./services:/etc/avahi/services
+networks:
+  default:
+    name: mdns-net
+    external: true

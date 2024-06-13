@@ -1,0 +1,3 @@
+[submodule "db-backup"]
+	path = db-backup
+	url = https://github.com/romkey/hackstack-db-backup

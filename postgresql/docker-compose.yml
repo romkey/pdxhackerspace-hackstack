@@ -1,0 +1,17 @@
+services:
+  postgresql:
+    image: postgres:latest
+    hostname: postgresql
+    container_name: postgresql
+    restart: unless-stopped
+    volumes:
+      - ../../lib/postgresql:/var/lib/postgresql/data
+      - ../../log/postgresql:/var/log/postgresql/
+    shm_size: 128mb
+    env_file:
+      - .env
+#    ports:
+#      - 5432:5432
+networks:
+  default:
+    name: postgres-net

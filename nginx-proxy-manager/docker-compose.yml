@@ -1,0 +1,26 @@
+services:
+  nginx_proxy_manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    hostname: nginx-proxy-manager
+    restart: unless-stopped
+# ports must be exposed
+# 81 must be exposed to allow initial configuration
+# 80 and 443 must be exposed for proxy operation
+    ports:
+      - 80:80
+      - 81:81
+      - 443:443
+    volumes:
+      - ./config:/data
+      - ../../log/nginx-proxy-manager:/opt/log/nginx-proxy-manager
+      - ../../lib/nginx-proxy-manager/access:/data/access
+      - ../../lib/nginx-proxy-manager/custom_ssl:/data/custom_ssl
+      - ../../lib/nginx-proxy-manager/database.sqlite:/data/database.sqlite
+      - ../../lib/nginx-proxy-manager/nginx:/data/nginx
+      - ../../lib/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+    env_file:
+      - .env
+networks:
+  default:
+    name: nginx-proxy-net

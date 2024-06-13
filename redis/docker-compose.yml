@@ -1,0 +1,17 @@
+services:
+  redis:
+    image: redis:alpine
+    hostname: redis
+    container_name: redis
+    restart: unless-stopped
+    command: "redis-server --requirepass ${SERVER_PASSWORD}"
+#    ports:
+#      - 6379:6379
+    volumes:
+      - ./conf:/usr/local/etc/redis
+      - ../../lib/redis:/var/lib/redis
+    env_file:
+      - .env
+networks:
+  default:
+    name: redis-net

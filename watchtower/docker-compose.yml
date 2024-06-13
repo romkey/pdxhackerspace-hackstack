@@ -1,0 +1,15 @@
+services:
+  watchtower:
+    image: containrrr/watchtower
+    hostname: watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    command: --schedule "0 0 4 * * *"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+# for notifications
+# https://containrrr.dev/watchtower/notifications/
+# https://containrrr.dev/shoutrrr/v0.8/services/slack/
+    env_file:
+      - .env

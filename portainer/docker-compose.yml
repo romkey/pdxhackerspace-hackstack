@@ -1,0 +1,17 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    depends_on:
+      - nginx-proxy-manager
+#    ports:
+#      - 9443:9443
+#      - 8000:8000
+    volumes:
+      - ../../lib/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
