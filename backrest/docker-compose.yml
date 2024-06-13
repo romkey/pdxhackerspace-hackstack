@@ -6,8 +6,8 @@ services:
     depends_on:
       - nginx-proxy-manager
     volumes:
-      - ./backrest/data:/data
-      - ./backrest/config:/config
+      - ../../lib/backrest:/data
+      - ./config:/config
       - /backups/chaos/backrest/cache:/cache
       - /backups/chaos/backrest/repos:/repos
       - /opt:/userdata

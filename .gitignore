@@ -2,9 +2,7 @@
 
 avahi-dns/services
 
-backrest/backrest/config/config.json
-backrest/backrest/config/config.json.bak.*
-backrest/backrest/data
+backrest/config/config.json*
 
 dnsmasq/dnsmasq.conf
 
