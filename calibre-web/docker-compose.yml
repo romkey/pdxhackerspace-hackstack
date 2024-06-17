@@ -1,0 +1,16 @@
+services:
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    restart: unless-stopped
+    volumes:
+      - ../../lib/calibre-web/config:/config
+      - ../../lib/calibre-web/books:/books
+#    ports:
+#      - 8083:8083
+    env_file:
+      - .env
+networks:
+  default:
+    external: true
+    name: nginx-proxy-net

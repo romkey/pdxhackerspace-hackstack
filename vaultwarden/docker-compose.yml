@@ -1,0 +1,20 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest-alpine
+    container_name: vaultwarden
+    hostname: vaultwarden
+    restart: unless-stopped
+    networks:
+      database: null    
+      default: null
+    volumes:
+      - ../../lib/vaultwarden:/data
+    env_file:
+      - .env
+networks:
+  default:
+    external: true
+    name: nginx-proxy-net
+  database:
+    external: true
+    name: postgres-net

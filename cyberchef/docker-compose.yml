@@ -1,0 +1,12 @@
+services:
+  web:
+    image: ghcr.io/gchq/cyberchef:latest
+    container_name: cyberchef
+    hostname: cyberchef
+    restart: unless-stopped
+#    ports:
+#      - 8090:80
+networks:
+  default:
+    external: true
+    name: nginx-proxy-net

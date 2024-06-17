@@ -1,0 +1,21 @@
+# https://github.com/open-webui/open-webui/blob/main/docker-compose.yaml
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
+    container_name: open-webui
+    restart: unless-stopped
+#    ports:
+#      - 8080:8080
+    networks:
+      - default
+      - llama
+    volumes:
+      - ../../lib/openwebui:/app/backend/data
+    env_file:
+      - .env
+networks:
+  default:
+    driver: bridge
+  llama:
+    name: llama-net
+    external: true

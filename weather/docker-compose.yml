@@ -1,0 +1,12 @@
+services:
+  web:
+    image: nginx
+    container_name: weather-nginx
+    restart: unless-stopped
+    volumes:
+     - /home/weather/weewx-report:/usr/share/nginx/html:ro
+     - ../../log/weather-nginx:/opt/log/nginx
+networks:
+  default:
+    external: true
+    name: nginx-proxy-net

@@ -1,0 +1,36 @@
+services:
+  frigate:
+    image: ghcr.io/blakeblackshear/frigate:stable
+    container_name: frigate
+    privileged: true
+    hostname: frigate
+    restart: unless-stopped
+    shm_size: 256mb
+    networks:
+      - default
+      - proxy
+#    devices:
+#      - /dev/dri/renderD128:/dev/dri/renderD128 # for intel hwaccel
+    volumes:
+      - /dev/bus/usb:/dev/bus/usb
+      - /etc/localtime:/etc/localtime:ro
+      - ../../lib/frigate/config:/config:rw
+      - ../../lib/frigate/media:/media/frigate:rw
+      - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
+        target: /tmp/cache
+        tmpfs:
+          size: 100000000
+#    ports:
+#      - 5000:5000
+#      - 8554:10554     # RTSP feeds
+#      - 8555:10555/tcp # WebRTC over tcp
+#      - 8555:10555/udp # WebRTC over udp
+    env_files:
+      - .env
+networks:
+  default:
+    name: frigate_default
+    driver: bridge
+  proxy:
+    external: true
+    name: nginx-proxy-net

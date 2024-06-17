@@ -4,9 +4,9 @@ services:
     container_name: ollama
     restart: unless-stopped
     volumes:
-      - /opt/lib/ollama:/root/.ollama
-    ports:
-      - 11434:11434
+      - ../../lib/ollama:/root/.ollama
+#    ports:
+#      - 11434:11434
     networks:
       - llama
     deploy:

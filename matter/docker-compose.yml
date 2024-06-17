@@ -9,7 +9,7 @@ services:
     volumes:
       - ../../lib/matter:/data
       - /run/dbus:/run/dbus:ro
-    environment:
+    env_file:
       - .env
 networks:
   default:
