@@ -1,0 +1,17 @@
+services:
+  whisper:
+    image: rhasspy/wyoming-openwakeword
+    container_name: openwakeword
+    hostname: openwakeword
+    restart: unless-stopped
+    command: --preload-model 'ok_nabu' --custom-model-dir /models
+#    ports:
+#      - 10400:10400
+    volumes:
+      - ../../lib/whisper:/models
+    env_file:
+      - .env
+networks:
+  default:
+    name: hass-net
+    external: true

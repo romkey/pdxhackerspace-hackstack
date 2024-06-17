@@ -1,0 +1,18 @@
+services:
+  whisper:
+    image: rhasspy/wyoming-whisper
+    container_name: whisper
+    hostname: whisper
+    restart: unless-stopped
+    entrypoint: python3
+    command: -m wyoming_faster_whisper --uri tcp://0.0.0.0:10300 --model tiny-int8 --beam-size 1 --language en --data-dir /data --download-dir /data
+#    ports:
+#      - 10300:10300
+    volumes:
+      - ../../lib/whisper:/data
+    env_file:
+      - .env
+networks:
+  default:
+    name: hass-net
+    external: true

@@ -1,0 +1,18 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    hostname: mosquitto
+    restart: unless-stopped
+    volumes:
+      - ./config:/mosquitto/config
+      - ../../lib/mosquitto:/mosquitto/data
+      - ../../log/mosquitto:/mosquitto/log
+# ports need to be exposed in order to be available to LAN
+    ports:
+      - 1883:1883
+    env_file:
+      - .env
+networks:
+  default:
+    name: mosquitto-net

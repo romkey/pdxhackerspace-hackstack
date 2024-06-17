@@ -15,3 +15,17 @@ nginx-proxy-manager/letsencrypt/
 redis/conf/
 
 upsd/config/
+*/.env
+
+home-assistant/config/
+
+mosquitto/config/mosquitto.conf
+mosquitto/config/mos_passwd
+
+mqtt-explorer/config/settings.json
+
+zigbee2mqtt/data/configuration.yaml
+zigbee2mqtt/data/state.json
+zigbee2mqtt/data/database.db
+zigbee2mqtt/data/log/
+

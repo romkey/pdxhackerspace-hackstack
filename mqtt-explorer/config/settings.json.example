@@ -1,0 +1,48 @@
+{
+  "ConnectionManager_connections": {
+    "mqtt.eclipse.org": {
+      "configVersion": 1,
+      "certValidation": true,
+      "clientId": "mqtt-explorer-217b95e0",
+      "id": "mqtt.eclipse.org",
+      "name": "mqtt.eclipse.org",
+      "encryption": false,
+      "subscriptions": [
+        {
+          "topic": "#",
+          "qos": 0
+        },
+        {
+          "topic": "$SYS/#",
+          "qos": 0
+        }
+      ],
+      "type": "mqtt",
+      "host": "mqtt.eclipse.org",
+      "port": 1883,
+      "protocol": "mqtt"
+    },
+    "test.mosquitto.org": {
+      "configVersion": 1,
+      "certValidation": true,
+      "clientId": "mqtt-explorer-ead37990",
+      "id": "test.mosquitto.org",
+      "name": "test.mosquitto.org",
+      "encryption": false,
+      "subscriptions": [
+        {
+          "topic": "#",
+          "qos": 0
+        },
+        {
+          "topic": "$SYS/#",
+          "qos": 0
+        }
+      ],
+      "type": "mqtt",
+      "host": "test.mosquitto.org",
+      "port": 1883,
+      "protocol": "mqtt"
+    }
+  }
+}

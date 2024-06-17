@@ -1,0 +1,17 @@
+services:
+  piper:
+    image: rhasspy/wyoming-piper
+    container_name: piper
+    hostname: piper
+    restart: unless-stopped
+    command: --voice en-us-lessac-low
+#    ports:
+#      - 10200:10200
+    volumes:
+      - ../../lib/piper:/data
+    env_file:
+      - .env
+networks:
+  default:
+    external: true
+    name: hass-net

@@ -1,0 +1,41 @@
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: home-assistant
+    hostname: home-assistant
+    privileged: true
+    restart: unless-stopped
+    volumes:
+      - ../../lib/home-assistant:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    networks:
+      - default
+      - proxy
+      - mqtt
+      - db
+      - mdns
+      - frigate
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+#    ports:
+#      - 8123:8123
+networks:
+  default:
+    driver: bridge
+    name: hass-net
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  mqtt:
+    name: mosquitto-net
+    external: true
+  db:
+    name: postgres-net
+    external: true
+  mdns:
+    external: true
+    name: mdns-net
+  frigate:
+    external: true
+    name: frigate_default

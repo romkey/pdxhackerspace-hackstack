@@ -1,0 +1,24 @@
+services:
+  esphome:
+    image: ghcr.io/esphome/esphome
+    container_name: esphome
+    hostname: esphome
+    volumes:
+      - ../../lib/esphome:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    privileged: true
+    networks:
+      - proxy
+      - mdns-net
+    ports:
+      - 6052:6052
+    env_file:
+      - .env
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  mdns-net:
+    external: true
+    name: mdns-net

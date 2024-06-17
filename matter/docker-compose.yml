@@ -1,0 +1,20 @@
+services:
+  matter:
+    image: ghcr.io/home-assistant-libs/python-matter-server:stable
+    container_name: matter
+    hostname: matter
+    restart: unless-stopped
+    security_opt:
+      - apparmor=unconfined
+    volumes:
+      - ../../lib/matter:/data
+      - /run/dbus:/run/dbus:ro
+    environment:
+      - .env
+networks:
+  default:
+    name: hass-net
+    external: true
+  mdns-net:
+    external: true
+    name: mdns-net

@@ -1,0 +1,17 @@
+services:
+  management-center:
+    image: cedalo/management-center:dev
+    container_name: management-center
+    volumes:
+      - ./config:/management-center/backend/config
+#    ports:
+#        - 8088:8088
+    env_file:
+      - .env
+networks:
+  default:
+    external: true
+    name: nginx-proxy-net
+  mosquitto::
+    external: true
+    name: mosquitto_default

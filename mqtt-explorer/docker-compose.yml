@@ -1,0 +1,12 @@
+services:
+  mqtt-explorer:
+    image: smeagolworms4/mqtt-explorer
+    container_name: mqtt-explorer
+    hostname: mqtt-explorer
+    restart: unless-stopped
+    volumes:
+      - ./config:/mqtt-explorer/config
+networks:
+  default:
+    external: true
+    name: nginx-proxy-net

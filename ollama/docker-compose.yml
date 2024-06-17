@@ -1,0 +1,21 @@
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    restart: unless-stopped
+    volumes:
+      - /opt/lib/ollama:/root/.ollama
+    ports:
+      - 11434:11434
+    networks:
+      - llama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 2
+              capabilities: [gpu]
+networks:
+  llama:
+    name: llama-net
