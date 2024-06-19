@@ -25,7 +25,7 @@ services:
 #      - 8554:10554     # RTSP feeds
 #      - 8555:10555/tcp # WebRTC over tcp
 #      - 8555:10555/udp # WebRTC over udp
-    env_files:
+    env_file:
       - .env
 networks:
   default:
