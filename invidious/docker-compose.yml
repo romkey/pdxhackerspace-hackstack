@@ -1,0 +1,28 @@
+services:
+  invidious:
+    image: quay.io/invidious/invidious:latest
+    # image: quay.io/invidious/invidious:latest-arm64 # ARM64/AArch64 devices
+    restart: unless-stopped
+    networks:
+      database: null
+      default: null
+    volumes:
+      - ./config:/invidious/config
+#    ports:
+#      - "127.0.0.1:3000:3000"
+    healthcheck:
+      test: wget -nv --tries=1 --spider http://127.0.0.1:3000/api/v1/trending || exit 1
+      interval: 30s
+      timeout: 5s
+      retries: 2
+    logging:
+      options:
+        max-size: "1G"
+        max-file: "4"
+networks:
+  default:
+    external: true
+    name: nginx-proxy-net
+  database:
+    external: true
+    name: postgres-net

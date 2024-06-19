@@ -1,0 +1,16 @@
+services:
+ rsyslog:
+    build: .
+    hostname: rsyslog
+    container_name: rsyslog
+    restart: unless-stopped
+    ports:
+      - 514:514
+    volumes:
+      - ./rsyslog.conf:/etc/rsyslog.conf
+      - ./rsyslog.d:/etc/rsyslog.d
+      - ../..//log/rsyslog:/var/log
+    env_file:
+      - .env
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"

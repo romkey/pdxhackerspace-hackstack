@@ -1,5 +1,5 @@
 services:
-  whisper:
+  openwakeword:
     image: rhasspy/wyoming-openwakeword
     container_name: openwakeword
     hostname: openwakeword
@@ -8,7 +8,7 @@ services:
 #    ports:
 #      - 10400:10400
     volumes:
-      - ../../lib/whisper:/models
+      - ../../lib/openwakeword:/models
     env_file:
       - .env
 networks:
