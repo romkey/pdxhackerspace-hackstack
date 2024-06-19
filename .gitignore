@@ -1,5 +1,9 @@
 */.env
 
+access-control-webhook/config/.ssh/
+access-control-webhook/config/hooks.json
+access-control-webhook/config/run/automation_rsa
+
 avahi-dns/services
 
 backrest/config/config.json*

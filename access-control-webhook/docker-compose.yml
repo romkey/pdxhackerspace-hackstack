@@ -1,0 +1,21 @@
+# https://github.com/thecatlady/docker-webhook
+services:
+  webhook:
+    build: .
+    container_name: access-control-webhook
+    hostname: access-control-webhook
+    restart: unless-stopped
+    command: -verbose -hooks=hooks.json -hotreload
+    env_file:
+      - .env
+    volumes:
+      - ./config:/config:ro
+#    ports:
+#      - 9000:9000
+#      - 9001:9001
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+networks:
+  default:
+    external: true
+    name: nginx-proxy-net
