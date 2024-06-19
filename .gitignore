@@ -11,6 +11,9 @@ glances/glances.pwd
 
 home-assistant/config/
 
+invidious/config/config.yml
+invidious/config/sql/
+
 mopidy/conf/mopidy.conf
 
 mosquitto/config/mosquitto.conf

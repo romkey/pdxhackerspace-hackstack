@@ -1,0 +1,18 @@
+services:
+  adminer:
+    image: adminer
+    hostname: adminer
+    container_name: adminer
+    restart: unless-stopped
+#    ports:
+#      - 8080:8080
+networks:
+  default:
+    name: nginx-proxy-net
+    external: true
+  mariadb:
+    name: mariadb-net
+    external: true
+  postgresql:
+    name: postgresql-net
+    external: true

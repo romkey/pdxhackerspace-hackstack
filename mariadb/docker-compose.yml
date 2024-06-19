@@ -7,9 +7,6 @@ services:
     restart: unless-stopped
     volumes:
       - ../../lib/mariadb:/var/lib/mysql:Z
-    networks:
-      default: null
-      mariadb: null
     env_file:
       - ./.env
 # https://mariadb.com/kb/en/using-healthcheck-sh/
@@ -25,18 +22,6 @@ services:
           "--innodb_initialized"
         ]
       timeout: 30s
-  adminer:
-    image: adminer
-    hostname: adminer
-    container_name: adminer
-    restart: unless-stopped
-    links:
-      - mariadb:db
-#    ports:
-#      - 8080:8080
 networks:
-  default:
-    name: nginx-proxy-net
-    external: true
   mariadb:
     name: mariadb-net
