@@ -9,20 +9,23 @@ dnsmasq/conf/dnsmasq.conf
 glances/glances.conf
 glances/glances.pwd
 
+home-assistant/config/
+
+mopidy/conf/mopidy.conf
+
+mosquitto/config/mosquitto.conf
+mosquitto/config/mos_passwd
+
+mqtt-explorer/config/settings.json
+
 nginx-proxy-manager/config/
 nginx-proxy-manager/letsencrypt/
 
 redis/conf/
 
 upsd/config/
-*/.env
 
-home-assistant/config/
-
-mosquitto/config/mosquitto.conf
-mosquitto/config/mos_passwd
-
-mqtt-explorer/config/settings.json
+wiki/config.yml
 
 zigbee2mqtt/data/configuration.yaml
 zigbee2mqtt/data/state.json
