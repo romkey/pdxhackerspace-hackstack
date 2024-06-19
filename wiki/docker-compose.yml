@@ -1,0 +1,21 @@
+services:
+  wiki:
+    image: ghcr.io/requarks/wiki:latest
+    container_name: wikijs
+    restart: unless-stopped
+    networks:
+      proxy: null
+      database: null
+    volumes:
+      - ./config.yml:/wiki/config.yml
+      - ../../lib/wikijs:/wiki/data
+#    ports:
+#      - "3001:3001"
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  database:
+    external: true
+    name: postgres-net

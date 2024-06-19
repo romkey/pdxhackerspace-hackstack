@@ -1,3 +1,6 @@
 [submodule "db-backup"]
 	path = db-backup
 	url = https://github.com/romkey/hackstack-db-backup
+[submodule "auto_planka"]
+	path = auto_planka
+	url = https://github.com/romkey/auto_planka
