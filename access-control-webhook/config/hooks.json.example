@@ -1,0 +1,20 @@
+[
+  {
+    "id": "R2Ma9QajdjA8_L.K*HHphAoorUaV6esw",
+    "execute-command": "/config/run/update-access-control.sh",
+    "command-working-directory": "/tmp",
+    "include-command-output-in-response": true,
+    "include-command-output-in-response-on-error": true,
+    "trigger-rule":
+        {
+          "match": {
+              "type": "value",
+              "value": "3fg8A@bH4bnm.9Kg",
+              "parameter": {
+		  "source": "url",
+		  "name": "sekrit"
+	      }
+	  }
+	}
+  }
+]
