@@ -1,0 +1,7 @@
+services:
+  bfg-repo-cleaner:
+    image: docker2snap/bfg-repo-cleaner
+    restart: no
+    command: /bin/bash
+    volumes:
+      - /opt/docker:/opt/docker

@@ -16,6 +16,7 @@ services:
       - db
       - mdns
       - frigate
+      - llama
     extra_hosts:
       - "host.docker.internal:host-gateway"
 #    ports:
@@ -39,3 +40,6 @@ networks:
   frigate:
     external: true
     name: frigate_default
+  llama:
+    external: true
+    name: llama-net
