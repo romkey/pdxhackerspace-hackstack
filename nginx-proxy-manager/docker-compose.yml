@@ -17,6 +17,10 @@ services:
       - ../../log/nginx-proxy-manager:/data/logs
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD", "/usr/bin/check-health"]
+      interval: 10s
+      timeout: 3s
 networks:
   default:
     name: nginx-proxy-net
