@@ -1,6 +1,6 @@
 # bfg-repo-cleaner
 
-Use this to purge files from git's history.
+Use [BFG repo cleaner](https://github.com/rtyley/bfg-repo-cleaner) to purge files from git's history.
 
 Especially useful with this repo which is full of files that might have
 *cough* accidentally contained sensitive information.
@@ -9,7 +9,9 @@ Especially useful with this repo which is full of files that might have
 
 Run
 
-`docker compose build`
+```
+docker compose build
+```
 
 in this directory.
 
@@ -25,11 +27,15 @@ git commit -m 'removing FILE'
 
 Then run
 
-`docker compose run --entrypoint /bin/bash bfg-repo-cleaner`
+```
+docker compose run --entrypoint /bin/bash bfg-repo-cleaner`
+```
 
 This will get you a shell in the container. Once there navigate to the directory containing the file you deleted and run:
 
-`java -jar /bfg/bfg.jar --delete-files FILE /opt/docker`
+```
+java -jar /bfg/bfg.jar --delete-files FILE /opt/docker
+```
 
 Note that you must run this in the file's directory, you cannot specify a pathname for `FILE`.
 
