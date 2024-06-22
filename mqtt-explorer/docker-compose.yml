@@ -4,9 +4,15 @@ services:
     container_name: mqtt-explorer
     hostname: mqtt-explorer
     restart: unless-stopped
+    networks:
+      - proxy
+      - mosquitto
     volumes:
       - ./config:/mqtt-explorer/config
 networks:
-  default:
+  proxy:
     external: true
     name: nginx-proxy-net
+  mosquitto:
+    external: true
+    name: mosquitto-net
