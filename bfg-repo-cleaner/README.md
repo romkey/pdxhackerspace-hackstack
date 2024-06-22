@@ -29,14 +29,14 @@ Then run
 
 This will get you a shell in the container. Once there navigate to the directory containing the file you deleted and run:
 
-`java -jar /bfg/bfg.jar --delete-files FILE`
+`java -jar /bfg/bfg.jar --delete-files FILE /opt/docker`
 
 Note that you must run this in the file's directory, you cannot specify a pathname for `FILE`.
 
 Once that's done, exit the container (`exit`). BFG may have written some files as root, so run these commands to get ownership and update the online repository:
 
 ```
-chown -R YOURUSERNAME .
+chown -R YOURUSERNAME /opt/docker/.git
 git push -f
 ```
 
