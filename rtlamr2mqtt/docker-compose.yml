@@ -1,9 +1,14 @@
 services:
-  rtlamr2mqtt:
+  rtlamr:
     image: allangood/rtlamr2mqtt:latest
     container_name: rtlamr2mqtt
     restart: unless-stopped
     devices:
-      - /dev/bus/usb:/dev/bus/usb
+      - /dev/bus/usb
     volumes:
-      - ./config.yaml:/etc/rtlamr2mqtt.yaml
+      - ./config.yaml:/etc/rtlamr2mqtt.yaml:ro
+      - ../../lib/rtlamr2mqtt/data:/var/lib/rtlamr2mqtt
+networks:
+  default:
+    name: mosquitto-net
+    external: true

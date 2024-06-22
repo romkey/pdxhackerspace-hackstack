@@ -30,6 +30,8 @@ nginx-proxy-manager/letsencrypt/
 
 redis/conf/
 
+rtlamr2mqtt/config.yaml
+
 upsd/config/
 
 wiki/config.yml
