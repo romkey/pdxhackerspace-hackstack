@@ -1,0 +1,30 @@
+services:
+  glances:
+    image: nicolargo/glances:3.4.0.5-full
+    container_name: glances
+    hostname: glances
+    privileged: true
+    pid: host
+    restart: unless-stopped
+    networks:
+      proxy: null
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./glances.conf:/glances/conf/glances.conf
+      - ./glances.pwd:/root/.config/glances/glances.pwd:ro
+      - /etc/os-release:/etc/os-release:ro
+    ports:
+      - 61208:61208
+    env_file:
+      - .env
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: "${GPU_COUNT}"
+              capabilities: [gpu]
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
