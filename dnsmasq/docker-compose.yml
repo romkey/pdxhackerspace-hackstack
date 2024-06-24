@@ -5,7 +5,9 @@ services:
     container_name: dnsmasq
     volumes:
       - ./conf/dnsmasq.conf:/etc/dnsmasq.conf
-      - ../../lib/dnsmasq/hosts.d:/etc/hosts.d
+#      - ../../lib/dnsmasq/hosts.d:/etc/hosts.d
+#      - ./conf/hosts.d:/etc/hosts.d
+      - ./conf/:/etc/dnsmasq
     ports:
       - "53:53/udp"
 #      - "8089:8080"

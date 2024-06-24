@@ -19,8 +19,9 @@ services:
       - llama
     extra_hosts:
       - "host.docker.internal:host-gateway"
-#    ports:
-#      - 8123:8123
+    ports:
+      - 8123:8123
+      - 5060:5060    
 networks:
   default:
     driver: bridge
