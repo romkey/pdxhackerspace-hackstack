@@ -13,8 +13,8 @@ services:
       - ./glances.conf:/glances/conf/glances.conf
       - ./glances.pwd:/root/.config/glances/glances.pwd:ro
       - /etc/os-release:/etc/os-release:ro
-#    ports:
-#      - 61208:61208
+    ports:
+      - 61208:61208
     env_file:
       - .env
 networks:

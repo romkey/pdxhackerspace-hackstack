@@ -1,0 +1,17 @@
+services:
+  z-wave:
+    image: zwavejs/zwave-js-ui:latest
+    container_name: z-wave
+    hostname: z-wave
+    restart: unless-stopped
+    devices:
+      - "${CONTROLLER_DEVICE}:/dev/zwave"
+    volumes:
+      - ../../lib/data:/usr/src/app/store
+#    ports:
+#      - 8091:8091
+#      - 3000:3000
+networks:
+  default:
+    name: hass-net
+    external: true
