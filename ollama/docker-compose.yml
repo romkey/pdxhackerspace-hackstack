@@ -9,12 +9,14 @@ services:
 #      - 11434:11434
     networks:
       - llama
+    env_file:
+      - .env
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              count: 2
+              count: "${GPU_COUNT}"
               capabilities: [gpu]
 networks:
   llama:
