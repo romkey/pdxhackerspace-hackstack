@@ -4,8 +4,8 @@ services:
     image: ghcr.io/open-webui/open-webui:${WEBUI_DOCKER_TAG-main}
     container_name: open-webui
     restart: unless-stopped
-#    ports:
-#      - 8080:8080
+    ports:
+      - 3000:8080
     networks:
       - default
       - llama
