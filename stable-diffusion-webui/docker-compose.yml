@@ -1,0 +1,24 @@
+services:
+  stable-diffusion-web-ui:
+    image: tukirito/sygil-webui:latest
+    container_name: stable-diffusion-web-ui
+    hostname: stable-diffusion-web-ui
+    volumes:
+      - /opt/lib/stable-diffusion-web-ui/outputs:/sd/outputs
+      - /opt/lib/stable-diffusion-web-ui/models:/sd/models
+      - /opt/log/stable-diffusion-web-ui/models:/sd/logs
+#    ports:
+#      - 8501:8501
+    env_file:
+      - .env
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: "${GPU_COUNT}"
+              capabilities: [gpu]
+networks:
+  default
+    name: nginx-proxy-net
+    external: true
