@@ -19,6 +19,6 @@ services:
               count: "${GPU_COUNT}"
               capabilities: [gpu]
 networks:
-  default
+  default:
     name: nginx-proxy-net
     external: true

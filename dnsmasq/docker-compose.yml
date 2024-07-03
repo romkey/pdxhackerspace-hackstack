@@ -3,17 +3,25 @@ services:
     restart: unless-stopped
     image: jpillora/dnsmasq
     container_name: dnsmasq
+    networks:
+      dnsmasq:
+        ipv4_address: "${IPV4_ADDRESS}"
+      proxy:
     volumes:
       - ./conf/dnsmasq.conf:/etc/dnsmasq.conf
-#      - ../../lib/dnsmasq/hosts.d:/etc/hosts.d
-#      - ./conf/hosts.d:/etc/hosts.d
-      - ./conf/:/etc/dnsmasq
+      - ./conf/hosts.d:/etc/hosts.d
     ports:
       - "53:53/udp"
-#      - "8089:8080"
+#      - "8080:8080"
     env_file:
       - .env
 networks:
-  default:
+  dnsmasq:
+    name: dnsmasq
+    driver: bridge
+    ipam:
+      config:
+        - subnet: "${IPV4_SUBNET}"
+  proxy:
     external: true
     name: nginx-proxy-net
