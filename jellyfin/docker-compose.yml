@@ -1,0 +1,34 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    hostname: jellyfin
+#     user: uid:gid
+#    network_mode: 'host'
+    restart: 'unless-stopped'
+    volumes:
+      - ../../lib/jellyfin:/config
+      - ./config:/config/config
+      - ../../logs/jellyfin:/config/logs
+      - ../../run/jellyfin/cache:/cache
+      - /media/nas:/media
+#    ports:
+#      - 8096:8096
+    env_file:
+      - .env
+    # Optional - may be necessary for docker healthcheck to pass if running in host network mode
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    networks:
+      - proxy
+      - mdns
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  db:
+    name: postgres-net
+    external: true
+  mdns:
+    external: true
+    name: mdns-net

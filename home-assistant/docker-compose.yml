@@ -40,7 +40,7 @@ networks:
     name: mdns-net
   frigate:
     external: true
-    name: frigate_default
+    name: frigate-net
   llama:
     external: true
     name: llama-net
