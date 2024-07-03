@@ -1,38 +1,31 @@
+# this should be the IP address in .env
+listen-address=172.80.0.2
+
 log-queries
-# don't forward requests for names without domains
 domain-needed
-# don't forward requests for non-routed addresses
 bogus-priv
-# don't read resolv.conf
 no-resolv
-# windows :/
 filterwin2k
 
+# Use this if you want to use a bogus local domain
+# this way you can address hosts as "esphome.ctrlh"
 domain=ctrlh
+local=/ctrlh/
+no-hosts
 expand-hosts
 
-address=/backrest.ctrlh/192.168.13.2
-address=/dnsmasq.ctrlh/192.168.13.2
-address=/dumpster.ctrlh/192.168.13.2
-address=/calibre/192.168.13.2
-address=/calibre.ctrlh/192.168.13.2
-address=/cyberchef.ctrlh/192.168.13.2
-address=/esphome/192.168.13.2
-address=/esphome.ctrlh/192.168.13.2
-address=/frigate.ctrlh/192.168.13.2
-address=/glances/192.168.13.2
-address=/glances.ctrlh/192.168.13.2
-address=/hass/192.168.13.2
-address=/hass.ctrlh/192.168.13.2
-address=/invidious/192.168.13.2
-address=/invidious.ctrlh/192.168.13.2
-address=/mopidy.ctrlh/192.168.13.2
-address=/mqtt.ctrlh/192.168.13.2
-address=/ntp.ctrlh/192.168.13.2
-address=/weather.ctrlh/192.168.13.2
-address=/wiki.ctrlh/192.168.13.2
-address=/zig.ctrlh/192.168.13.2
-#address=//192.168.13.2
+# disable lookup caching at the expense of increased network traffic and latency
+local-ttl=0
+max-cache-ttl=0
 
-#server=1.1.1.1
+hostsdir=/etc/hosts.d
+
+# you can add individual hostnames if you want
+# address=/DOMAIN.NAME/IP.ADD.RE.SS
+
+# chain queries to other internal DNS servers using the hackstack
+server=/corginium.ctrlh/192.168.13.11
+
+# default DNS server
+# 9.9.9.9 is considered more private than Google (8.8.8.8) or Cloudflare (1.1.1.1)
 server=9.9.9.9
