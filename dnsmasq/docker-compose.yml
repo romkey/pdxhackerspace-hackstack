@@ -3,18 +3,20 @@ services:
     restart: unless-stopped
     image: jpillora/dnsmasq
     container_name: dnsmasq
-    networks:
-      dnsmasq:
-        ipv4_address: "${IPV4_ADDRESS}"
-      proxy:
+    network_mode: host
+#    networks:
+#      dnsmasq:
+#        ipv4_address: "${IPV4_ADDRESS}"
+#      proxy:
     volumes:
       - ./conf/dnsmasq.conf:/etc/dnsmasq.conf
       - ./conf/hosts.d:/etc/hosts.d
-    ports:
-      - "53:53/udp"
+#    ports:
+#      - "53:53/udp"
 #      - "8080:8080"
     env_file:
       - .env
+
 networks:
   dnsmasq:
     name: dnsmasq
