@@ -1,5 +1,6 @@
-# this should be the IP address in .env
-listen-address=172.80.0.2
+# this should be the IP address of the interface we want to accept queries
+# finding that 0.0.0.0 does not work
+listen-address=EXTERNAL INTERFACE IP ADDRESS
 
 log-queries
 domain-needed
@@ -28,4 +29,5 @@ server=/corginium.ctrlh/192.168.13.11
 
 # default DNS server
 # 9.9.9.9 is considered more private than Google (8.8.8.8) or Cloudflare (1.1.1.1)
-server=9.9.9.9
+# you may prefer to use your router so that it can resolve local names
+server=192.168.13.1
