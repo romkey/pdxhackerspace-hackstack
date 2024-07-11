@@ -19,6 +19,8 @@ home-assistant/config/
 invidious/config/config.yml
 invidious/config/sql/
 
+jellyfin/config/
+
 mopidy/conf/mopidy.conf
 
 mosquitto/config/mosquitto.conf

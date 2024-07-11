@@ -9,7 +9,7 @@ services:
     volumes:
       - ../../lib/jellyfin:/config
       - ./config:/config/config
-      - ../../logs/jellyfin:/config/logs
+      - ../../log/jellyfin:/config/log
       - ../../run/jellyfin/cache:/cache
       - /media/nas:/media
 #    ports:
@@ -22,6 +22,8 @@ services:
     networks:
       - proxy
       - mdns
+      - db
+      - hass
 networks:
   proxy:
     name: nginx-proxy-net
@@ -32,3 +34,6 @@ networks:
   mdns:
     external: true
     name: mdns-net
+  hass:
+    external: true
+    name: hass-net
