@@ -1,0 +1,25 @@
+# https://github.com/fcogomez/ComfyUI
+services:
+  comfy-ui:
+    image: fcogomez/comfy-ui:latest
+    container_name: comfy-ui
+    hostname: comfy-ui
+    networks:
+      - proxy
+    volumes:
+      - ../../lib/comfy-ui:/storage
+    ports:
+      - 8188:8188
+    env_file:
+      - .env
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: "${GPU_COUNT}"
+              capabilities: [gpu]
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true
