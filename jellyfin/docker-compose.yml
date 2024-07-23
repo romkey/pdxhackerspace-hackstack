@@ -11,9 +11,12 @@ services:
       - ./config:/config/config
       - ../../log/jellyfin:/config/log
       - ../../run/jellyfin/cache:/cache
+      - ../../lib/xmltv:/xmltv
       - /media/nas:/media
-#    ports:
+    ports:
 #      - 8096:8096
+# ? old for homerunhd
+      - 8020-8030:8020-8030/udp
     env_file:
       - .env
     # Optional - may be necessary for docker healthcheck to pass if running in host network mode
