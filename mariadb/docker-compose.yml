@@ -5,6 +5,8 @@ services:
     container_name: mariadb
     command: --max-allowed-packet=64MB
     restart: unless-stopped
+    networks:
+      - mariadb
     volumes:
       - ../../lib/mariadb:/var/lib/mysql:Z
     env_file:
