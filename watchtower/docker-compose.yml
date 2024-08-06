@@ -1,7 +1,7 @@
 services:
   watchtower:
     image: containrrr/watchtower
-    hostname: watchtower
+    hostname: "${WATCHTOWER_HOSTNAME}"
     container_name: watchtower
     restart: unless-stopped
     command: --schedule "0 0 4 * * *"
