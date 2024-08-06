@@ -8,6 +8,8 @@ services:
       - mosquitto
     devices:
       - "${SDR_DEVICE}"
+    volumes:
+      - ./config:/etc/rtl_433
     env_file:
       - .env
 networks:
