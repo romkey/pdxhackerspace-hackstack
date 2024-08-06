@@ -354,7 +354,7 @@
 #   # local_address = ""
 #
 #   ## Token for authentication.
-  token = "2MHeG09HiVhum63pLlh5JWYbTXR5SlqXQ2f3UE60rvQ9SeedkYii7a5RABnrW7Npju7tjocyfcfqQdJrOeS4hg=="
+  token = "PUT YOUR TOKEN HERE"
 #
 #   ## Organization is the name of the organization you wish to write to.
    organization = "docs"
@@ -13246,7 +13246,7 @@
 #   ## If both are empty or both are set, an error is thrown.
 #   # token_file = "/path/to/auth/token"
 #   ## OR
-#   token = "s.CDDrgg5zPv5ssI0Z2P4qxJj2"
+#   token = ""
 #
 #   ## Set response_timeout (default 5 seconds)
 #   # response_timeout = "5s"
