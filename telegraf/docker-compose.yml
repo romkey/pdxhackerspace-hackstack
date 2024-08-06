@@ -1,0 +1,26 @@
+services:
+  telegraf:
+    image: telegraf
+    container_name: telegraf
+    hostname: telegraf
+    restart: unless-stopped
+    volumes:
+      - ./config/telegraf.conf:/etc/telegraf/telegraf.conf
+      - /:/hostfs
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file:
+      - .env
+    networks:
+      - influxdb
+      - postgres
+      - mariadb
+networks:
+  influxdb:
+    name: influxdb-net
+    external: true
+  postgres:
+    name: postgres-net
+    external: true
+  mariadb:
+    name: mariadb-net
+    external: true

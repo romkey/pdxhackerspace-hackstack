@@ -14,7 +14,11 @@ dnsmasq/conf/hosts.d/
 glances/glances.conf
 glances/glances.pwd
 
+grafana/config/grafana.ini
+
 home-assistant/config/
+
+influxdb/config/influx-configs
 
 invidious/config/config.yml
 invidious/config/sql/
@@ -34,6 +38,8 @@ nginx-proxy-manager/letsencrypt/
 redis/conf/
 
 rtlamr2mqtt/config.yaml
+
+telegraf/config/telegraf.conf
 
 upsd/config/
 
