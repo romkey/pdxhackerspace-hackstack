@@ -9,11 +9,14 @@ services:
     volumes:
       - ../../lib/jellyfin:/config
       - ./config:/config/config
-      - ../../logs/jellyfin:/config/logs
+      - ../../log/jellyfin:/config/log
       - ../../run/jellyfin/cache:/cache
+      - ../../lib/xmltv:/xmltv
       - /media/nas:/media
-#    ports:
+    ports:
 #      - 8096:8096
+# ? old for homerunhd
+      - 8020-8030:8020-8030/udp
     env_file:
       - .env
     # Optional - may be necessary for docker healthcheck to pass if running in host network mode
@@ -22,6 +25,8 @@ services:
     networks:
       - proxy
       - mdns
+      - db
+      - hass
 networks:
   proxy:
     name: nginx-proxy-net
@@ -32,3 +37,6 @@ networks:
   mdns:
     external: true
     name: mdns-net
+  hass:
+    external: true
+    name: hass-net
