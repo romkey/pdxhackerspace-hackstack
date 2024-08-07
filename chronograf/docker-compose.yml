@@ -1,0 +1,23 @@
+services:
+  chronograf:
+    image: chronograf
+    container_name: chronograf
+    hostname: chronograf
+#    command: chronograf --influxdb-url=http://influxdb:8086
+    restart: unless-stopped
+#    ports:
+#      - 8888:8888
+    volumes:
+      - ../../lib/chronograf:/var/lib/chronograf
+    networks:
+      - proxy
+      - influxdb
+    env_file:
+      - .env
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  influxdb:
+    name: influxdb-net
+    external: true
