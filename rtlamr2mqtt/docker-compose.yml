@@ -4,10 +4,12 @@ services:
     container_name: rtlamr2mqtt
     restart: unless-stopped
     devices:
-      - /dev/bus/usb
+      - "${SDR_DEVICE}"
     volumes:
       - ./config.yaml:/etc/rtlamr2mqtt.yaml:ro
       - ../../lib/rtlamr2mqtt/data:/var/lib/rtlamr2mqtt
+    env_file:
+      - .env
 networks:
   default:
     name: mosquitto-net
