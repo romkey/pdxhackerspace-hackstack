@@ -1,0 +1,30 @@
+services:
+  planka:
+    image: ghcr.io/plankanban/planka:latest
+    container_name: planka
+    hostname: planka
+    restart: unless-stopped
+    networks:
+      - proxy
+      - database
+    volumes:
+      - /opt/lib/planka/user-avatars:/app/public/user-avatars
+      - /opt/lib/planka/project-background-images:/app/public/project-background-images
+      - /opt/lib/planka/attachments:/app/private/attachments
+      - /opt/log/planka:/app/logs
+#    ports:
+#      - 3000:1337
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d planka"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  database:
+    external: true
+    name: postgres-net
