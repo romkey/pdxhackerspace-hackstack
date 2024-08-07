@@ -1,0 +1,24 @@
+services:
+  partdb:
+    image: jbtronics/part-db1:latest
+    container_name: partdb
+    hostname: partdb
+    restart: unless-stopped
+    ports:
+      - '28080:80'
+    networks:
+      - proxy
+      - database
+    volumes:
+      - ../../lib/partdb//uploads:/var/www/html/uploads
+      - ../../lib/partdb/public_media:/var/www/html/public/media
+      - ../../lib/partdb//db:/var/www/html/var/db
+    env_file:
+      - .env
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  database:
+    name: postgres-net
+    external: true
