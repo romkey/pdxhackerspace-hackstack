@@ -1,0 +1,18 @@
+services:
+  rtl_433:
+    container_name: rtl_433
+    image: hertzg/rtl_433:master-alpine
+    entrypoint: "/usr/local/bin/rtl_433"
+    command: "-F ${MQTT_BROKER} ${RTL433_EXTRA_OPTIONS}"
+    networks:
+      - mosquitto
+    devices:
+      - "${SDR_DEVICE}"
+    volumes:
+      - ./config:/etc/rtl_433
+    env_file:
+      - .env
+networks:
+  mosquitto:
+    name: mosquitto-net
+    external: true

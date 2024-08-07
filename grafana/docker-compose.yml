@@ -1,0 +1,22 @@
+services:
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    hostname: grafana
+    restart: unless-stopped
+    volumes:
+      - ../../lib/grafana:/var/lib/grafana
+      - ../../log/grafana:/var/log/grafana
+      - ./config:/etc/grafana
+#    ports:
+#     - 3000:3000
+    networks:
+      - proxy
+      - influxdb
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  influxdb:
+    name: influxdb-net
+    external: true

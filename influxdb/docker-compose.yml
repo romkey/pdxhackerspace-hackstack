@@ -1,0 +1,17 @@
+services:
+  influxdb2:
+    image: influxdb:2
+    container_name: influxdb
+    hostname: influxdb
+#    ports:
+#      - 8086:8086
+    volumes:
+      - ../../lib/influxdb2:/var/lib/influxdb2
+      - ./config:/etc/influxdb2
+    env_file:
+      - .env
+    networks:
+      - influxdb
+networks:
+  influxdb:
+    name: influxdb-net
