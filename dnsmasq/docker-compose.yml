@@ -1,29 +1,14 @@
 services:
   dnsmasq:
     restart: unless-stopped
-    image: jpillora/dnsmasq
+    build: .
     container_name: dnsmasq
+    hostname: dnsmasq
     network_mode: host
-#    networks:
-#      dnsmasq:
-#        ipv4_address: "${IPV4_ADDRESS}"
-#      proxy:
     volumes:
       - ./conf/dnsmasq.conf:/etc/dnsmasq.conf
       - ./conf/hosts.d:/etc/hosts.d
 #    ports:
 #      - "53:53/udp"
-#      - "8080:8080"
-    env_file:
-      - .env
-
-networks:
-  dnsmasq:
-    name: dnsmasq
-    driver: bridge
-    ipam:
-      config:
-        - subnet: "${IPV4_SUBNET}"
-  proxy:
-    external: true
-    name: nginx-proxy-net
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
