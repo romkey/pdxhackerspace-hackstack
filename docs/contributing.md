@@ -17,7 +17,7 @@ As a rule we try to allow users to customize the installation as much as possibl
 Docker Compose can specify external directories or Docker volumes to be mounted inside the container. We use a specific organization for volumes (`APPNAME` is the name of the application):
 
 - any configuration data will be stored in a directory called `config` in the directory containing the `docker-compose` file
-- any runtime data, state information, sqlite3 databases - anything that maintains the state of the application and which must be preserved across runs - will be stored in `../../lib/APPNAME`
+- any runtime data, state information, sqlite3 databases - anything that maintains the state of the application and which must be preserved across runs - will be stored in `../../lib/APPNAME`. Applications which mingle configuration and run-time data in a way that makes it difficult to isolate them may store configuration data in this directory as well.
 - log files go in `../../log/APPNAME`
 - transient runtime files, like caches or FIFOs, go in `../../run/APPNAME`
 
@@ -77,6 +77,8 @@ All applications should use the instance of Postgresql or MariaDB that is alread
 If it's absolutely necessary that an application be pinned to a specific version of a database then of course that's acceptable, but both Postgresql and MariaDB have excellent backwards compability
 
 We recognize the "single point of failure" argument but in particular, Postgresql is a tank and if it's failed then server maintainers have immediate issues they need to deal with that are more important than any one application.
+
+Redis is an exception. The official position on multi-application Redis is to use one instance of Redis per application. Applications which require Redis should provide their own service definitions for it in their compose file and should isolate it on a network they share with it. Since Redis is most commonly used for transient data like caches it probably doesn't require backups. If it does the application should provide for them.
 
 ## Environment and Configuration
 
