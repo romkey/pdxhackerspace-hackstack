@@ -30,7 +30,7 @@ services:
 networks:
   default:
     name: frigate-net
-    driver: bridge
+#    driver: bridge
   proxy:
     external: true
     name: nginx-proxy-net

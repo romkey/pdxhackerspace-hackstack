@@ -4,8 +4,8 @@ services:
     container_name: partdb
     hostname: partdb
     restart: unless-stopped
-    ports:
-      - '28080:80'
+#    ports:
+#      - 28080:80
     networks:
       - proxy
       - database
