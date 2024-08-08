@@ -11,8 +11,8 @@ services:
     networks:
       - proxy
       - mdns-net
-    ports:
-      - 6052:6052
+#    ports:
+#      - 6052:6052
     env_file:
       - .env
 networks:

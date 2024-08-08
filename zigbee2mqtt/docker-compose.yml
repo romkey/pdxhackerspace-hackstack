@@ -10,17 +10,14 @@ services:
     volumes:
       - ./data:/app/data
       - /run/udev:/run/udev:ro
-    ports:
-      - 8080:8080
+#    ports:
+#      - 8080:8080
     env_file:
       - .env
     networks:
-      - default
-      - proxy
+       - proxy
       - mqtt
 networks:
-  default:
-    driver: bridge
   proxy:
     name: nginx-proxy-net
     external: true
