@@ -1,6 +1,6 @@
 # Examples
 
-On our primary server we're running a full stack. These services aren't things that end users would generally interact with, and gives us a sturdy foundation to run other applications on.
+On our primary server we're running the full stack. These services aren't things that end users would generally interact with, and gives us a sturdy foundation to run other applications on.
 
 - Nginx Proxy Manager to provide reverse proxies for both local and public services. Each service has a hostname or domain name; Nginx Proxy Manager maps that name to the service. Local names end in `.ctrlh`, public names in `.pdxhackerspace.org`. Public names will always be served over HTTPS with certificates provided by Let's Encrypt, which Nginx Proxy Manager handles. Our router is configured to proxy ports 80 (HTTP) and 443 (HTTPS) to the server, where Nginx Proxy Manager handles them.
 
