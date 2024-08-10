@@ -20,6 +20,8 @@ services:
       options:
         max-size: "1G"
         max-file: "4"
+    env_file:
+      - .env
 networks:
   default:
     external: true

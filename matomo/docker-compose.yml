@@ -1,0 +1,37 @@
+services:
+  matomo:
+    image: matomo:fpm-alpine
+    container_name: matomo
+    hostname: matomo
+    restart: unless-stopped
+    networks:
+      - matomo
+      - mariadb
+    volumes:
+      - /opt/lib/matomo:/var/www/html
+    env_file:
+      - ./.env
+  matomo-nginx:
+    image: nginx:alpine
+    container_name: matomo-nginx
+    hostname: matomo-nginx
+    restart: unless-stopped
+    networks:
+      - matomo
+      - proxy
+      - mariadb
+    volumes:
+      - /opt/lib/matomo:/var/www/html:z,ro
+      # see https://github.com/matomo-org/matomo-nginx
+      - ./nginx/matomo.conf:/etc/nginx/conf.d/default.conf:z,ro
+#    ports:
+#      - 8080:80
+networks:
+  matomo:
+    name: matomo-net
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  mariadb:
+    external: true
+    name: mariadb-net
