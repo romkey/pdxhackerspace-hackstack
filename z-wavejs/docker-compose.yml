@@ -7,11 +7,17 @@ services:
     devices:
       - "${CONTROLLER_DEVICE}:/dev/zwave"
     volumes:
-      - ../../lib/data:/usr/src/app/store
+      - ../../lib/z-wavejs:/usr/src/app/store
+    networks:
+      - hass
+      - proxy
 #    ports:
 #      - 8091:8091
 #      - 3000:3000
 networks:
-  default:
+  hass:
     name: hass-net
+    external: true
+  proxy:
+    name: nginx-proxy-net
     external: true

@@ -1,0 +1,26 @@
+services:
+  statping:
+    image: adamboutcher/statping-ng:latest
+    container_name: statping
+    hostname: statping
+    restart: always
+    networks:
+      - proxy
+      - postgresql
+      - mariadb
+    volumes:
+      - ../../lib/statping:/app
+#    ports:
+#      - 8091:8080
+    env_file:
+      - .env
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  postgresql:
+    name: postgres-net
+    external: true
+  mariadb:
+    name: mariadb-net
+    external: true
