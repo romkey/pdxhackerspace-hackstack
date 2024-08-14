@@ -1,18 +1,18 @@
 # Postgresql
 
-To create a database:
-```
-docker compose exec postgresql psql -U postgresql
-create database NAME;
-```
+These examples assume that the administrative user for Postgresql is `postgresql`. If you've used another name, substitute it for `postgresql`.
 
 To create a user:
 ```
-docker compose exec postgresql psql -U postgresql
-create role NAME with password PASSWORD;;
+docker compose exec postgresql createuser -U postgresql -w USERNAME
 ```
+this will prompt for a password.
 
-`role` disallows login by default. Use `user` to allow login.
+
+To create a database:
+```
+docker compose exec postgresql createdb NAME -O OWNER_NAME;
+```
 
 To change a user or role's password:
 ```
