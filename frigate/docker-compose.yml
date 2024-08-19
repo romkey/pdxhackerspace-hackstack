@@ -20,8 +20,8 @@ services:
         target: /tmp/cache
         tmpfs:
           size: 100000000
-#    ports:
-#      - 5000:5000
+    ports:
+      - 5000:5000
 #      - 8554:10554     # RTSP feeds
 #      - 8555:10555/tcp # WebRTC over tcp
 #      - 8555:10555/udp # WebRTC over udp
@@ -30,7 +30,6 @@ services:
 networks:
   default:
     name: frigate-net
-#    driver: bridge
   proxy:
     external: true
     name: nginx-proxy-net
