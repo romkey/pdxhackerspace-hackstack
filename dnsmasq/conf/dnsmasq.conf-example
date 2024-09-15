@@ -1,6 +1,6 @@
 # this should be the IP address of the interface we want to accept queries
 # finding that 0.0.0.0 does not work
-listen-address=EXTERNAL INTERFACE IP ADDRESS
+listen-address=192.168.13.2
 
 log-queries
 domain-needed
@@ -8,26 +8,22 @@ bogus-priv
 no-resolv
 filterwin2k
 
-# Use this if you want to use a bogus local domain
-# this way you can address hosts as "esphome.ctrlh"
 domain=ctrlh
-local=/ctrlh/
-no-hosts
 expand-hosts
+no-hosts
+local=/ctrlh/
 
-# disable lookup caching at the expense of increased network traffic and latency
-local-ttl=0
-max-cache-ttl=0
+local-ttl=5
+max-cache-ttl=5
 
+# add individual hostnames to /opt/lib/dnsmasq/hosts.d, which is mapped to /etc/hosts.d
 hostsdir=/etc/hosts.d
+# hostname directory for automatically generated host files
+hostsdir=/etc/autohosts.d
 
-# you can add individual hostnames if you want
-# address=/DOMAIN.NAME/IP.ADD.RE.SS
-
-# chain queries to other internal DNS servers using the hackstack
 server=/corginium.ctrlh/192.168.13.11
 
-# default DNS server
-# 9.9.9.9 is considered more private than Google (8.8.8.8) or Cloudflare (1.1.1.1)
-# you may prefer to use your router so that it can resolve local names
+# fall back to the router (UDM Pro)
+# this gives it the opportunity to service requests for
+# names it's configured for
 server=192.168.13.1

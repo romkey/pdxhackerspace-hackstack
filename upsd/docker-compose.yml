@@ -2,10 +2,14 @@ services:
   upsd:
     image: gpdm/nut-upsd
     container_name: upsd
+    hostname: upsd
     restart: unless-stopped
     privileged: true
+    devices:
+      - "${UPS_DEVICE}:/dev/ups0:rw"
     volumes:
-    - /dev/serial/by-id/usb-FTDI_FT231X_USB_UART_D30IHXM0-if00-port0:/dev/ups0:rw
-    - ./config:/etc/nut
+      - ./config:/etc/nut
     ports:
-    - 3493:3493
+      - 3493:3493
+    env_file:
+      - .env

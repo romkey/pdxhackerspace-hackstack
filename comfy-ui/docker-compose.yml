@@ -8,8 +8,8 @@ services:
       - proxy
     volumes:
       - ../../lib/comfy-ui:/storage
-    ports:
-      - 8188:8188
+#    ports:
+#      - 8188:8188
     env_file:
       - .env
     deploy:

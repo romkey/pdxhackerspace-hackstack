@@ -5,10 +5,10 @@ services:
     container_name: invidious
     restart: unless-stopped
     networks:
-      database: null
-      default: null
+      - database
+      - proxy
     volumes:
-      - ./config:/invidious/config
+      - ./config/config.yml:/invidious/config/config.yml
 #    ports:
 #      - "127.0.0.1:3000:3000"
     healthcheck:
@@ -20,8 +20,10 @@ services:
       options:
         max-size: "1G"
         max-file: "4"
+    env_file:
+      - .env
 networks:
-  default:
+  proxy:
     external: true
     name: nginx-proxy-net
   database:
