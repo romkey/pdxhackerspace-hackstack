@@ -4,8 +4,8 @@ services:
     container_name: backrest
     hostname: backrest
     volumes:
-      - ../../lib/backrest:/data
       - ./config:/config
+      - ../../lib/backrest:/data
       - /backups/chaos/backrest/cache:/cache
       - /backups/chaos/backrest/repos:/repos
       - /opt:/userdata
