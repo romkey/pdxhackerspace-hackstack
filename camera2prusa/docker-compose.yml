@@ -1,0 +1,7 @@
+services:
+  prusa_connect_rtsp:
+    image: jtee3d/prusa_connect_rtsp:latest
+    container_name: camera2prusa_connect
+    restart: unless-stopped
+    env_file:
+      - .env
