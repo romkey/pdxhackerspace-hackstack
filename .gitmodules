@@ -4,3 +4,6 @@
 [submodule "auto_planka"]
 	path = auto_planka
 	url = https://github.com/romkey/auto_planka
+[submodule "pdxhackerspace-hackstack-trimetd"]
+	path = pdxhackerspace-hackstack-trimetd
+	url = git@github.com:romkey/pdxhackerspace-hackstack-trimetd.git
