@@ -7,3 +7,6 @@
 [submodule "pdxhackerspace-hackstack-trimetd"]
 	path = pdxhackerspace-hackstack-trimetd
 	url = git@github.com:romkey/pdxhackerspace-hackstack-trimetd.git
+[submodule "autogenerate-hosts"]
+	path = autogenerate-hosts
+	url = git@github.com:romkey/pdxhackerspace-hackstack-autogenerate-hosts.git
