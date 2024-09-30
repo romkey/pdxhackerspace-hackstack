@@ -1,0 +1,30 @@
+services:
+  musicassistant:
+    container_name: music-assistant
+    hostname: music-assistant
+    image: ghcr.io/music-assistant/server:stable
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/lib/music-assistant:/data
+      - /media/nas/music:/media
+#    network_mode: host
+    networks:
+      - proxy
+      - mdns
+      - hass
+#    ports:
+#      - 8095:8095
+#      - 8096:8096
+
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  hass:
+    name: hass-net
+    external: true
+  mdns:
+    external: true
+    name: mdns-net
