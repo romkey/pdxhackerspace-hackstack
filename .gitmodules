@@ -10,3 +10,6 @@
 [submodule "autogenerate-hosts"]
 	path = autogenerate-hosts
 	url = git@github.com:romkey/pdxhackerspace-hackstack-autogenerate-hosts.git
+[submodule "trimetd"]
+	path = trimetd
+	url = https://github.com/romkey/pdxhackerspace-hackstack-trimetd
