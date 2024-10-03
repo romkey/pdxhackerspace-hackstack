@@ -1,5 +1,5 @@
 services:
-  musicassistant:
+  music-assistant:
     container_name: music-assistant
     hostname: music-assistant
     image: ghcr.io/music-assistant/server:stable
@@ -14,9 +14,9 @@ services:
       - proxy
       - mdns
       - hass
-#    ports:
+    ports:
 #      - 8095:8095
-#      - 8096:8096
+      - 8096:8096
 
 networks:
   proxy:
