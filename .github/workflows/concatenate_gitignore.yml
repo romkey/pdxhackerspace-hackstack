@@ -25,7 +25,7 @@ jobs:
           
           # Find all .gitignore files one level down, process each with its path prefix
           find . -mindepth 2 -maxdepth 2 -name ".gitignore" | while read -r gitignore_file; do
-            dir_path=$(dirname "$gitignore_file")
+            dir_path=$(dirname "$gitignore_file" | sed 's|^\./||')
             echo -e "\n# Patterns from $dir_path/.gitignore" >> .gitignore
             sed "s|^|$dir_path/|" "$gitignore_file" >> .gitignore
           done
