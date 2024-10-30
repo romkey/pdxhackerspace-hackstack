@@ -46,3 +46,8 @@ zigbee2mqtt/data/state.json
 zigbee2mqtt/data/database.db
 zigbee2mqtt/data/log/
 
+
+# Patterns from ./access-control-webhook/.gitignore
+./access-control-webhook/config/.ssh/
+./access-control-webhook/config/hooks.json
+./access-control-webhook/config/run/automation_rsa
