@@ -4,9 +4,6 @@ avahi-dns/services
 
 backrest/config/config.json*
 
-dnsmasq/conf/dnsmasq.conf
-dnsmasq/conf/hosts.d/
-
 glances/glances.conf
 glances/glances.pwd
 
