@@ -4,9 +4,6 @@ avahi-dns/services
 
 backrest/config/config.json*
 
-dnsmasq/conf/dnsmasq.conf
-dnsmasq/conf/hosts.d/
-
 glances/glances.conf
 glances/glances.pwd
 
@@ -47,7 +44,11 @@ zigbee2mqtt/data/database.db
 zigbee2mqtt/data/log/
 
 
-# Patterns from ./access-control-webhook/.gitignore
-./access-control-webhook/config/.ssh/
-./access-control-webhook/config/hooks.json
-./access-control-webhook/config/run/automation_rsa
+# Patterns from dnsmasq/.gitignore
+dnsmasq/conf/dnsmasq.conf
+dnsmasq/conf/hosts.d/
+
+# Patterns from access-control-webhook/.gitignore
+access-control-webhook/config/.ssh/
+access-control-webhook/config/hooks.json
+access-control-webhook/config/run/automation_rsa
