@@ -1,0 +1,3 @@
+config/.ssh/
+config/hooks.json
+config/run/automation_rsa
