@@ -52,3 +52,6 @@ dnsmasq/conf/hosts.d/
 access-control-webhook/config/.ssh/
 access-control-webhook/config/hooks.json
 access-control-webhook/config/run/automation_rsa
+
+# Patterns from airconnect/.gitignore
+airconnect/config/*.xml
