@@ -1,6 +1,11 @@
 # Do not edit .gitignore - the file is assembled automatically by a Github action
-# from */.gitignore files and .gitignore.initial on pushes to the 
+# from */.gitignore files and .gitignore.initial on pushes to the repo
 #
+# To add to .gitignore either edit the related .gitignore file in a subdirectory
+# or edit .gitignore.initial
+#
+# Be sure to git pull after pushing .gitignore modifications and after the action
+# runs, so that you get the updated .gitignore file in your local environment
 
 */.env
 
@@ -54,6 +59,10 @@ mosquitto/config/mos_passwd
 access-control-webhook/config/.ssh/
 access-control-webhook/config/hooks.json
 access-control-webhook/config/run/automation_rsa
+
+# Patterns from nginx-proxy-manager/.gitignore
+nginx-proxy-manager/config/
+nginx-proxy-manager/letsencrypt/
 
 # Patterns from airconnect/.gitignore
 airconnect/config/*.xml
