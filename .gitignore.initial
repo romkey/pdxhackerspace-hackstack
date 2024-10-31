@@ -11,25 +11,10 @@
 
 avahi-dns/services
 
-grafana/config/grafana.ini
-
 home-assistant/config/
-
-influxdb/config/influx-configs
-
-invidious/config/config.yml
-invidious/config/sql/
-
-jellyfin/config/
 
 mopidy/conf/mopidy.conf
 
-mqtt-explorer/config/settings.json
-
 redis/conf/
-
-rtlamr2mqtt/config.yaml
-
-telegraf/config/telegraf.conf
 
 upsd/config/
