@@ -11,13 +11,20 @@
 
 avahi-dns/services
 
+grafana/config/grafana.ini
+
 home-assistant/config/
 
 influxdb/config/influx-configs
 
+invidious/config/config.yml
+invidious/config/sql/
+
 jellyfin/config/
 
 mopidy/conf/mopidy.conf
+
+mqtt-explorer/config/settings.json
 
 redis/conf/
 
@@ -44,9 +51,19 @@ zigbee2mqtt/data/log/
 # Patterns from backrest/.gitignore
 backrest/config/config.json*
 
+# Patterns from grafana/.gitignore
+grafana/config/grafani.ini
+
 # Patterns from mosquitto/.gitignore
 mosquitto/config/mosquitto.conf
 mosquitto/config/mos_passwd
+
+# Patterns from mqtt-explorer/.gitignore
+mqtt-explorer/config/settings.json
+
+# Patterns from invidious/.gitignore
+invidious/config/config.yml
+invidious/config/sql/
 
 # Patterns from access-control-webhook/.gitignore
 access-control-webhook/config/.ssh/
