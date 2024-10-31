@@ -11,28 +11,16 @@
 
 avahi-dns/services
 
-grafana/config/grafana.ini
-
 home-assistant/config/
-
-influxdb/config/influx-configs
-
-invidious/config/config.yml
-invidious/config/sql/
-
-jellyfin/config/
 
 mopidy/conf/mopidy.conf
 
-mqtt-explorer/config/settings.json
-
 redis/conf/
 
-rtlamr2mqtt/config.yaml
-
-telegraf/config/telegraf.conf
-
 upsd/config/
+
+# Patterns from telegraf/.gitignore
+telegraf/telegraf/config/telegraf.conf
 
 # Patterns from glances/.gitignore
 glances/glances.conf
@@ -58,8 +46,14 @@ grafana/config/grafani.ini
 mosquitto/config/mosquitto.conf
 mosquitto/config/mos_passwd
 
+# Patterns from rtlamr2mqtt/.gitignore
+rtlamr2mqtt/config.yaml
+
 # Patterns from mqtt-explorer/.gitignore
 mqtt-explorer/config/settings.json
+
+# Patterns from wiki/.gitignore
+wiki/config.yml
 
 # Patterns from invidious/.gitignore
 invidious/config/config.yml
@@ -69,6 +63,12 @@ invidious/config/sql/
 access-control-webhook/config/.ssh/
 access-control-webhook/config/hooks.json
 access-control-webhook/config/run/automation_rsa
+
+# Patterns from jellyfin/.gitignore
+jellyfin/config/
+
+# Patterns from influxdb/.gitignore
+influxdb/config/influx-configs
 
 # Patterns from nginx-proxy-manager/.gitignore
 nginx-proxy-manager/config/
