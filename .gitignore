@@ -1,11 +1,10 @@
+# Do not edit .gitignore - the file is assembled automatically by a Github action
+# from */.gitignore files and .gitignore.initial on pushes to the 
+#
+
 */.env
 
 avahi-dns/services
-
-backrest/config/config.json*
-
-glances/glances.conf
-glances/glances.pwd
 
 grafana/config/grafana.ini
 
@@ -20,13 +19,7 @@ jellyfin/config/
 
 mopidy/conf/mopidy.conf
 
-mosquitto/config/mosquitto.conf
-mosquitto/config/mos_passwd
-
 mqtt-explorer/config/settings.json
-
-nginx-proxy-manager/config/
-nginx-proxy-manager/letsencrypt/
 
 redis/conf/
 
@@ -36,17 +29,26 @@ telegraf/config/telegraf.conf
 
 upsd/config/
 
-wiki/config.yml
+# Patterns from glances/.gitignore
+glances/glances.conf
+glances/glances.pwd
 
+# Patterns from dnsmasq/.gitignore
+dnsmasq/conf/dnsmasq.conf
+dnsmasq/conf/hosts.d/
+
+# Patterns from zigbee2mqtt/.gitignore
 zigbee2mqtt/data/configuration.yaml
 zigbee2mqtt/data/state.json
 zigbee2mqtt/data/database.db
 zigbee2mqtt/data/log/
 
+# Patterns from backrest/.gitignore
+backrest/config/config.json*
 
-# Patterns from dnsmasq/.gitignore
-dnsmasq/conf/dnsmasq.conf
-dnsmasq/conf/hosts.d/
+# Patterns from mosquitto/.gitignore
+mosquitto/config/mosquitto.conf
+mosquitto/config/mos_passwd
 
 # Patterns from access-control-webhook/.gitignore
 access-control-webhook/config/.ssh/
