@@ -20,7 +20,7 @@ redis/conf/
 upsd/config/
 
 # Patterns from telegraf/.gitignore
-telegraf/telegraf/config/telegraf.conf
+telegraf/config/telegraf.conf
 
 # Patterns from glances/.gitignore
 glances/glances.conf
