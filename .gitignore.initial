@@ -7,7 +7,7 @@
 # Be sure to git pull after pushing .gitignore modifications and after the action
 # runs, so that you get the updated .gitignore file in your local environment
 
-*/.env
+**/*.env
 
 avahi-dns/services
 
