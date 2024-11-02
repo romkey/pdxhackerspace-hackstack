@@ -9,13 +9,18 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /opt/lib/music-assistant:/data
       - /media/nas/music:/media
-#    network_mode: host
-    networks:
-      - proxy
-      - mdns
-      - hass
+    network_mode: host
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+    security_opt:
+      - apparmor:unconfined
+#    networks:
+#      - proxy
+#      - mdns
+#      - hass
     ports:
-#      - 8095:8095
+      - 8095:8095
       - 8096:8096
 
 networks:
