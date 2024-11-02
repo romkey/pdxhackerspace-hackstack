@@ -1,0 +1,12 @@
+services:
+  airconnect:
+    image: 1activegeek/airconnect
+    container_name: airconnect
+    hostname: airconnect
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    volumes:
+      - ./config:/config
+    env_file:
+      - .env
