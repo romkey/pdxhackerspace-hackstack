@@ -40,7 +40,7 @@ zigbee2mqtt/data/log/
 backrest/config/config.json*
 
 # Patterns from grafana/.gitignore
-grafana/config/grafani.ini
+grafana/config/grafana.ini
 
 # Patterns from mosquitto/.gitignore
 mosquitto/config/mosquitto.conf
