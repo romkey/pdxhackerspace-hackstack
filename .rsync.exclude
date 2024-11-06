@@ -15,6 +15,7 @@ lib/grafana/grafana.db
 
 # Patterns from mosquitto/.rsync.exclude
 lib/mosquitto/mosquitto.db
+
 # Patterns from postgresql/.rsync.exclude
 lib/postgresql
 
