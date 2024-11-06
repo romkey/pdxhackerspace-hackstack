@@ -1,0 +1,5 @@
+lost+found/
+containerd/
+docker/
+run/
+**/*.log

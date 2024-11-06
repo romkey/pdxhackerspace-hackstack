@@ -1,0 +1,49 @@
+name: Update .gitignore
+
+on:
+  push:
+    paths:
+      - "**/.rsync.exclude"
+      - ".rsync.exclude.initial"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-rsync-exclude:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Concatenate .rsync.exclude files with directory paths
+        run: |
+          # Start with the initial .gitignore file
+          cp .rsync.exclude.initial .rsync.exclude
+          
+          # Find all .gitignore files one level down, process each with its path prefix
+          find . -mindepth 2 -maxdepth 2 -name ".rsync.exclude" | while read -r rsync_excludes; do
+            dir_path=$(dirname "$rsync_excludes" | sed 's|^\./||')
+            echo -e "\n# Patterns from $dir_path/.rsync.exclude" >> .rsync.exclude
+            sed "s|^|$dir_path/|" "$rsync_excludes" >> .rsync.exclude
+          done
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if [[ -n "$(git status --porcelain .rsync.exclude)" ]]; then
+            echo "changes=true" >> $GITHUB_ENV
+          else
+            echo "changes=false" >> $GITHUB_ENV
+          fi
+
+      - name: Commit and push if changes exist
+        if: env.changes == 'true'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .gitignore
+          git commit -m "Update top-level .rsync.exclude with directory paths"
+          git push
