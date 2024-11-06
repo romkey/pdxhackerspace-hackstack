@@ -1,0 +1,11 @@
+lost+found/
+containerd/
+docker/
+run/
+**/*.log
+
+# Patterns from mariadb/.rsync.exclude
+mariadb/lib/mariadb
+
+# Patterns from postgresql/.rsync.exclude
+postgresql/lib/postgresql
