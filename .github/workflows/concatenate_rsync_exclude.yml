@@ -5,6 +5,7 @@ on:
     paths:
       - "**/.rsync.exclude"
       - ".rsync.exclude.initial"
+      - ".github/actions/concatenate_rsync_exclude.yml"
   workflow_dispatch:
 
 permissions:
@@ -20,10 +21,10 @@ jobs:
 
       - name: Concatenate .rsync.exclude files with directory paths
         run: |
-          # Start with the initial .gitignore file
+          # Start with the .rsync.exclude.initial file
           cp .rsync.exclude.initial .rsync.exclude
           
-          # Find all .gitignore files one level down, process each with its path prefix
+          # Find all .rsync.exclude files one level down, process each with its path prefix
           find . -mindepth 2 -maxdepth 2 -name ".rsync.exclude" | while read -r rsync_excludes; do
             dir_path=$(dirname "$rsync_excludes" | sed 's|^\./||')
             echo -e "\n# Patterns from $dir_path/.rsync.exclude" >> .rsync.exclude
