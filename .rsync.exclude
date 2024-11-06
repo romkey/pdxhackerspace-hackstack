@@ -5,7 +5,7 @@ run/
 **/*.log
 
 # Patterns from mariadb/.rsync.exclude
-./mariadb/.rsync.exclude
+lib/mariadb
 
 # Patterns from postgresql/.rsync.exclude
-./postgresql/.rsync.exclude
+lib/postgresql
