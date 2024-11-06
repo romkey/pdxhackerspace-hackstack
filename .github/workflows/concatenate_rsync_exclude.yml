@@ -28,7 +28,7 @@ jobs:
           find . -mindepth 2 -maxdepth 2 -name ".rsync.exclude" | while read -r rsync_excludes; do
             dir_path=$(dirname "$rsync_excludes" | sed 's|^\./||')
             echo -e "\n# Patterns from $dir_path/.rsync.exclude" >> .rsync.exclude
-            echo "$rsync_excludes" >> .rsync.exclude
+            cat "$dirname/.rsync.exclude" >> .rsync.exclude
           done
 
       - name: Check for changes
