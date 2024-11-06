@@ -1,4 +1,4 @@
-name: Update .gitignore
+name: Update .rsync.exlude
 
 on:
   push:
@@ -45,6 +45,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .gitignore
+          git add .rsync.exclude
           git commit -m "Update top-level .rsync.exclude with directory paths"
           git push
