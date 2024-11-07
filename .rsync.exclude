@@ -13,6 +13,9 @@ lib/mariadb
 # Patterns from grafana/.rsync.exclude
 lib/grafana/grafana.db
 
+# Patterns from esphome/.rsync.exclude
+lib/esphome/.esphome
+
 # Patterns from mosquitto/.rsync.exclude
 lib/mosquitto/mosquitto.db
 
