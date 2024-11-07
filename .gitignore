@@ -37,6 +37,9 @@ zigbee2mqtt/data/log/
 # Patterns from backrest/.gitignore
 backrest/config/config.json*
 
+# Patterns from mopidy/.gitignore
+mopidy/config/mopidy.conf
+
 # Patterns from grafana/.gitignore
 grafana/config/grafana.ini
 
