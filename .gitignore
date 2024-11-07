@@ -13,8 +13,6 @@ avahi-dns/services
 
 home-assistant/config/
 
-mopidy/conf/mopidy.conf
-
 redis/conf/
 
 upsd/config/
@@ -38,6 +36,9 @@ zigbee2mqtt/data/log/
 
 # Patterns from backrest/.gitignore
 backrest/config/config.json*
+
+# Patterns from mopidy/.gitignore
+mopidy/config/mopidy.conf
 
 # Patterns from grafana/.gitignore
 grafana/config/grafana.ini

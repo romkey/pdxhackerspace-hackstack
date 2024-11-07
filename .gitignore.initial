@@ -13,8 +13,6 @@ avahi-dns/services
 
 home-assistant/config/
 
-mopidy/conf/mopidy.conf
-
 redis/conf/
 
 upsd/config/
