@@ -7,7 +7,7 @@ services:
 #    ports:
 #      - 8086:8086
     volumes:
-      - ../../lib/influxdb2:/var/lib/influxdb2
+      - ../../lib/influxdb:/var/lib/influxdb2
       - ./config:/etc/influxdb2
     env_file:
       - .env
