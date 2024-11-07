@@ -1,3 +1,6 @@
+# Do not edit .rsync.exclude
+# File is automatically built from .rsync.exclude.inital and */.rsync.exclude
+
 lost+found/
 containerd/
 docker/
