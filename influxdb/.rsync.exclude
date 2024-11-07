@@ -1,2 +1,2 @@
 lib/influxdb/engine
-lib/influxdb/influxdb.sqlite
+lib/influxdb/influxd.sqlite
