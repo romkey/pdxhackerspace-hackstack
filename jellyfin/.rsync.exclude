@@ -1,0 +1,6 @@
+lib/jellyfin/data/jellyfin.db
+lib/jellyfin/data/jellyfin.db-shm
+lib/jellyfin/data/jellyfin.db-wal
+lib/jellyfin/data/library.db
+lib/jellyfin/data/library.db-shm
+lib/jellyfin/data/library.db-wal
