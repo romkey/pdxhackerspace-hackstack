@@ -7,6 +7,9 @@ run/
 # Patterns from frigate/.rsync.exclude
 lib/frigate/config/frigate.db
 
+# Patterns from home-assistant/.rsync.exclude
+lib/home-assistant/backups
+
 # Patterns from mariadb/.rsync.exclude
 lib/mariadb
 
