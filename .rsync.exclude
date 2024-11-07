@@ -31,5 +31,17 @@ lib/postgresql
 # Patterns from calibre-web/.rsync.exclude
 lib/calibre-web/metadatab.db
 
+# Patterns from jellyfin/.rsync.exclude
+lib/jellyfin/data/jellyfin.db
+lib/jellyfin/data/jellyfin.db-shm
+lib/jellyfin/data/jellyfin.db-wal
+lib/jellyfin/data/library.db
+lib/jellyfin/data/library.db-shm
+lib/jellyfin/data/library.db-wal
+
+# Patterns from music-assistant/.rsync.exclude
+lib/music-assistant/cache.db
+lib/music-assistant/library.db
+
 # Patterns from nginx-proxy-manager/.rsync.exclude
 lib/nginx-proxy-manager/database.sqlite
