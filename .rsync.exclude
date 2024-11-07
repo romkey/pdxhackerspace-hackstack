@@ -1,0 +1,32 @@
+lost+found/
+containerd/
+docker/
+run/
+**/*.log
+
+# Patterns from frigate/.rsync.exclude
+lib/frigate/config/frigate.db
+
+# Patterns from home-assistant/.rsync.exclude
+lib/home-assistant/backups
+
+# Patterns from mariadb/.rsync.exclude
+lib/mariadb
+
+# Patterns from grafana/.rsync.exclude
+lib/grafana/grafana.db
+
+# Patterns from esphome/.rsync.exclude
+lib/esphome/.esphome
+
+# Patterns from mosquitto/.rsync.exclude
+lib/mosquitto/mosquitto.db
+
+# Patterns from postgresql/.rsync.exclude
+lib/postgresql
+
+# Patterns from calibre-web/.rsync.exclude
+lib/calibre-web/metadatab.db
+
+# Patterns from nginx-proxy-manager/.rsync.exclude
+lib/nginx-proxy-manager/database.sqlite
