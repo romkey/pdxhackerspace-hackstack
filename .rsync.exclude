@@ -43,5 +43,9 @@ lib/jellyfin/data/library.db-wal
 lib/music-assistant/cache.db
 lib/music-assistant/library.db
 
+# Patterns from influxdb/.rsync.exclude
+lib/influxdb/engine
+lib/influxdb/influxdb.sqlite
+
 # Patterns from nginx-proxy-manager/.rsync.exclude
 lib/nginx-proxy-manager/database.sqlite
