@@ -1,0 +1,10 @@
+# https://hub.docker.com/r/mikebrady/shairport-sync
+# https://github.com/mikebrady/shairport-sync
+services:
+  shairport-sync:
+    image: mikebrady/shairport-sync:latest
+    restart: unless-stopped
+    network_mode: host
+    devices:
+      - /dev/snd:/dev/snd
+      
