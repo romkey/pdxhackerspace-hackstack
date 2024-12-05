@@ -45,7 +45,7 @@ lib/music-assistant/library.db
 
 # Patterns from influxdb/.rsync.exclude
 lib/influxdb/engine
-lib/influxdb/influxdb.sqlite
+lib/influxdb/influxd.sqlite
 
 # Patterns from nginx-proxy-manager/.rsync.exclude
 lib/nginx-proxy-manager/database.sqlite
