@@ -1,5 +1,54 @@
 # Philosophy
 
+Hackstack's priorities are:
+- consistency
+- ease of maintenance
+- ease of disaster recovery
+
+Hackstack is designed specifically for a hacker/makerspace type of
+environment and recognizes that the needs and resources of such an
+environment are very different from those of a business selling
+web-based services.
+
+Hacker/Makerspaces are generally smallish, low resourced
+organizations. They:
+- have memberships (users) which more likely number in the hundreds
+  rather than hundreds of  thousands to millions
+- offer services which may reasonably be only accessible on-site
+- most likely do not have the resources to buy modern server hardware
+  (and in fact may be running on scavenged or reclaimed hardware)
+- most likely do not have the resources to have an on call tech
+  support or IT staff but rather a few volunteers that keep things
+  chugging along
+
+### Anti-goals
+
+Recognizing these conditions helps us understand some
+anti-goals. These spaces do not need services that:
+- scale
+- migrate easily or transparently between nodes
+and they do not need the overhead of running and maintaining systems
+that offer those as primary features.
+
+### Hardware
+
+Because Hacker/Makerspaces often use older hardware they are subject
+to a higher likelihood of hardware failure than businesses would
+generally anticipate while having fewer resources to manage
+failures. This dictates that overall design favor ease of disaster
+recovery and keeping resource requirements minimal.
+
+### Consistency
+
+There is little consistency to how applications are offered online
+using Docker compose files. Naming, port allocation, filesystem use
+all vary tremendously. From a maintenance perspective having to figure
+out how each individual application is set up can be a collosal
+headache when they're all different. Therefore Hackstack provides a
+set of guidelines as to how applications will be installed, similar to
+how Linux has done for decades. Once a maintainer is familiar with
+them they can easily inspect and manage any Hackstack application.
+
 ## Underlying System
 
 Keep the underlying system hosting the servers as clean and unpolluted
