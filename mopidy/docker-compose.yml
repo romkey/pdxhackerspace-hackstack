@@ -7,24 +7,20 @@ services:
     restart: unless-stopped
     privileged: true
     networks:
-      - nginx-proxy-net
+      - proxy
       - mdns
     volumes:
       - ../../lib/mopidy:/app:rw
-      - /media/nas/music:/media
+      - ../../run/mopidy:/app/cache
       - ./config:/config:ro
-      - type: tmpfs
-        target: /app/cache
-        tmpfs:
-          size: 128000000
-          mode: 777
-    user: mopidy:audio
+      - /media/nas/music:/media
+    user: 84044:audio
     ports:
       - 6600:6600
       - 6680:6680
 
 networks:
-  default:
+  proxy:
     external: true
     name: nginx-proxy-net
   mdns:

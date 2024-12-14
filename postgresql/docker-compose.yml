@@ -1,6 +1,6 @@
 services:
   postgresql:
-    image: postgres:latest
+    image: postgres:16
     hostname: postgresql
     container_name: postgresql
     restart: unless-stopped
