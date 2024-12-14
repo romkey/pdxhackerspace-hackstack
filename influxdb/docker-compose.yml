@@ -3,10 +3,11 @@ services:
     image: influxdb:2
     container_name: influxdb
     hostname: influxdb
+    restart: unless-stopped
 #    ports:
 #      - 8086:8086
     volumes:
-      - ../../lib/influxdb2:/var/lib/influxdb2
+      - ../../lib/influxdb:/var/lib/influxdb2
       - ./config:/etc/influxdb2
     env_file:
       - .env

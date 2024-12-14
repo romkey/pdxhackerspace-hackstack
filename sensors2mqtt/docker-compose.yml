@@ -1,0 +1,21 @@
+services:
+  sensors2mqtt:
+    container_name: sensors2mqtt
+    privileged: true
+    image: kevinpdavid/sensors2mqtt:main
+    restart: unless-stopped
+    networks:
+      - mosquitto
+    env_file:
+      - .env
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities:
+                - gpu
+networks:
+  mosquitto:
+    name: mosquitto-net
+    external: true

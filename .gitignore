@@ -1,52 +1,79 @@
-*/.env
+# Do not edit .gitignore - the file is assembled automatically by a Github action
+# from */.gitignore files and .gitignore.initial on pushes to the repo
+#
+# To add to .gitignore either edit the related .gitignore file in a subdirectory
+# or edit .gitignore.initial
+#
+# Be sure to git pull after pushing .gitignore modifications and after the action
+# runs, so that you get the updated .gitignore file in your local environment
 
-access-control-webhook/config/.ssh/
-access-control-webhook/config/hooks.json
-access-control-webhook/config/run/automation_rsa
+**/*.env
 
 avahi-dns/services
 
-backrest/config/config.json*
-
-dnsmasq/conf/dnsmasq.conf
-dnsmasq/conf/hosts.d/
-
-glances/glances.conf
-glances/glances.pwd
-
-grafana/config/grafana.ini
-
 home-assistant/config/
-
-influxdb/config/influx-configs
-
-invidious/config/config.yml
-invidious/config/sql/
-
-jellyfin/config/
-
-mopidy/conf/mopidy.conf
-
-mosquitto/config/mosquitto.conf
-mosquitto/config/mos_passwd
-
-mqtt-explorer/config/settings.json
-
-nginx-proxy-manager/config/
-nginx-proxy-manager/letsencrypt/
 
 redis/conf/
 
-rtlamr2mqtt/config.yaml
-
-telegraf/config/telegraf.conf
-
 upsd/config/
 
-wiki/config.yml
+# Patterns from telegraf/.gitignore
+telegraf/config/telegraf.conf
 
+# Patterns from glances/.gitignore
+glances/glances.conf
+glances/glances.pwd
+
+# Patterns from dnsmasq/.gitignore
+dnsmasq/conf/dnsmasq.conf
+dnsmasq/conf/hosts.d/
+
+# Patterns from zigbee2mqtt/.gitignore
 zigbee2mqtt/data/configuration.yaml
 zigbee2mqtt/data/state.json
 zigbee2mqtt/data/database.db
 zigbee2mqtt/data/log/
 
+# Patterns from backrest/.gitignore
+backrest/config/config.json*
+
+# Patterns from mopidy/.gitignore
+mopidy/config/mopidy.conf
+
+# Patterns from grafana/.gitignore
+grafana/config/grafana.ini
+
+# Patterns from mosquitto/.gitignore
+mosquitto/config/mosquitto.conf
+mosquitto/config/mos_passwd
+
+# Patterns from rtlamr2mqtt/.gitignore
+rtlamr2mqtt/config.yaml
+
+# Patterns from mqtt-explorer/.gitignore
+mqtt-explorer/config/settings.json
+
+# Patterns from wiki/.gitignore
+wiki/config.yml
+
+# Patterns from invidious/.gitignore
+invidious/config/config.yml
+invidious/config/sql/
+
+# Patterns from access-control-webhook/.gitignore
+access-control-webhook/config/.ssh/
+access-control-webhook/config/hooks.json
+access-control-webhook/config/run/automation_rsa
+
+# Patterns from jellyfin/.gitignore
+jellyfin/config/
+
+# Patterns from influxdb/.gitignore
+influxdb/config/influx-configs
+
+# Patterns from nginx-proxy-manager/.gitignore
+nginx-proxy-manager/config/
+nginx-proxy-manager/letsencrypt/
+
+# Patterns from airconnect/.gitignore
+airconnect/config/*.xml

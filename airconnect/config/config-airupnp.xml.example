@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<airupnp>
+<common>
+<enabled>1</enabled>
+<max_volume>100</max_volume>
+<http_length>-1</http_length>
+<upnp_max>1</upnp_max>
+<codec>flac</codec>
+<metadata>1</metadata>
+<flush>1</flush>
+<artwork></artwork>
+<latency></latency>
+<drift>0</drift>
+</common>
+<main_log>info</main_log>
+<upnp_log>info</upnp_log>
+<util_log>warn</util_log>
+<raop_log>info</raop_log>
+<log_limit>-1</log_limit>
+<max_players>32</max_players>
+<binding>?</binding>
+<ports>0:0</ports>
+<device>
+</device>
+</airupnp>
