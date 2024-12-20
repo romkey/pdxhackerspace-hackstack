@@ -6,9 +6,31 @@ We don't intend it as any kind of ubiquitous or universal guide to server softwa
 
 Hackstack applications all follow a set of conventions that dictate how they store data, publish network ports, use databases, are configured and backed up, and interact with one another. By following conventions the system stays manageable and organized; we know where everything lives and how it works, instead of being a haphazard collection of Docker and compose files that all do everything differently.
 
+## tldr;
+
+1. All applications have their own Docker Compose files
+
+2. Each application lives in a directory in `/opt/docker`
+
+3. Each application's volumes are filesystem binds that are stored in a directory named for the application `/opt/lib`, `/opt/logs` or `/opt/run`
+
+4. Unless absolutely necessary, applications do not use host networking and do not publish ports. Whenever possible, applications are exposed via `nginx-proxy-manager`
+
+5. Applications are isolated on Docker networks that connect functional groups
+
+6. Unless absolutely necessary, applications use the shared instances of Postgresql and Mariadb and do not spin up their own instances of them. However, applications that require Redis do use their own instance of that.
+
+7. Environment variables are stored in `.env`, not in `docker-compose.yml`. Applications should provide a `.env.example` with secrets redacted.
+
+8. The environment variable `BACKUP_DATABASE_URLS` in a `.env` file will allow dumps of live databases to be backed up automatically.
+
+9. Applications will be automatically updated by Watchtower. For locally built applications or applications that shouldn't be updated, add the label `com.centurylinklabs.watchtower.enable=false` to the compose file.
+
+10. Applications that follow these conventions will have their files and databases backed up automatically.
+
 ## Docker Compose
 
-All services are managed by Docker Compose. The service should include a docker-compose.yml file in a directory at the root of the repository.
+All services are managed by Docker Compose. The service should include a `docker-compose.yml` file in a directory at the root of the repository.
 
 As a rule we try to allow users to customize the installation as much as possible without modifying the compose file. Obviously this isn't always possible but we strongly prefer doing so when possible. This allows the user a change to potentially be able to simply pull new versions of the hackstack to gain new applications.
 
@@ -17,7 +39,7 @@ As a rule we try to allow users to customize the installation as much as possibl
 Docker Compose can specify external directories or Docker volumes to be mounted inside the container. We use a specific organization for volumes (`APPNAME` is the name of the application):
 
 - any configuration data will be stored in a directory called `config` in the directory containing the `docker-compose` file
-- any runtime data, state information, sqlite3 databases - anything that maintains the state of the application and which must be preserved across runs - will be stored in `../../lib/APPNAME`. Applications which mingle configuration and run-time data in a way that makes it difficult to isolate them may store configuration data in this directory as well.
+- any runtime data, state information, Sqlite3 databases - anything that maintains the state of the application and which must be preserved across runs - will be stored in `../../lib/APPNAME`. Applications which mingle configuration and run-time data in a way that makes it difficult to isolate them may store configuration data in this directory as well.
 - log files go in `../../log/APPNAME`
 - transient runtime files, like caches or FIFOs, go in `../../run/APPNAME`
 
