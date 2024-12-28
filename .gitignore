@@ -43,6 +43,9 @@ mopidy/config/mopidy.conf
 # Patterns from grafana/.gitignore
 grafana/config/grafana.ini
 
+# Patterns from snapserver/.gitignore
+snapserver/config/snapcast.conf
+
 # Patterns from mosquitto/.gitignore
 mosquitto/config/mosquitto.conf
 mosquitto/config/mos_passwd
