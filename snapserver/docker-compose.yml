@@ -1,5 +1,6 @@
 services:
   snapserver:
+#    image: saiyato/snapserver
     image: ivdata/snapserver
     hostname: snapserver
     container_name: snapserver
@@ -9,8 +10,8 @@ services:
       - 1705:1705 # port for TCP Json RPC
       - 1780:1780 # port for the SnapWeb Webinterface
     volumes:
-      - /opt/docker/snapserver/config/snapcast.conf:/etc/snapcast.conf
-      - /opt/run/snapserver/fifo:/tmp/snapfile
-      - /opt/lib/snapserver:/var/lib/snapcast
+      - ./config/snapcast.conf:/etc/snapcast.conf
+      - ../../run/snapserver/fifo:/tmp/snapfile
+      - ../../lib/snapserver:/var/lib/snapcast
     env_file:
       - .env
