@@ -3,8 +3,11 @@
 services:
   shairport-sync:
     image: mikebrady/shairport-sync:latest
+    container_name: shairport-sync
+    hostname: shairport-sync
     restart: unless-stopped
     network_mode: host
     devices:
       - /dev/snd:/dev/snd
-      
+    volumes:
+      - ../../run/shairport-sync/fifos:/tmp/shairport-sync-metadata/
