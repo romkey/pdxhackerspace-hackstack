@@ -1,0 +1,17 @@
+services:
+  snapserver:
+#    image: saiyato/snapserver
+    image: ivdata/snapserver
+    hostname: snapserver
+    container_name: snapserver
+    restart: unless-stopped
+    ports:
+      - 1704:1704 # port for the actual audio streaming
+      - 1705:1705 # port for TCP Json RPC
+      - 1780:1780 # port for the SnapWeb Webinterface
+    volumes:
+      - ./config/snapcast.conf:/etc/snapcast.conf
+      - ../../run/snapserver/fifo:/tmp/snapfile
+      - ../../lib/snapserver:/var/lib/snapcast
+    env_file:
+      - .env

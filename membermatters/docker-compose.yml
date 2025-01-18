@@ -1,0 +1,75 @@
+services:
+  mm-redis:
+    image: redis
+    restart: unless-stopped
+    networks:
+      - redis
+
+  mm-webapp:
+    image: membermatters/membermatters
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mm-redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    networks:
+      - proxy
+      - database
+      - redis
+
+  mm-celery-worker:
+    image: membermatters/membermatters
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - mm-webapp
+      - mm-redis
+    networks:
+      - proxy
+      - database
+      - redis
+
+  mm-celery-beat:
+    image: membermatters/membermatters
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - mm-webapp
+      - mm-celery-worker
+      - mm-redis
+    networks:
+      - proxy
+      - database
+      - redis
+
+  mm-celery-prom-exporter:
+    image: danihodovic/celery-exporter
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - mm-celery-worker
+      - mm-redis
+    networks:
+      - proxy
+      - database
+      - redis
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  database:
+    external: true
+    name: postgres-net
+  redis:
+    name: mm-redis-net

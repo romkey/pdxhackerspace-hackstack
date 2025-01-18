@@ -1,0 +1,9 @@
+# https://github.com/AlainGourves/shairport-metadata-display
+services:
+  shairport-metadata-display:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ../../run/shairport-sync/fifos:/tmp/shairport-sync-metadata
