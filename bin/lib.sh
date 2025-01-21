@@ -3,19 +3,19 @@
 # source ./lib.sh
 
 start_app() {
-    pushd "$1"
-    if ! docker-compose ps | grep -q 'Up'; then
+    cd "$1"
+    if ! docker compose ps | grep -q 'Up'; then
         echo "Docker Compose project is not running. Starting it..."
-        docker-compose up -d
+        docker compose up -d
         echo "$1 started."
     else
         echo "$1 is already running."
     fi
 
-    popd
+    cd ..
 }
 
-install_default_config(app, filename) {
+install_default_config() {
     if [ -n "$2" ]; then
         cp "$1/config/$2.default" "$1/config/$2"
         echo "Installed $1/config/$2 - you should review this file for possible configuration changes"

@@ -8,17 +8,26 @@ echo "This script uses `sudo` to run items as root; you'll be prompted at least 
 echo "the start to enter your password in order to allow this"
 
 sudo apt update && apt upgrade -y
-sudo apt install pwgen -y
+sudo apt install pwgen curl software-properties-common -y
 
 if ! command -v docker &> /dev/null; then
     echo "Docker not found. Installing Docker..."
 
-    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+#    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+    sudo apt install -y apt-transport-https ca-certificates curl
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo tee /etc/apt/trusted.gpg.d/docker.asc
-    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+#    sudo add-apt-repository "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+    sudo echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+        $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+        sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
     sudo apt update
-    sudo apt install -y docker-ce docker-ce-cli containerd.io
+#    sudo apt install -y docker-ce docker-ce-cli containerd.io
+    sudo apt install -y docker-ce docker-ce-cli 
 
     sudo systemctl start docker
     sudo systemctl enable docker
