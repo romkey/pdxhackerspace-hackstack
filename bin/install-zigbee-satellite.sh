@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source ./lib.sh
+. ./bin/lib.sh
 
 install_default_config zigbee2mqtt
 start_app zigbee2mqtt
