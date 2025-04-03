@@ -25,7 +25,7 @@ echo
 echo "Only usable from within a hackstack container. To use externally, replace 'mosquitto' with the name or IP address or name of this server"
 
 echo "creating user:"
-CMD="docker compose -f ../docker-compose.yml exec mosquitto mosquitto_passwd -b /mosquitto/data/mos_passwd ${USER} ${PASSWORD}"
+CMD="docker compose -f ../docker-compose.yml exec mosquitto mosquitto_passwd -b /mosquitto/config/mos_passwd ${USER} ${PASSWORD}"
 echo "    ${CMD}"
 if $CMD ; then
     echo "successful"
