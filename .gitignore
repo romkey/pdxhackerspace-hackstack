@@ -17,22 +17,34 @@ redis/conf/
 
 upsd/config/
 
-# Patterns from telegraf/.gitignore
-telegraf/config/telegraf.conf
-
-# Patterns from glances/.gitignore
-glances/glances.conf
-glances/glances.pwd
-
 # Patterns from dnsmasq/.gitignore
 dnsmasq/conf/dnsmasq.conf
 dnsmasq/conf/hosts.d/
+
+# Patterns from grafana/.gitignore
+grafana/config/grafana.ini
 
 # Patterns from zigbee2mqtt/.gitignore
 zigbee2mqtt/data/configuration.yaml
 zigbee2mqtt/data/state.json
 zigbee2mqtt/data/database.db
 zigbee2mqtt/data/log/
+
+# Patterns from influxdb/.gitignore
+influxdb/config/influx-configs
+
+# Patterns from snapserver/.gitignore
+snapserver/config/snapcast.conf
+
+# Patterns from nginx-proxy-manager/.gitignore
+nginx-proxy-manager/config/
+nginx-proxy-manager/letsencrypt/
+
+# Patterns from telegraf/.gitignore
+telegraf/config/telegraf.conf
+
+# Patterns from mqtt-explorer/.gitignore
+mqtt-explorer/config/settings.json
 
 # Patterns from shairport-sync/.gitignore
 shairport-sync/// Sample Configuration File for Shairport Sync
@@ -343,34 +355,18 @@ shairport-sync///	drop_this_fraction_of_audio_packets = 0.0; // use this to simu
 shairport-sync///	retain_cover_art = "no"; // artwork is deleted when its corresponding track has been played. Set this to "yes" to retain all artwork permanently. Warning -- your directory might fill up.
 shairport-sync/};
 
-# Patterns from backrest/.gitignore
-backrest/config/config.json*
-
-# Patterns from mopidy/.gitignore
-mopidy/config/mopidy.conf
-
-# Patterns from grafana/.gitignore
-grafana/config/grafana.ini
-
-# Patterns from snapserver/.gitignore
-snapserver/config/snapcast.conf
+# Patterns from rtlamr2mqtt/.gitignore
+rtlamr2mqtt/config.yaml
 
 # Patterns from mosquitto/.gitignore
 mosquitto/config/mosquitto.conf
 mosquitto/config/mos_passwd
 
-# Patterns from rtlamr2mqtt/.gitignore
-rtlamr2mqtt/config.yaml
-
-# Patterns from mqtt-explorer/.gitignore
-mqtt-explorer/config/settings.json
+# Patterns from backrest/.gitignore
+backrest/config/config.json*
 
 # Patterns from wiki/.gitignore
 wiki/config.yml
-
-# Patterns from invidious/.gitignore
-invidious/config/config.yml
-invidious/config/sql/
 
 # Patterns from access-control-webhook/.gitignore
 access-control-webhook/config/.ssh/
@@ -380,12 +376,16 @@ access-control-webhook/config/run/automation_rsa
 # Patterns from jellyfin/.gitignore
 jellyfin/config/
 
-# Patterns from influxdb/.gitignore
-influxdb/config/influx-configs
-
-# Patterns from nginx-proxy-manager/.gitignore
-nginx-proxy-manager/config/
-nginx-proxy-manager/letsencrypt/
-
 # Patterns from airconnect/.gitignore
 airconnect/config/*.xml
+
+# Patterns from invidious/.gitignore
+invidious/config/config.yml
+invidious/config/sql/
+
+# Patterns from glances/.gitignore
+glances/glances.conf
+glances/glances.pwd
+
+# Patterns from mopidy/.gitignore
+mopidy/config/mopidy.conf
