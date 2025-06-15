@@ -5,8 +5,8 @@ services:
     restart: unless-stopped
     volumes:
       - ../../lib/ollama:/root/.ollama
-#    ports:
-#      - 11434:11434
+    ports:
+      - 11434:11434
     networks:
       - llama
     env_file:
