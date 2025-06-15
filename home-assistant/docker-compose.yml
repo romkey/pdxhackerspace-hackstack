@@ -7,6 +7,10 @@ services:
     restart: unless-stopped
     volumes:
       - ../../lib/home-assistant:/config
+# these make images available to mqtt2template without exposing lots of other
+# data or making them accidentally available through other services
+# this also makes it easy for mqtt2template to check how recent an image is or if it's valid
+      - ../../lib/mqtt2template/websites/outside/images:/config/websites/outside
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
     networks:

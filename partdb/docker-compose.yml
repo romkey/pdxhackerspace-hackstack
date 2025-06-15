@@ -12,7 +12,7 @@ services:
     volumes:
       - ../../lib/partdb//uploads:/var/www/html/uploads
       - ../../lib/partdb/public_media:/var/www/html/public/media
-      - ../../lib/partdb//db:/var/www/html/var/db
+      - ../../lib/partdb/db:/var/www/html/var/db
     env_file:
       - .env
 networks:
