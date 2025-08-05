@@ -1,12 +1,12 @@
 services:
   zigbee2mqtt:
-    image: koenkk/zigbee2mqtt
+#    image: koenkk/zigbee2mqtt:2.0.0
+    image: koenkk/zigbee2mqtt:lastest
     container_name: zigbee2mqtt
     hostname: zigbee2mqtt
     restart: unless-stopped
     devices:
-      # Make sure this matched your adapter location
-      - /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2496616-if00:/dev/ttyACM0
+      - "${CONTROLLER_DEVICE}:/dev/ttyACM0"
     volumes:
       - ./data:/app/data
       - /run/udev:/run/udev:ro
@@ -15,7 +15,7 @@ services:
     env_file:
       - .env
     networks:
-       - proxy
+      - proxy
       - mqtt
 networks:
   proxy:

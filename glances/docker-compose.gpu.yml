@@ -1,6 +1,6 @@
 services:
   glances:
-    image: nicolargo/glances:ubuntu-3.4.0.5-full
+    image: nicolargo/glances:ubuntu-latest-full
     container_name: glances
     hostname: glances
     privileged: true

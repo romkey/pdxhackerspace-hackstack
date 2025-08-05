@@ -1,0 +1,28 @@
+# usage:
+#     docker compose up postfix -d
+#     docker compose exec postfix mailq
+services:
+  postfix-base: &base
+    image: boky/postfix
+    restart: no
+    volumes:
+      - ../../lib/postfix/spool:/var/spool/postfix:rw
+      - ../../lib/postfix/sasldb2:/etc/sasldb2
+      - ../../lib/postfix/sasl:/etc/sasl2
+    env_file:
+      - .env
+
+  postfix:
+    <<: *base
+    hostname: mail-relay
+    container_name: postfix
+    restart: unless-stopped
+    ports:
+      - 25:25
+      - 587:587
+
+  mailq:
+    <<: *base
+    container_name: mailq
+    restart: no
+    command: mailq
