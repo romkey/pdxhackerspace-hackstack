@@ -1,17 +1,28 @@
 services:
-  postgresql:
+  postgresql: &base
     image: postgres:16
     hostname: postgresql
     container_name: postgresql
     restart: unless-stopped
+    networks:
+      - default
+      - proxy
     volumes:
       - ../../lib/postgresql:/var/lib/postgresql/data
       - ../../log/postgresql:/var/log/postgresql/
     shm_size: 128mb
     env_file:
       - .env
-#    ports:
-#      - 5432:5432
+
+  postgresql-ports:
+    <<: *base
+    name: postgresql-ports
+    ports:
+      - 5432:5432
+
 networks:
   default:
     name: postgres-net
+  proxy:
+    name: nginx-proxy-net
+    external: true

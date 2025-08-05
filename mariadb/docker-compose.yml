@@ -1,5 +1,5 @@
 services:
-  mariadb:
+  mariadb: &base
     image: mariadb:latest
     hostname: mariadb
     container_name: mariadb
@@ -7,6 +7,7 @@ services:
     restart: unless-stopped
     networks:
       - mariadb
+      - proxy
     volumes:
       - ../../lib/mariadb:/var/lib/mysql:Z
     env_file:
@@ -24,6 +25,16 @@ services:
           "--innodb_initialized"
         ]
       timeout: 30s
+
+  mariadb-ports:
+    <<: *base
+    container_name: mariadb-ports
+    ports:
+      - 3306:3306
+
 networks:
   mariadb:
     name: mariadb-net
+  proxy:
+    name: nginx-proxy-net
+    external: true
