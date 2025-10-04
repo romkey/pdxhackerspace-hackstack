@@ -1,7 +1,7 @@
 services:
   zigbee2mqtt:
 #    image: koenkk/zigbee2mqtt:2.0.0
-    image: koenkk/zigbee2mqtt:lastest
+    image: koenkk/zigbee2mqtt:latest
     container_name: zigbee2mqtt
     hostname: zigbee2mqtt
     restart: unless-stopped
