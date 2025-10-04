@@ -1,0 +1,14 @@
+services:
+  ak_outpost:
+    image: ghcr.io/goauthentik/proxy
+#    ports:
+#      - 9000:9000
+    hostname: ak_outpost
+    env_file:
+      - .env
+    networks:
+      - proxy
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
