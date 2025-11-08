@@ -1,0 +1,22 @@
+# use '' as no value
+NUT_SERVERS:
+  - HOST: HOST
+    PORT: 3493
+    USERNAME: USERNAME
+    PASSWORD: PASSWORD
+    DISABLED: false
+INFLUX_HOST: ''
+INFLUX_TOKEN: ''
+INFLUX_ORG: ''
+INFLUX_BUCKET: ''
+INFLUX_INTERVAL: 10
+DATE_FORMAT: MM/DD/YYYY
+TIME_FORMAT: 12-hour
+DASHBOARD_SECTIONS:
+  - key: KPIS
+    enabled: true
+  - key: CHARTS
+    enabled: true
+  - key: VARIABLES
+    enabled: true
+DISABLE_VERSION_CHECK: false
