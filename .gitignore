@@ -19,13 +19,15 @@ redis/conf/
 
 upsd/config/
 
-# Patterns from access-control-webhook/.gitignore
-access-control-webhook/config/.ssh/
-access-control-webhook/config/hooks.json
-access-control-webhook/config/run/automation_rsa
+# Patterns from dnsmasq/.gitignore
+dnsmasq/conf/dnsmasq.conf
+dnsmasq/conf/hosts.d/
 
-# Patterns from backrest/.gitignore
-backrest/config/config.json*
+# Patterns from rtlamr2mqtt/.gitignore
+rtlamr2mqtt/config.yaml
+
+# Patterns from influxdb/.gitignore
+influxdb/config/influx-configs
 
 # Patterns from zigbee2mqtt/.gitignore
 zigbee2mqtt/data/configuration.yaml
@@ -33,45 +35,29 @@ zigbee2mqtt/data/state.json
 zigbee2mqtt/data/database.db
 zigbee2mqtt/data/log/
 
-# Patterns from dnsmasq/.gitignore
-dnsmasq/conf/dnsmasq.conf
-dnsmasq/conf/hosts.d/
-
-# Patterns from influxdb/.gitignore
-influxdb/config/influx-configs
-
-# Patterns from mopidy/.gitignore
-mopidy/config/mopidy.conf
-
-# Patterns from nginx-proxy-manager/.gitignore
-nginx-proxy-manager/config/
-nginx-proxy-manager/letsencrypt/
-
-# Patterns from glances/.gitignore
-glances/glances.conf
-glances/glances.pwd
-
-# Patterns from jellyfin/.gitignore
-jellyfin/config/
-
-# Patterns from airconnect/.gitignore
-airconnect/config/*.xml
-
-# Patterns from snapserver/.gitignore
-snapserver/config/snapcast.conf
-
-# Patterns from grafana/.gitignore
-grafana/config/grafana.ini
-
-# Patterns from invidious/.gitignore
-invidious/config/config.yml
-invidious/config/sql/
+# Patterns from telegraf/.gitignore
+telegraf/config/telegraf.conf
 
 # Patterns from wiki/.gitignore
 wiki/config.yml
 
-# Patterns from rtlamr2mqtt/.gitignore
-rtlamr2mqtt/config.yaml
+# Patterns from jellyfin/.gitignore
+jellyfin/config/
+
+# Patterns from mopidy/.gitignore
+mopidy/config/mopidy.conf
+
+# Patterns from backrest/.gitignore
+backrest/config/config.json*
+
+# Patterns from access-control-webhook/.gitignore
+access-control-webhook/config/.ssh/
+access-control-webhook/config/hooks.json
+access-control-webhook/config/run/automation_rsa
+
+# Patterns from glances/.gitignore
+glances/glances.conf
+glances/glances.pwd
 
 # Patterns from shairport-sync/.gitignore
 shairport-sync//INSTALL
@@ -128,8 +114,18 @@ shairport-sync/# vscode
 shairport-sync/.vscode
 shairport-sync/
 
-# Patterns from telegraf/.gitignore
-telegraf/config/telegraf.conf
+# Patterns from invidious/.gitignore
+invidious/config/config.yml
+invidious/config/sql/
+
+# Patterns from snapserver/.gitignore
+snapserver/config/snapcast.conf
+
+# Patterns from airconnect/.gitignore
+airconnect/config/*.xml
+
+# Patterns from grafana/.gitignore
+grafana/config/grafana.ini
 
 # Patterns from mqtt-explorer/.gitignore
 mqtt-explorer/config/settings.json
@@ -137,3 +133,7 @@ mqtt-explorer/config/settings.json
 # Patterns from mosquitto/.gitignore
 mosquitto/config/mosquitto.conf
 mosquitto/config/mos_passwd
+
+# Patterns from nginx-proxy-manager/.gitignore
+nginx-proxy-manager/config/
+nginx-proxy-manager/letsencrypt/

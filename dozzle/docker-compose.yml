@@ -1,0 +1,31 @@
+services:
+  dozzle:
+    image: amir20/dozzle:latest
+    hostname: dozzle
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+#    ports:
+#      - 8080:8080
+    networks:
+      - proxy
+    env_file:
+      - .env
+
+  agent:
+    image: amir20/dozzle:latest
+    command: agent
+    healthcheck:
+      test: ["CMD", "/dozzle", "healthcheck"]
+      interval: 5s
+      retries: 5
+      start_period: 5s
+      start_interval: 5s
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 7007:7007
+
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true

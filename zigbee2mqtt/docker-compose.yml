@@ -10,7 +10,17 @@ services:
     volumes:
       - ./data:/app/data
       - /run/udev:/run/udev:ro
-    ports:
-      - 8080:8080
+#    ports:
+#      - 8080:8080
     env_file:
       - .env
+    networks:
+      - proxy
+      - mqtt
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  mqtt:
+    name: mosquitto-net
+    external: true

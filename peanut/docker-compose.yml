@@ -1,0 +1,19 @@
+services:
+  peanut:
+    image: brandawg93/peanut:latest
+    container_name: PeaNUT
+    hostname: peanut
+    restart: unless-stopped
+    volumes:
+      - ./config:/config
+#    ports:
+#      - 8080:8080
+    networks:
+      - proxy
+    env_file:
+      - .env
+
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true

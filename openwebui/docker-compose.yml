@@ -5,8 +5,8 @@ services:
     container_name: openwebui
     hostname: openwebui
     restart: unless-stopped
-#    ports:
-#      - 3000:8080
+    ports:
+      - 3000:8080
     networks:
       - default
       - llama

@@ -1,0 +1,73 @@
+services:
+  redis:
+    image: docker.io/library/redis:alpine
+    command: --save 60 1 --loglevel warning
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+    volumes:
+      - ../../lib/authentik/redis:/data
+    networks:
+      - redis
+
+  server:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.8.3}
+    restart: unless-stopped
+    command: server
+    hostname: authentik-server
+    environment:
+      AUTHENTIK_REDIS__HOST: redis
+    volumes:
+      - ../../lib/authentik/media:/media
+      - ../../lib/authentik/custom-templates:/templates
+    env_file:
+      - .env
+#    ports:
+#      - "${COMPOSE_PORT_HTTP:-9000}:9000"
+#      - "${COMPOSE_PORT_HTTPS:-9443}:9443"
+    depends_on:
+      - redis
+    networks:
+      - proxy
+      - redis
+      - database
+
+  worker:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.8.3}
+    restart: unless-stopped
+    command: worker
+    environment:
+      AUTHENTIK_REDIS__HOST: redis
+    # `user: root` and the docker socket volume are optional.
+    # See more for the docker socket integration here:
+    # https://goauthentik.io/docs/outposts/integrations/docker
+    # Removing `user: root` also prevents the worker from fixing the permissions
+    # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
+    # (1000:1000 by default)
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../../lib/authentik/media:/media
+      - ../../lib/authentik/certs:/certs
+      - ../../lib/authentik/custom-templates:/templates
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    networks:
+      - redis
+      - database
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  database:
+    external: true
+    name: postgres-net
+  redis:
+    name: authentik-redis-net
