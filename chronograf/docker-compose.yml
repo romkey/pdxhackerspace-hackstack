@@ -1,6 +1,6 @@
 services:
   chronograf:
-    image: chronograf
+    image: chronograf:${IMAGE_VERSION:-latest}
     container_name: chronograf
     hostname: chronograf
 #    command: chronograf --influxdb-url=http://influxdb:8086

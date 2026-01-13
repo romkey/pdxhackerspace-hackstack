@@ -1,6 +1,6 @@
 services:
   z-wave:
-    image: zwavejs/zwave-js-ui:latest
+    image: zwavejs/zwave-js-ui:${IMAGE_VERSION:-latest}
     container_name: z-wave
     hostname: z-wave
     restart: unless-stopped

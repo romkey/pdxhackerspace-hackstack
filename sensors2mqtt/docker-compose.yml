@@ -1,8 +1,9 @@
 services:
   sensors2mqtt:
+    image: kevinpdavid/sensors2mqtt:${IMAGE_VERSION:-main}
     container_name: sensors2mqtt
+    hostname: sensors2mqtt
     privileged: true
-    image: kevinpdavid/sensors2mqtt:main
     restart: unless-stopped
     networks:
       - mosquitto

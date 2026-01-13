@@ -1,6 +1,6 @@
 services:
   vaultwarden:
-    image: vaultwarden/server:latest-alpine
+    image: vaultwarden/server:${IMAGE_VERSION:-latest-alpine}
     container_name: vaultwarden
     hostname: vaultwarden
     restart: unless-stopped

@@ -1,6 +1,6 @@
 services:
   esphome:
-    image: ghcr.io/esphome/esphome
+    image: ghcr.io/esphome/esphome:${IMAGE_VERSION:-latest}
     container_name: esphome
     hostname: esphome
     volumes:

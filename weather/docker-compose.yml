@@ -1,7 +1,8 @@
 services:
-  web:
-    image: nginx
-    container_name: weather-nginx
+  weather:
+    image: nginx:${IMAGE_VERSION:-latest}
+    container_name: weather
+    hostname: weather
     restart: unless-stopped
     volumes:
      - /home/weather/weewx-report:/usr/share/nginx/html:ro

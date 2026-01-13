@@ -1,6 +1,6 @@
 services:
   matomo:
-    image: matomo:fpm-alpine
+    image: matomo:${IMAGE_VERSION:-fpm-alpine}
     container_name: matomo
     hostname: matomo
     restart: unless-stopped
@@ -10,9 +10,9 @@ services:
     volumes:
       - /opt/lib/matomo:/var/www/html
     env_file:
-      - ./.env
+      - .env
   matomo-nginx:
-    image: nginx:alpine
+    image: nginx:${NGINX_IMAGE_VERSION:-alpine}
     container_name: matomo-nginx
     hostname: matomo-nginx
     restart: unless-stopped

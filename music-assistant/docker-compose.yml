@@ -2,7 +2,7 @@ services:
   music-assistant:
     container_name: music-assistant
     hostname: music-assistant
-    image: ghcr.io/music-assistant/server:stable
+    image: ghcr.io/music-assistant/server:${IMAGE_VERSION:-stable}
     restart: unless-stopped
     privileged: true
     volumes:

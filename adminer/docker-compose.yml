@@ -1,6 +1,6 @@
 services:
   adminer:
-    image: adminer
+    image: adminer:${IMAGE_VERSION:-latest}
     hostname: adminer
     container_name: adminer
     restart: unless-stopped
@@ -14,5 +14,5 @@ networks:
     name: mariadb-net
     external: true
   postgresql:
-    name: postgresql-net
+    name: postgres-net
     external: true

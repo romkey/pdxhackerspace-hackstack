@@ -1,8 +1,9 @@
 services:
   stable-diffusion-web-ui:
-    image: tukirito/sygil-webui:latest
+    image: tukirito/sygil-webui:${IMAGE_VERSION:-latest}
     container_name: stable-diffusion-web-ui
     hostname: stable-diffusion-web-ui
+    restart: unless-stopped
     volumes:
       - /opt/lib/stable-diffusion-web-ui/outputs:/sd/outputs
       - /opt/lib/stable-diffusion-web-ui/models:/sd/models

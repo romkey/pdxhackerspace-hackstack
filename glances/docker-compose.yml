@@ -1,6 +1,6 @@
 services:
   glances:
-    image: nicolargo/glances:3.4.0.5
+    image: nicolargo/glances:${IMAGE_VERSION:-latest}
     container_name: glances
     hostname: glances
     privileged: true

@@ -1,6 +1,6 @@
 services:
   jellyfin:
-    image: jellyfin/jellyfin
+    image: jellyfin/jellyfin:${IMAGE_VERSION:-latest}
     container_name: jellyfin
     hostname: jellyfin
     restart: unless-stopped

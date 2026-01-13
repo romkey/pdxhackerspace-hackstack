@@ -2,6 +2,8 @@
 services:
   shairport-metadata-display:
     build: .
+    container_name: shairport-metadata-display
+    hostname: shairport-metadata-display
     restart: unless-stopped
     env_file:
       - .env

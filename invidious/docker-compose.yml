@@ -1,7 +1,7 @@
 services:
   invidious:
-    image: quay.io/invidious/invidious:latest
-    # image: quay.io/invidious/invidious:latest-arm64 # ARM64/AArch64 devices
+    image: quay.io/invidious/invidious:${IMAGE_VERSION:-latest}
+    # image: quay.io/invidious/invidious:${INVIDIOUS_TAG:-latest-arm64} # ARM64/AArch64 devices
     container_name: invidious
     restart: unless-stopped
     networks:

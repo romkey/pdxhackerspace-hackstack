@@ -1,9 +1,9 @@
 services:
   statping:
-    image: adamboutcher/statping-ng:latest
+    image: adamboutcher/statping-ng:${IMAGE_VERSION:-latest}
     container_name: statping
     hostname: statping
-    restart: always
+    restart: unless-stopped
     networks:
       - proxy
       - postgresql

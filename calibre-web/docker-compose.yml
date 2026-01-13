@@ -1,7 +1,8 @@
 services:
   calibre-web:
-    image: lscr.io/linuxserver/calibre-web:latest
+    image: lscr.io/linuxserver/calibre-web:${IMAGE_VERSION:-latest}
     container_name: calibre-web
+    hostname: calibre-web
     restart: unless-stopped
     volumes:
       - ../../lib/calibre-web/config:/config

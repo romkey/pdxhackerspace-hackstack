@@ -1,9 +1,10 @@
 # https://github.com/fcogomez/ComfyUI
 services:
   comfy-ui:
-    image: fcogomez/comfy-ui:latest
+    image: fcogomez/comfy-ui:${IMAGE_VERSION:-latest}
     container_name: comfy-ui
     hostname: comfy-ui
+    restart: unless-stopped
     networks:
       - proxy
     volumes:

@@ -1,7 +1,8 @@
 services:
   portainer:
-    image: portainer/portainer-ce:latest
+    image: portainer/portainer-ce:${IMAGE_VERSION:-latest}
     container_name: portainer
+    hostname: portainer
     restart: unless-stopped
 #    ports:
 #      - 9443:9443

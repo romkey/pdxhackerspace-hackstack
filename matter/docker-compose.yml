@@ -1,6 +1,6 @@
 services:
   matter:
-    image: ghcr.io/home-assistant-libs/python-matter-server:stable
+    image: ghcr.io/home-assistant-libs/python-matter-server:${IMAGE_VERSION:-stable}
     container_name: matter
     hostname: matter
     restart: unless-stopped

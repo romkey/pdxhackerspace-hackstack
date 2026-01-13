@@ -1,6 +1,6 @@
 services:
   mariadb: &base
-    image: mariadb:latest
+    image: mariadb:${IMAGE_VERSION:-latest}
     hostname: mariadb
     container_name: mariadb
     command: --max-allowed-packet=64MB
@@ -11,7 +11,7 @@ services:
     volumes:
       - ../../lib/mariadb:/var/lib/mysql:Z
     env_file:
-      - ./.env
+      - .env
 # https://mariadb.com/kb/en/using-healthcheck-sh/
     healthcheck:
       interval: 30s

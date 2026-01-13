@@ -1,6 +1,6 @@
 services:
-  influxdb2:
-    image: influxdb:2
+  influxdb:
+    image: influxdb:${IMAGE_VERSION:-2}
     container_name: influxdb
     hostname: influxdb
     restart: unless-stopped

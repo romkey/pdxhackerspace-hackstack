@@ -1,6 +1,8 @@
 services:
   redis:
-    image: docker.io/library/redis:alpine
+    image: docker.io/library/redis:${REDIS_IMAGE_VERSION:-alpine}
+    container_name: authentik-redis
+    hostname: authentik-redis
     command: --save 60 1 --loglevel warning
     restart: unless-stopped
     healthcheck:
@@ -15,12 +17,13 @@ services:
       - redis
 
   server:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.8.3}
+    image: ghcr.io/goauthentik/server:${IMAGE_VERSION:-2025.8.3}
+    container_name: authentik-server
+    hostname: authentik-server
     restart: unless-stopped
     command: server
-    hostname: authentik-server
     environment:
-      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_REDIS__HOST: authentik-redis
     volumes:
       - ../../lib/authentik/media:/media
       - ../../lib/authentik/custom-templates:/templates
@@ -37,11 +40,13 @@ services:
       - database
 
   worker:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.8.3}
+    image: ghcr.io/goauthentik/server:${IMAGE_VERSION:-2025.8.3}
+    container_name: authentik-worker
+    hostname: authentik-worker
     restart: unless-stopped
     command: worker
     environment:
-      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_REDIS__HOST: authentik-redis
     # `user: root` and the docker socket volume are optional.
     # See more for the docker socket integration here:
     # https://goauthentik.io/docs/outposts/integrations/docker

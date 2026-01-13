@@ -1,6 +1,6 @@
 services:
-  avahi
-    image: ydkn/avahi
+  avahi:
+    image: ydkn/avahi:${IMAGE_VERSION:-latest}
     hostname: avahi
     container_name: avahi
     restart: unless-stopped

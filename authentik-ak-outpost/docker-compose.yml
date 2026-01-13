@@ -1,9 +1,11 @@
 services:
-  ak_outpost:
-    image: ghcr.io/goauthentik/proxy
+  ak-outpost:
+    image: ghcr.io/goauthentik/proxy:${IMAGE_VERSION:-latest}
+    container_name: ak-outpost
+    hostname: ak-outpost
+    restart: unless-stopped
 #    ports:
 #      - 9000:9000
-    hostname: ak_outpost
     env_file:
       - .env
     networks:

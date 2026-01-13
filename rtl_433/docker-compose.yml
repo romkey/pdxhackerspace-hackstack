@@ -1,7 +1,9 @@
 services:
   rtl_433:
+    image: hertzg/rtl_433:${IMAGE_VERSION:-master-alpine}
     container_name: rtl_433
-    image: hertzg/rtl_433:master-alpine
+    hostname: rtl_433
+    restart: unless-stopped
     entrypoint: "/usr/local/bin/rtl_433"
     command: "-F ${MQTT_BROKER} ${RTL433_EXTRA_OPTIONS}"
     networks:

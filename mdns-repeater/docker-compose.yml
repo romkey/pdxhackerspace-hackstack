@@ -1,6 +1,6 @@
 services:
   mdns-repeater:
-    image: monstrenyatko/mdns-repeater
+    image: monstrenyatko/mdns-repeater:${IMAGE_VERSION:-latest}
     container_name: mdns-repeater
     restart: unless-stopped
     command: mdns-repeater-app -f -d eth0 eth1

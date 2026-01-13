@@ -1,8 +1,8 @@
----
 services:
   netbootxyz:
-    image: ghcr.io/netbootxyz/netbootxyz
+    image: ghcr.io/netbootxyz/netbootxyz:${IMAGE_VERSION:-latest}
     container_name: netbootxyz
+    hostname: netbootxyz
     environment:
       - MENU_VERSION=2.0.47 # optional
       - NGINX_PORT=80 # optional

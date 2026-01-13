@@ -1,8 +1,9 @@
 # https://hub.docker.com/r/oznu/cloudflare-ddns/
 services:
   cloudflare-ddns:
-    image: oznu/cloudflare-ddns:latest
+    image: oznu/cloudflare-ddns:${IMAGE_VERSION:-latest}
     container_name: cloudflare-ddns
+    hostname: cloudflare-ddns
     restart: unless-stopped
     env_file:
       - .env

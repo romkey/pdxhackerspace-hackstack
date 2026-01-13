@@ -1,6 +1,6 @@
 services:
   planka:
-    image: ghcr.io/plankanban/planka:latest
+    image: ghcr.io/plankanban/planka:${IMAGE_VERSION:-latest}
     container_name: planka
     hostname: planka
     restart: unless-stopped

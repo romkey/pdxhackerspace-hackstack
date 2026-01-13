@@ -1,6 +1,6 @@
 services:
   backrest:
-    image: garethgeorge/backrest
+    image: garethgeorge/backrest:${IMAGE_VERSION:-latest}
     container_name: backrest
     hostname: backrest
     volumes:

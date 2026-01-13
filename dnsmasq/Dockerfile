@@ -6,4 +6,4 @@ RUN apk update \
 RUN mkdir -p /etc/default/
 RUN echo -e "ENABLED=1\nIGNORE_RESOLVCONF=yes" > /etc/default/dnsmasq
 
-ENTRYPOINT ["dnsmasq","--no-daemon"]
+ENTRYPOINT ["dnsmasq","--no-daemon","--bind-dynamic"]

@@ -1,6 +1,6 @@
 services:
   grafana:
-    image: grafana/grafana-enterprise
+    image: grafana/grafana-enterprise:${IMAGE_VERSION:-latest}
     container_name: grafana
     hostname: grafana
     restart: unless-stopped

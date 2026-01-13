@@ -1,10 +1,10 @@
 services:
   snapserver:
 #    image: saiyato/snapserver
-    image: ivdata/snapserver
+    image: ivdata/snapserver:${IMAGE_VERSION:-latest}
+    container_name: snapserver
     hostname: snapserver
     network_mode: host
-    container_name: snapserver
     restart: unless-stopped
 #    ports:
 #      - 1704:1704 # port for the actual audio streaming

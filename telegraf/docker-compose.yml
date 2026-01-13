@@ -1,6 +1,6 @@
 services:
   telegraf:
-    image: telegraf
+    image: telegraf:${IMAGE_VERSION:-latest}
     container_name: telegraf
     hostname: telegraf
     restart: unless-stopped

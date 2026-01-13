@@ -3,7 +3,7 @@
 #     docker compose exec postfix mailq
 services:
   postfix-base: &base
-    image: boky/postfix
+    image: boky/postfix:${IMAGE_VERSION:-latest}
     restart: no
     volumes:
       - ../../lib/postfix/spool:/var/spool/postfix:rw

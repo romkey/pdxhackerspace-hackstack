@@ -1,7 +1,8 @@
 services:
   wiki:
-    image: ghcr.io/requarks/wiki:latest
-    container_name: wikijs
+    image: ghcr.io/requarks/wiki:${IMAGE_VERSION:-latest}
+    container_name: wiki
+    hostname: wiki
     restart: unless-stopped
     networks:
       proxy: null

@@ -1,6 +1,6 @@
 services:
   openwakeword:
-    image: rhasspy/wyoming-openwakeword
+    image: rhasspy/wyoming-openwakeword:${IMAGE_VERSION:-latest}
     container_name: openwakeword
     hostname: openwakeword
     restart: unless-stopped

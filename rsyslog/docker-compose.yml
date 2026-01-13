@@ -9,7 +9,7 @@ services:
     volumes:
       - ./rsyslog.conf:/etc/rsyslog.conf
       - ./rsyslog.d:/etc/rsyslog.d
-      - ../..//log/rsyslog:/var/log
+      - ../../log/rsyslog:/var/log
     env_file:
       - .env
     labels:

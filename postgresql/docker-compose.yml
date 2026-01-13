@@ -1,6 +1,6 @@
 services:
   postgresql: &base
-    image: postgres:16
+    image: postgres:${IMAGE_VERSION:-16}
     hostname: postgresql
     container_name: postgresql
     restart: unless-stopped
@@ -16,7 +16,7 @@ services:
 
   postgresql-ports:
     <<: *base
-    name: postgresql-ports
+    container_name: postgresql-ports
     ports:
       - 5432:5432
 

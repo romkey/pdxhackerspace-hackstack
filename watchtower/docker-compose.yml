@@ -1,6 +1,6 @@
 services:
   watchtower:
-    image: containrrr/watchtower
+    image: containrrr/watchtower:${IMAGE_VERSION:-latest}
     hostname: "${WATCHTOWER_HOSTNAME}"
     container_name: watchtower
     restart: unless-stopped

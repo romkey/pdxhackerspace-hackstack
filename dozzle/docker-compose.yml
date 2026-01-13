@@ -1,7 +1,9 @@
 services:
   dozzle:
-    image: amir20/dozzle:latest
+    image: amir20/dozzle:${IMAGE_VERSION:-latest}
+    container_name: dozzle
     hostname: dozzle
+    restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 #    ports:
@@ -12,7 +14,10 @@ services:
       - .env
 
   agent:
-    image: amir20/dozzle:latest
+    image: amir20/dozzle:${IMAGE_VERSION:-latest}
+    container_name: dozzle-agent
+    hostname: dozzle-agent
+    restart: unless-stopped
     command: agent
     healthcheck:
       test: ["CMD", "/dozzle", "healthcheck"]

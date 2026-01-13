@@ -1,7 +1,8 @@
 services:
-  rtlamr:
-    image: allangood/rtlamr2mqtt:latest
+  rtlamr2mqtt:
+    image: allangood/rtlamr2mqtt:${IMAGE_VERSION:-latest}
     container_name: rtlamr2mqtt
+    hostname: rtlamr2mqtt
     restart: unless-stopped
     devices:
       - "${SDR_DEVICE}"

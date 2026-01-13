@@ -1,6 +1,6 @@
 services:
   ollama:
-    image: ollama/ollama
+    image: ollama/ollama:${IMAGE_VERSION:-latest}
     container_name: ollama
     restart: unless-stopped
     volumes:

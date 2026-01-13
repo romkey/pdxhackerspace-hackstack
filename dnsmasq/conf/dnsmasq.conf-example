@@ -1,6 +1,6 @@
 # this should be the IP address of the interface we want to accept queries
 # finding that 0.0.0.0 does not work
-listen-address=192.168.13.2
+listen-address=192.168.13.2,127.0.0.1
 
 log-queries
 domain-needed

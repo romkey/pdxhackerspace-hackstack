@@ -1,7 +1,7 @@
 services:
   peanut:
-    image: brandawg93/peanut:latest
-    container_name: PeaNUT
+    image: brandawg93/peanut:${IMAGE_VERSION:-latest}
+    container_name: peanut
     hostname: peanut
     restart: unless-stopped
     volumes:

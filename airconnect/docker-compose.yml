@@ -1,6 +1,6 @@
 services:
   airconnect:
-    image: 1activegeek/airconnect
+    image: 1activegeek/airconnect:${IMAGE_VERSION:-latest}
     container_name: airconnect
     hostname: airconnect
     restart: unless-stopped

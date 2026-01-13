@@ -1,12 +1,16 @@
 services:
   mm-redis:
-    image: redis
+    image: redis:${REDIS_IMAGE_VERSION:-latest}
+    container_name: mm-redis
+    hostname: mm-redis
     restart: unless-stopped
     networks:
       - redis
 
   mm-webapp:
-    image: membermatters/membermatters
+    image: membermatters/membermatters:${IMAGE_VERSION:-latest}
+    container_name: mm-webapp
+    hostname: mm-webapp
     restart: unless-stopped
     env_file:
       - .env
@@ -25,7 +29,9 @@ services:
       - redis
 
   mm-celery-worker:
-    image: membermatters/membermatters
+    image: membermatters/membermatters:${IMAGE_VERSION:-latest}
+    container_name: mm-celery-worker
+    hostname: mm-celery-worker
     restart: unless-stopped
     env_file:
       - .env
@@ -38,7 +44,9 @@ services:
       - redis
 
   mm-celery-beat:
-    image: membermatters/membermatters
+    image: membermatters/membermatters:${IMAGE_VERSION:-latest}
+    container_name: mm-celery-beat
+    hostname: mm-celery-beat
     restart: unless-stopped
     env_file:
       - .env
@@ -52,7 +60,9 @@ services:
       - redis
 
   mm-celery-prom-exporter:
-    image: danihodovic/celery-exporter
+    image: danihodovic/celery-exporter:${CELERY_EXPORTER_IMAGE_VERSION:-latest}
+    container_name: mm-celery-prom-exporter
+    hostname: mm-celery-prom-exporter
     restart: unless-stopped
     env_file:
       - .env

@@ -1,6 +1,6 @@
 services:
   mqtt-explorer:
-    image: smeagolworms4/mqtt-explorer
+    image: smeagolworms4/mqtt-explorer:${IMAGE_VERSION:-latest}
     container_name: mqtt-explorer
     hostname: mqtt-explorer
     restart: unless-stopped

@@ -2,7 +2,7 @@
 # https://github.com/mikebrady/shairport-sync
 services:
   shairport-sync:
-    image: mikebrady/shairport-sync:latest
+    image: mikebrady/shairport-sync:${IMAGE_VERSION:-latest}
     container_name: shairport-sync
     hostname: shairport-sync
     restart: unless-stopped

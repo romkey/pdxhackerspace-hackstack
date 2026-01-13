@@ -1,6 +1,6 @@
 services:
   piper:
-    image: rhasspy/wyoming-piper
+    image: rhasspy/wyoming-piper:${IMAGE_VERSION:-latest}
     container_name: piper
     hostname: piper
     restart: unless-stopped

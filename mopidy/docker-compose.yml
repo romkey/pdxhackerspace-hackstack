@@ -1,7 +1,7 @@
 # https://hub.docker.com/r/buvis/mopidy
 services:
   mopidy:
-    image: buvis/mopidy
+    image: buvis/mopidy:${IMAGE_VERSION:-latest}
     container_name: mopidy
     hostname: mopidy
     restart: unless-stopped

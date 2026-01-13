@@ -1,6 +1,6 @@
 services:
   whisper:
-    image: rhasspy/wyoming-whisper
+    image: rhasspy/wyoming-whisper:${IMAGE_VERSION:-latest}
     container_name: whisper
     hostname: whisper
     restart: unless-stopped

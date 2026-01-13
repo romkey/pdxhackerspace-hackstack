@@ -1,9 +1,9 @@
 # https://hub.docker.com/r/ivdata/snapclient
 services:
   snapclient:
-    image: ivdata/snapclient
-    hostname: snapclient
+    image: ivdata/snapclient:${IMAGE_VERSION:-latest}
     container_name: snapclient
+    hostname: snapclient
     restart: unless-stopped
     devices:
       - ${SOUND_DEVICE}

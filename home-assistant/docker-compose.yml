@@ -1,6 +1,6 @@
 services:
-  homeassistant:
-    image: ghcr.io/home-assistant/home-assistant:stable
+  home-assistant:
+    image: ghcr.io/home-assistant/home-assistant:${IMAGE_VERSION:-stable}
     container_name: home-assistant
     hostname: home-assistant
     privileged: true

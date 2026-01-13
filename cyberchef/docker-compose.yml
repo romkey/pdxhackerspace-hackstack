@@ -1,6 +1,6 @@
 services:
-  web:
-    image: ghcr.io/gchq/cyberchef:latest
+  cyberchef:
+    image: ghcr.io/gchq/cyberchef:${IMAGE_VERSION:-latest}
     container_name: cyberchef
     hostname: cyberchef
     restart: unless-stopped

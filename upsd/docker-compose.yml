@@ -1,6 +1,6 @@
 services:
   upsd:
-    image: gpdm/nut-upsd
+    image: gpdm/nut-upsd:${IMAGE_VERSION:-latest}
     container_name: upsd
     hostname: upsd
     restart: unless-stopped
