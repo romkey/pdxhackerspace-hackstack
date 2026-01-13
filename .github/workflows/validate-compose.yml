@@ -1,0 +1,122 @@
+name: Validate Docker Compose Files
+
+on:
+  pull_request:
+    paths:
+      - '**/docker-compose.yml'
+      - '**/docker-compose.*.yml'
+      - '.github/scripts/validate_compose.py'
+      - '.github/workflows/validate-compose.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - '**/docker-compose.yml'
+      - '**/docker-compose.*.yml'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  validate:
+    name: Validate Compose Files
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for file comparison
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install pyyaml
+      
+      - name: Get changed files (PR only)
+        id: changed-files
+        if: github.event_name == 'pull_request'
+        run: |
+          # Get list of changed docker-compose files
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep -E 'docker-compose.*\.yml$' || true)
+          echo "files=${CHANGED_FILES}" >> $GITHUB_OUTPUT
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Validate changed compose files (PR)
+        if: github.event_name == 'pull_request' && steps.changed-files.outputs.has_changes == 'true'
+        run: |
+          echo "Validating changed files:"
+          echo "${{ steps.changed-files.outputs.files }}"
+          python .github/scripts/validate_compose.py --github-actions ${{ steps.changed-files.outputs.files }}
+      
+      - name: Validate all compose files (push/manual)
+        if: github.event_name != 'pull_request'
+        run: |
+          python .github/scripts/validate_compose.py --github-actions --root .
+      
+      - name: Skip message (no changes)
+        if: github.event_name == 'pull_request' && steps.changed-files.outputs.has_changes == 'false'
+        run: |
+          echo "No docker-compose files changed in this PR"
+
+  lint:
+    name: YAML Lint
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install yamllint
+        run: pip install yamllint
+      
+      - name: Create yamllint config
+        run: |
+          cat > .yamllint.yml << 'EOF'
+          extends: relaxed
+          rules:
+            line-length:
+              max: 200
+            truthy:
+              check-keys: false
+            comments:
+              min-spaces-from-content: 1
+            indentation:
+              spaces: 2
+              indent-sequences: true
+          EOF
+      
+      - name: Lint docker-compose files
+        run: |
+          find . -name 'docker-compose*.yml' -not -path './.github/*' | xargs yamllint -c .yamllint.yml || true
+        continue-on-error: true  # Don't fail on lint warnings
+
+  docker-compose-config:
+    name: Docker Compose Syntax Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Validate compose file syntax
+        run: |
+          # Find all docker-compose files and validate syntax
+          ERRORS=0
+          for file in $(find . -name 'docker-compose*.yml' -not -path './.github/*'); do
+            echo "Checking syntax: $file"
+            # Use docker compose config to validate (dry-run)
+            # We need to cd to the directory so relative paths work
+            DIR=$(dirname "$file")
+            BASENAME=$(basename "$file")
+            if ! (cd "$DIR" && docker compose -f "$BASENAME" config > /dev/null 2>&1); then
+              echo "::warning file=$file::Compose file has syntax issues (may be due to missing .env)"
+            fi
+          done
+        continue-on-error: true  # .env files won't exist in CI

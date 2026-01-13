@@ -1,0 +1,23 @@
+---
+alwaysApply: true
+---
+
+Don't use version in docker-compose files
+Always use bind mounts instead of Docker volumes unless the volume is for NFS
+Use the initial service name as the hostname and container name
+restart: unless-stopped
+If the compose project uses environment variables, load them from .env
+For images, use env var for tag with default: image: name:${IMAGE_VERSION:-latest}
+Environment variables should come from a single .env file and should not be embedded in the docker compose file - exception: it's okay to declare the default for a variable but no constants should be in docker-compose.yml
+Containers should almost never declare ports but commented out ports is acceptable - this should be a warning not an error as there can be exceptions
+Volumes should avoid absolute paths and instead should use relative paths like ../../lib
+Persistent runtime state should go in ../../lib
+Log files should go in ../../log
+Transient runtime state (like .pid files) should go in ../../run
+Warning if no HEALTHCHECK
+Warning if host mode - warn that containers should not run in host unless absolutely necessary
+Warning if not host mode and does not declare any networks - should have a db network if it needs a database, proxy if it needs reverse proxy
+Error if container has its own copy of Postgresql or Mariadb or Mysql - it should use the shared one
+Whenever possible configuration files should live in a config directory in the same place as docker-compose.yml and .env - must be config not other names
+Must have a .env.example file if there are environment variables in docker-compose.yml
+Must have a README file explaining the function of the service, whether it needs configuration via .env files or config or both, and how to start and stop it safely

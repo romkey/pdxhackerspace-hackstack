@@ -8,10 +8,10 @@ services:
       - proxy
       - database
     volumes:
-      - /opt/lib/planka/user-avatars:/app/public/user-avatars
-      - /opt/lib/planka/project-background-images:/app/public/project-background-images
-      - /opt/lib/planka/attachments:/app/private/attachments
-      - /opt/log/planka:/app/logs
+      - ../../lib/planka/user-avatars:/app/public/user-avatars
+      - ../../lib/planka/project-background-images:/app/public/project-background-images
+      - ../../lib/planka/attachments:/app/private/attachments
+      - ../../log/planka:/app/logs
 #    ports:
 #      - 3000:1337
     env_file:

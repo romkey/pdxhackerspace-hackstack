@@ -5,9 +5,9 @@ services:
     hostname: stable-diffusion-web-ui
     restart: unless-stopped
     volumes:
-      - /opt/lib/stable-diffusion-web-ui/outputs:/sd/outputs
-      - /opt/lib/stable-diffusion-web-ui/models:/sd/models
-      - /opt/log/stable-diffusion-web-ui/models:/sd/logs
+      - ../../lib/stable-diffusion-web-ui/outputs:/sd/outputs
+      - ../../lib/stable-diffusion-web-ui/models:/sd/models
+      - ../../log/stable-diffusion-web-ui:/sd/logs
 #    ports:
 #      - 8501:8501
     env_file:

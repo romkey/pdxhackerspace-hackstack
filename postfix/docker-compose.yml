@@ -14,7 +14,7 @@ services:
 
   postfix:
     <<: *base
-    hostname: mail-relay
+    hostname: postfix
     container_name: postfix
     restart: unless-stopped
     ports:

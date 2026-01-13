@@ -1,2 +1,2 @@
-conf/dnsmasq.conf
-conf/hosts.d/
+config/dnsmasq.conf
+config/hosts.d/

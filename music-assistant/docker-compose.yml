@@ -7,7 +7,7 @@ services:
     privileged: true
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /opt/lib/music-assistant:/data
+      - ../../lib/music-assistant:/data
       - /media/nas/music:/media
     network_mode: host
     cap_add:

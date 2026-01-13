@@ -6,7 +6,7 @@ services:
     hostname: dnsmasq
     network_mode: host
     volumes:
-      - ./conf/dnsmasq.conf:/etc/dnsmasq.conf
+      - ./config/dnsmasq.conf:/etc/dnsmasq.conf
       - ../../lib/dnsmasq/hosts.d:/etc/hosts.d
       - ../../lib/dnsmasq/autohosts.d:/etc/autohosts.d
 #    ports:

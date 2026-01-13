@@ -1,0 +1,2 @@
+# Requirements for docker-compose validation script
+PyYAML>=6.0

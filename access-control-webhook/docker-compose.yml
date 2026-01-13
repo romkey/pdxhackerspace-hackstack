@@ -1,6 +1,6 @@
 # https://github.com/thecatlady/docker-webhook
 services:
-  webhook:
+  access-control-webhook:
     build: .
     container_name: access-control-webhook
     hostname: access-control-webhook

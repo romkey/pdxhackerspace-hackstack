@@ -1,7 +1,7 @@
 services:
   watchtower:
-    image: containrrr/watchtower:${IMAGE_VERSION:-latest}
-    hostname: "${WATCHTOWER_HOSTNAME}"
+    image: nickfedor/watchtower:${IMAGE_VERSION:-latest}
+    hostname: watchtower
     container_name: watchtower
     restart: unless-stopped
     command: --schedule "0 0 4 * * *"
