@@ -20,8 +20,8 @@ redis/conf/
 upsd/config/
 
 # Patterns from dnsmasq/.gitignore
-dnsmasq/conf/dnsmasq.conf
-dnsmasq/conf/hosts.d/
+dnsmasq/config/dnsmasq.conf
+dnsmasq/config/hosts.d/
 
 # Patterns from rtlamr2mqtt/.gitignore
 rtlamr2mqtt/config.yaml
@@ -60,59 +60,7 @@ glances/glances.conf
 glances/glances.pwd
 
 # Patterns from shairport-sync/.gitignore
-shairport-sync//INSTALL
-shairport-sync//shairport-sync
-shairport-sync//shairport-sync.exe
-shairport-sync//shairport-sync-dbus-test-client
-shairport-sync//shairport-sync-mpris-test-client
-shairport-sync/
-shairport-sync/*.o
-shairport-sync//*~
-shairport-sync/*.xml~
-shairport-sync//config.mk
-shairport-sync//config.h
-shairport-sync/Makefile
-shairport-sync/Makefile.in
-shairport-sync/aclocal.m4
-shairport-sync/autom4te.cache
-shairport-sync/compile
-shairport-sync//config.*
-shairport-sync/configure
-shairport-sync/depcomp
-shairport-sync/install-sh
-shairport-sync/missing
-shairport-sync/stamp-h1
-shairport-sync/.dirstamp
-shairport-sync/.deps
-shairport-sync/man/Makefile
-shairport-sync/man/Makefile.in
-shairport-sync/scripts/shairport-sync.service
-shairport-sync/scripts/shairport-sync.service-avahi
-shairport-sync/scripts/shairport-sync
-shairport-sync/shairport-sync.core
-shairport-sync/gitversion.*
-shairport-sync/plist_xml_strings.*
-shairport-sync/
-shairport-sync/#Some dbus files that are automatically generated
-shairport-sync//org.gnome.ShairportSync.service
-shairport-sync//dbus-interface.*
-shairport-sync//mpris-interface.*
-shairport-sync//lib_*.*
-shairport-sync/
-shairport-sync/# Some eclipse project files
-shairport-sync/.cproject
-shairport-sync/.project
-shairport-sync/
-shairport-sync/# macOS stuff
-shairport-sync/.DS_Store
-shairport-sync/shairport-sync.xcodeproj
-shairport-sync/
-shairport-sync/# separate build directory
-shairport-sync/build
-shairport-sync/
-shairport-sync/# vscode
-shairport-sync/.vscode
-shairport-sync/
+shairport-sync/config/shairport-sync.conf
 
 # Patterns from invidious/.gitignore
 invidious/config/config.yml
