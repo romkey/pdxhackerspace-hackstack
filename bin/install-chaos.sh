@@ -1,0 +1,114 @@
+#!/bin/sh
+#
+# install-chaos.sh
+# Configures and starts all core and chaos-host services in dependency order.
+#
+# Prerequisites - the following networks must already exist before running
+# this script (created by services not in this install):
+#
+#   mdns-net   - created by mdns-repeater (needed by matter, jellyfin, mopidy,
+#                home-assistant)
+#   frigate-net - created by frigate (needed by home-assistant)
+#   redis-net  - created by redis (needed by db-backup)
+#
+# If those services are not running yet, start them first or the dependent
+# services here will fail to come up.
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+. "$SCRIPT_DIR/lib.sh"
+
+# ============================================================
+# Service list in dependency order:
+#
+# Tier 0 - no external network dependencies (or create their own from scratch)
+#   nginx-proxy-manager   creates: nginx-proxy-net
+#   mosquitto             creates: mosquitto-net
+#   ollama                creates: llama-net
+#   cloudflare-ddns       no networks
+#   postfix               no networks
+#   rsyslog               no networks
+#   snapserver            host network mode
+#
+# Tier 1 - needs proxy
+#   postgresql            creates: postgres-net   needs: proxy
+#   mariadb               creates: mariadb-net    needs: proxy
+#   dnsmasq               needs: (none)
+#   dozzle                needs: proxy
+#   glances               needs: proxy
+#   cyberchef             needs: proxy
+#   peanut                needs: proxy
+#
+# Tier 2 - needs proxy + db, mariadb, mqtt, or llama
+#   invidious             needs: proxy, db
+#   partdb                needs: proxy, db
+#   planka                needs: proxy, db
+#   statping              needs: proxy, db
+#   vaultwarden           needs: proxy, db
+#   matomo                creates: matomo-net     needs: proxy, mariadb
+#   mosquitto-management-center  needs: proxy, mqtt
+#   mqtt-explorer         needs: proxy, mqtt
+#   openwebui             needs: proxy, llama
+#
+# Tier 3 - needs proxy + mqtt + db + llama (+ mdns + frigate - see above)
+#   home-assistant        creates: hass-net       needs: proxy, mqtt, db,
+#                                                         llama, mdns, frigate
+#
+# Tier 4 - needs hass (and optionally mdns - see above)
+#   piper                 needs: hass
+#   whisper               needs: hass
+#   matter                needs: hass, mdns
+#   jellyfin              needs: proxy, db, hass, mdns
+#   mopidy                needs: proxy, mdns
+#
+# Tier 5 - needs db + mariadb + redis (see above)
+#   db-backup             needs: db, mariadb, redis
+# ============================================================
+
+CHAOS_APPS="
+nginx-proxy-manager
+mosquitto
+ollama
+cloudflare-ddns
+postfix
+rsyslog
+snapserver
+postgresql
+mariadb
+dnsmasq
+dozzle
+glances
+cyberchef
+peanut
+invidious
+partdb
+planka
+statping
+vaultwarden
+matomo
+mosquitto-management-center
+mqtt-explorer
+openwebui
+home-assistant
+piper
+whisper
+matter
+jellyfin
+mopidy
+db-backup
+"
+
+echo "==> Configuring all apps..."
+for app in $CHAOS_APPS; do
+    echo "  Configuring $app..."
+    configure_app "$app"
+done
+
+echo ""
+echo "==> Starting apps in dependency order..."
+for app in $CHAOS_APPS; do
+    start_app "$app"
+done
+
+echo ""
+echo "Done. Run 'docker ps' to verify all services are up."
