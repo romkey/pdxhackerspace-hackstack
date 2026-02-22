@@ -1,17 +1,26 @@
 services:
   db-backup:
-    image: ghcr.io/romkey/pdxhackstack-db-backup:${IMAGE_VERSION:-latest}
+    image: ghcr.io/romkey/hackstack-db-backup:${IMAGE_VERSION:-latest}
     container_name: db-backup
     hostname: db-backup
     restart: unless-stopped
     volumes:
-      - ../../lib/db-backup:/backups
+      - ${DBBACKUP_PARENT_HOST_PATH:-/opt}:/opt
+      - ${DBBACKUP_DEST_PATH}:/dest
     env_file:
       - .env
     networks:
       - db
+      - mariadb
+      - redis
 
 networks:
   db:
-    name: postgres-net
     external: true
+    name: postgres-net
+  mariadb:
+    external: true
+    name: mariadb-net
+  redis:
+    external: true
+    name: redis-net

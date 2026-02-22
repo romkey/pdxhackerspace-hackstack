@@ -1,10 +1,37 @@
 # db-backup
 
-Scheduled PostgreSQL database backup service. Runs on a configurable cron
-schedule, dumps one or more databases, and stores compressed backup files in
-`../../lib/db-backup`.
+Continuous database backup service for PostgreSQL, MySQL/MariaDB, SQLite, and
+Redis. Automatically discovers databases by scanning application directories
+for `.env` files containing `BACKUP_DATABASE_URLS`, backs them up on a
+configurable interval, and applies tiered retention (hourly/daily/weekly/
+monthly/yearly).
 
-Image source: [romkey/pdxhackstack-db-backup](https://github.com/romkey/pdxhackstack-db-backup)
+Image: [romkey/hackstack-db-backup](https://github.com/romkey/hackstack-db-backup)
+(`ghcr.io/romkey/hackstack-db-backup`)
+
+## How it works
+
+On each backup cycle, the service scans every subdirectory under `PARENT_DIR`
+for a `.env` file. If that file contains a `BACKUP_DATABASE_URLS` variable,
+each URL in the comma-separated list is backed up and compressed with bzip2.
+
+Backup files land in `DEST_DIR/<app_name>/backup-<db>-<timestamp>.sql.bz2`.
+
+## Configuring an application for backup
+
+Add this to the application's `.env` file (not the db-backup `.env`):
+
+```bash
+BACKUP_DATABASE_URLS="postgresql://user:pass@postgresql:5432/mydb"
+```
+
+Multiple databases can be comma-separated:
+
+```bash
+BACKUP_DATABASE_URLS="postgresql://user:pass@postgresql:5432/db1,redis://:pass@redis:6379/0"
+```
+
+Supported URL schemes: `postgresql://`, `mysql://`, `sqlite:///`, `redis://`
 
 ## Configuration
 
@@ -16,21 +43,20 @@ Copy `.env.example` to `.env` and configure:
 cp .env.example .env
 ```
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `POSTGRES_HOST` | PostgreSQL hostname | `postgresql` |
-| `POSTGRES_PORT` | PostgreSQL port | `5432` |
-| `POSTGRES_USER` | Database user | _(required)_ |
-| `POSTGRES_PASSWORD` | Database password | _(required)_ |
-| `POSTGRES_DATABASES` | Comma-separated list of databases to back up | all databases |
-| `BACKUP_SCHEDULE` | Cron schedule for backups | `0 3 * * *` (3am daily) |
-| `BACKUP_RETENTION_DAYS` | Number of days to retain backups | `7` |
-| `IMAGE_VERSION` | Docker image tag | `latest` |
-
-### Backup Storage
-
-Backups are stored in `../../lib/db-backup` on the host, which maps to
-`/backups` inside the container.
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `PARENT_DIR` | Yes | `/opt/docker` | Path **inside** the container to scan for app subdirectories |
+| `DEST_DIR` | Yes | `/dest` | Path **inside** the container where backups are written |
+| `DBBACKUP_PARENT_HOST_PATH` | Yes | `/opt` | Host path mounted as `/opt` in the container (must contain `PARENT_DIR`) |
+| `DBBACKUP_DEST_PATH` | Yes | — | Host path mounted as `/dest` in the container |
+| `BACKUP_INTERVAL_MINUTES` | No | `60` | Minutes between backup cycles |
+| `SLACK_WEBHOOK_URL` | No | — | Slack webhook URL for notifications |
+| `BACKUP_RETAIN_HOURLY` | No | `6` | Hourly backups to keep |
+| `BACKUP_RETAIN_DAILY` | No | `6` | Daily backups to keep |
+| `BACKUP_RETAIN_WEEKLY` | No | `6` | Weekly backups to keep |
+| `BACKUP_RETAIN_MONTHLY` | No | `6` | Monthly backups to keep |
+| `BACKUP_RETAIN_YEARLY` | No | `6` | Yearly backups to keep |
+| `IMAGE_VERSION` | No | `latest` | Docker image tag |
 
 ## Usage
 
@@ -50,10 +76,4 @@ docker compose down
 
 ```bash
 docker compose logs -f
-```
-
-### Triggering a manual backup
-
-```bash
-docker compose exec db-backup /backup.sh
 ```
