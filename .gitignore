@@ -26,6 +26,10 @@ dnsmasq/config/hosts.d/
 # Patterns from rtlamr2mqtt/.gitignore
 rtlamr2mqtt/config.yaml
 
+# Patterns from autogenerate-hosts/.gitignore
+autogenerate-hosts/.env
+autogenerate-hosts/app/npm-hosts
+
 # Patterns from influxdb/.gitignore
 influxdb/config/influx-configs
 
@@ -46,6 +50,62 @@ jellyfin/config/
 
 # Patterns from mopidy/.gitignore
 mopidy/config/mopidy.conf
+
+# Patterns from auto_planka/.gitignore
+auto_planka/*.gem
+auto_planka/*.rbc
+auto_planka//.config
+auto_planka//coverage/
+auto_planka//InstalledFiles
+auto_planka//pkg/
+auto_planka//spec/reports/
+auto_planka//spec/examples.txt
+auto_planka//test/tmp/
+auto_planka//test/version_tmp/
+auto_planka//tmp/
+auto_planka/
+auto_planka/# Used by dotenv library to load environment variables.
+auto_planka/.env*
+auto_planka/
+auto_planka/## Specific to RubyMotion:
+auto_planka/.dat*
+auto_planka/.repl_history
+auto_planka/build/
+auto_planka/*.bridgesupport
+auto_planka/build-iPhoneOS/
+auto_planka/build-iPhoneSimulator/
+auto_planka/
+auto_planka/## Specific to RubyMotion (use of CocoaPods):
+auto_planka/#
+auto_planka/# We recommend against adding the Pods directory to your .gitignore. However
+auto_planka/# you should judge for yourself, the pros and cons are mentioned at:
+auto_planka/# https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control
+auto_planka/#
+auto_planka/# vendor/Pods/
+auto_planka/
+auto_planka/## Documentation cache and generated files:
+auto_planka//.yardoc/
+auto_planka//_yardoc/
+auto_planka//doc/
+auto_planka//rdoc/
+auto_planka/
+auto_planka/## Environment normalization:
+auto_planka//.bundle/
+auto_planka//vendor/bundle
+auto_planka//lib/bundler/man/
+auto_planka/
+auto_planka/# for a library or gem, you might want to ignore these files since the code is
+auto_planka/# intended to run in multiple environments; otherwise, check them in:
+auto_planka/# Gemfile.lock
+auto_planka/# .ruby-version
+auto_planka/# .ruby-gemset
+auto_planka/
+auto_planka/# unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
+auto_planka/.rvmrc
+auto_planka/
+auto_planka/*.json
+auto_planka/
+auto_planka/app/.env
 
 # Patterns from backrest/.gitignore
 backrest/config/config.json*
