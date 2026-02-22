@@ -1,0 +1,15 @@
+services:
+  trimetd:
+    image: ghcr.io/romkey/pdxhackstack-trimetd:${IMAGE_VERSION:-latest}
+    container_name: trimetd
+    hostname: trimetd
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - mqtt
+
+networks:
+  mqtt:
+    name: mosquitto-net
+    external: true

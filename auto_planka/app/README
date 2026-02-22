@@ -1,0 +1,73 @@
+ Schema |           Name           |   Type   |    Owner
+--------+--------------------------+----------+-------------
+ public | action                   | table    | planka_user
+ public | archive                  | table    | planka_user
+ public | attachment               | table    | planka_user
+ public | board                    | table    | planka_user
+ public | board_membership         | table    | planka_user
+ public | card                     | table    | planka_user
+ public | card_label               | table    | planka_user
+ public | card_membership          | table    | planka_user
+ public | card_subscription        | table    | planka_user
+ public | identity_provider_user   | table    | planka_user
+ public | label                    | table    | planka_user
+ public | list                     | table    | planka_user
+ public | migration                | table    | planka_user
+ public | migration_id_seq         | sequence | planka_user
+ public | migration_lock           | table    | planka_user
+ public | migration_lock_index_seq | sequence | planka_user
+ public | next_id_seq              | sequence | planka_user
+ public | notification             | table    | planka_user
+ public | project                  | table    | planka_user
+ public | project_manager          | table    | planka_user
+ public | session                  | table    | planka_user
+ public | task                     | table    | planka_user
+ public | user_account             | table    | planka_user
+
+
+planka_db=# \d board
+                            Table "public.board"
+   Column   |            Type             | Collation | Nullable |  Default
+------------+-----------------------------+-----------+----------+-----------
+ id         | bigint                      |           | not null | next_id()
+ project_id | bigint                      |           | not null |
+ position   | double precision            |           | not null |
+ name       | text                        |           | not null |
+ created_at | timestamp without time zone |           |          |
+ updated_at | timestamp without time zone |           |          |
+
+
+planka_db=# \d board_membership
+                       Table "public.board_membership"
+   Column    |            Type             | Collation | Nullable |  Default
+-------------+-----------------------------+-----------+----------+-----------
+ id          | bigint                      |           | not null | next_id()
+ board_id    | bigint                      |           | not null |
+ user_id     | bigint                      |           | not null |
+ created_at  | timestamp without time zone |           |          |
+ updated_at  | timestamp without time zone |           |          |
+ role        | text                        |           | not null |
+ can_comment | boolean                     |           |          |
+
+
+planka_db=# \d user_account
+                               Table "public.user_account"
+         Column         |            Type             | Collation | Nullable |  Default
+------------------------+-----------------------------+-----------+----------+-----------
+ id                     | bigint                      |           | not null | next_id()
+ email                  | text                        |           | not null |
+ password               | text                        |           |          |
+ is_admin               | boolean                     |           | not null |
+ name                   | text                        |           | not null |
+ username               | text                        |           |          |
+ phone                  | text                        |           |          |
+ organization           | text                        |           |          |
+ subscribe_to_own_cards | boolean                     |           | not null |
+ created_at             | timestamp without time zone |           |          |
+ updated_at             | timestamp without time zone |           |          |
+ deleted_at             | timestamp without time zone |           |          |
+ language               | text                        |           |          |
+ password_changed_at    | timestamp without time zone |           |          |
+ avatar                 | jsonb                       |           |          |
+ is_sso                 | boolean                     |           | not null |
+

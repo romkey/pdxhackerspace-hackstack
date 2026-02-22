@@ -1,0 +1,11 @@
+services:
+  autogenerate-hosts:
+    image: ghcr.io/romkey/pdxhackstack-autogenerate-hosts:${IMAGE_VERSION:-latest}
+    container_name: autogenerate-hosts
+    hostname: autogenerate-hosts
+    restart: unless-stopped
+    volumes:
+      - "${DB_PATH}:${DB_PATH}"
+      - "${HOSTSFILE_PATH}:/dest"
+    env_file:
+      - .env

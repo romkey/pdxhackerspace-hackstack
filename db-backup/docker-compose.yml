@@ -1,0 +1,17 @@
+services:
+  db-backup:
+    image: ghcr.io/romkey/pdxhackstack-db-backup:${IMAGE_VERSION:-latest}
+    container_name: db-backup
+    hostname: db-backup
+    restart: unless-stopped
+    volumes:
+      - ../../lib/db-backup:/backups
+    env_file:
+      - .env
+    networks:
+      - db
+
+networks:
+  db:
+    name: postgres-net
+    external: true
