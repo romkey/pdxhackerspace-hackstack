@@ -1,0 +1,23 @@
+services:
+  llama-cpp:
+    image: ghcr.io/ggml-org/llama.cpp:${IMAGE_VERSION:-server}
+    container_name: llama-cpp
+    hostname: llama-cpp
+    restart: unless-stopped
+    volumes:
+      - ../../lib/llama-cpp/models:/models
+    env_file:
+      - .env
+#   ports:
+#     - 8080:8080
+    networks:
+      - llama
+      - proxy
+
+networks:
+  llama:
+    external: true
+    name: llama-net
+  proxy:
+    external: true
+    name: nginx-proxy-net
