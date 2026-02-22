@@ -12,7 +12,6 @@ services:
     networks:
       - db
       - mariadb
-      - redis
 
 networks:
   db:
@@ -21,6 +20,3 @@ networks:
   mariadb:
     external: true
     name: mariadb-net
-  redis:
-    external: true
-    name: redis-net

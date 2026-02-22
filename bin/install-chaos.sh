@@ -3,14 +3,8 @@
 # install-chaos.sh
 # Configures and starts all core and chaos-host services in dependency order.
 #
-# Prerequisites - the following network must already exist before running
-# this script (created by a service not in this install):
-#
-#   redis-net  - created by the redis service (needed by db-backup to back up
-#                the shared Redis instance). Only db-backup uses this network;
-#                authentik and membermatters each embed their own private redis.
-#
-# If redis is not running yet, start it first or db-backup will fail to come up.
+# All networks used by services in this script are created by services within
+# this script. No external prerequisites required.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -60,8 +54,8 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 #   jellyfin              needs: proxy, db, hass, mdns
 #   mopidy                needs: proxy, mdns
 #
-# Tier 5 - needs db + mariadb + redis (see prerequisite note above)
-#   db-backup             needs: db, mariadb, redis
+# Tier 5 - needs db + mariadb
+#   db-backup             needs: db, mariadb
 # ============================================================
 
 CHAOS_APPS="
