@@ -1,6 +1,8 @@
 #!/bin/sh
 
-source ./lib.sh
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+. "$SCRIPT_DIR/lib.sh"
 
 install_default_config snapclient snapcast
 start_app snapclient
