@@ -19,13 +19,12 @@ services:
       - mqtt
       - db
       - mdns
-      - frigate
       - llama
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
       - 8123:8123
-      - 5060:5060    
+      - 5060:5060
 networks:
   hass:
     driver: bridge
@@ -42,9 +41,6 @@ networks:
   mdns:
     external: true
     name: mdns-net
-  frigate:
-    external: true
-    name: frigate-net
   llama:
     external: true
     name: llama-net

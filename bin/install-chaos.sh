@@ -3,16 +3,14 @@
 # install-chaos.sh
 # Configures and starts all core and chaos-host services in dependency order.
 #
-# Prerequisites - the following networks must already exist before running
-# this script (created by services not in this install):
+# Prerequisites - the following network must already exist before running
+# this script (created by a service not in this install):
 #
-#   mdns-net   - created by mdns-repeater (needed by matter, jellyfin, mopidy,
-#                home-assistant)
-#   frigate-net - created by frigate (needed by home-assistant)
-#   redis-net  - created by redis (needed by db-backup)
+#   redis-net  - created by the redis service (needed by db-backup to back up
+#                the shared Redis instance). Only db-backup uses this network;
+#                authentik and membermatters each embed their own private redis.
 #
-# If those services are not running yet, start them first or the dependent
-# services here will fail to come up.
+# If redis is not running yet, start it first or db-backup will fail to come up.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -25,6 +23,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 #   nginx-proxy-manager   creates: nginx-proxy-net
 #   mosquitto             creates: mosquitto-net
 #   ollama                creates: llama-net
+#   mdns-repeater         creates: mdns-net (and ipvlan_net)
 #   cloudflare-ddns       no networks
 #   postfix               no networks
 #   rsyslog               no networks
@@ -50,18 +49,18 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 #   mqtt-explorer         needs: proxy, mqtt
 #   openwebui             needs: proxy, llama
 #
-# Tier 3 - needs proxy + mqtt + db + llama (+ mdns + frigate - see above)
+# Tier 3 - needs proxy + mqtt + db + llama + mdns
 #   home-assistant        creates: hass-net       needs: proxy, mqtt, db,
-#                                                         llama, mdns, frigate
+#                                                         llama, mdns
 #
-# Tier 4 - needs hass (and optionally mdns - see above)
+# Tier 4 - needs hass and/or mdns
 #   piper                 needs: hass
 #   whisper               needs: hass
 #   matter                needs: hass, mdns
 #   jellyfin              needs: proxy, db, hass, mdns
 #   mopidy                needs: proxy, mdns
 #
-# Tier 5 - needs db + mariadb + redis (see above)
+# Tier 5 - needs db + mariadb + redis (see prerequisite note above)
 #   db-backup             needs: db, mariadb, redis
 # ============================================================
 
@@ -69,6 +68,7 @@ CHAOS_APPS="
 nginx-proxy-manager
 mosquitto
 ollama
+mdns-repeater
 cloudflare-ddns
 postfix
 rsyslog
