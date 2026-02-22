@@ -7,7 +7,7 @@ services:
     entrypoint: "/usr/local/bin/rtl_433"
     command: "-F ${MQTT_BROKER} ${RTL433_EXTRA_OPTIONS}"
     networks:
-      - mosquitto
+      - mqtt
     devices:
       - "${SDR_DEVICE}"
     volumes:
@@ -15,6 +15,6 @@ services:
     env_file:
       - .env
 networks:
-  mosquitto:
+  mqtt:
     name: mosquitto-net
     external: true

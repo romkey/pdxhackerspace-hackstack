@@ -11,7 +11,9 @@ services:
 #      - 8083:8083
     env_file:
       - .env
+    networks:
+      - proxy
 networks:
-  default:
+  proxy:
     external: true
     name: nginx-proxy-net

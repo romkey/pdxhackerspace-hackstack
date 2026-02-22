@@ -37,7 +37,7 @@ services:
     networks:
       - proxy
       - redis
-      - database
+      - db
 
   worker:
     image: ghcr.io/goauthentik/server:${IMAGE_VERSION:-2025.8.3}
@@ -65,13 +65,13 @@ services:
       - redis
     networks:
       - redis
-      - database
+      - db
 
 networks:
   proxy:
     external: true
     name: nginx-proxy-net
-  database:
+  db:
     external: true
     name: postgres-net
   redis:

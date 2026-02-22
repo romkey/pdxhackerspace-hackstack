@@ -4,9 +4,11 @@ services:
     container_name: cyberchef
     hostname: cyberchef
     restart: unless-stopped
+    networks:
+      - proxy
 #    ports:
 #      - 8090:80
 networks:
-  default:
+  proxy:
     external: true
     name: nginx-proxy-net

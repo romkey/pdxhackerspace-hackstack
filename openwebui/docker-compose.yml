@@ -8,16 +8,16 @@ services:
     ports:
       - 3000:8080
     networks:
-      - default
+      - proxy
       - llama
     volumes:
       - ../../lib/openwebui:/app/backend/data
     env_file:
       - .env
 networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true
   llama:
     name: llama-net
-    external: true
-  default:
-    name: nginx-proxy-net
     external: true

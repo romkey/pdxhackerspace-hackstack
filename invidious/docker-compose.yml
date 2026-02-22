@@ -5,7 +5,7 @@ services:
     container_name: invidious
     restart: unless-stopped
     networks:
-      - database
+      - db
       - proxy
     volumes:
       - ./config/config.yml:/invidious/config/config.yml
@@ -26,6 +26,6 @@ networks:
   proxy:
     external: true
     name: nginx-proxy-net
-  database:
+  db:
     external: true
     name: postgres-net

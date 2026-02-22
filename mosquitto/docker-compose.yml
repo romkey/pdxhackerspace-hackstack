@@ -13,6 +13,8 @@ services:
       - 1883:1883
     env_file:
       - .env
+    networks:
+      - mqtt
 networks:
-  default:
+  mqtt:
     name: mosquitto-net

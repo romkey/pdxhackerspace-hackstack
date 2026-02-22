@@ -12,6 +12,8 @@ services:
       - ../../lib/redis:/var/lib/redis
     env_file:
       - .env
+    networks:
+      - redis
 networks:
-  default:
+  redis:
     name: redis-net

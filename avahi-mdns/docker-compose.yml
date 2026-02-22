@@ -8,7 +8,9 @@ services:
       - mdns_repeater
     volumes:
       - ./services:/etc/avahi/services
+    networks:
+      - mdns
 networks:
-  default:
+  mdns:
     name: mdns-net
     external: true

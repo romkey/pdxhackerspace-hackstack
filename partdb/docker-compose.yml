@@ -8,7 +8,7 @@ services:
 #      - 28080:80
     networks:
       - proxy
-      - database
+      - db
     volumes:
       - ../../lib/partdb/uploads:/var/www/html/uploads
       - ../../lib/partdb/public_media:/var/www/html/public/media
@@ -19,6 +19,6 @@ networks:
   proxy:
     name: nginx-proxy-net
     external: true
-  database:
+  db:
     name: postgres-net
     external: true

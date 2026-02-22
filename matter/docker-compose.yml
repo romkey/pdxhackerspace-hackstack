@@ -11,10 +11,13 @@ services:
       - /run/dbus:/run/dbus:ro
     env_file:
       - .env
+    networks:
+      - hass
+      - mdns
 networks:
-  default:
+  hass:
     name: hass-net
     external: true
-  mdns-net:
+  mdns:
     external: true
     name: mdns-net

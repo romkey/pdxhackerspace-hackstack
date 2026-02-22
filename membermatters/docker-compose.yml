@@ -25,7 +25,7 @@ services:
       retries: 15
     networks:
       - proxy
-      - database
+      - db
       - redis
 
   mm-celery-worker:
@@ -40,7 +40,7 @@ services:
       - mm-redis
     networks:
       - proxy
-      - database
+      - db
       - redis
 
   mm-celery-beat:
@@ -56,7 +56,7 @@ services:
       - mm-redis
     networks:
       - proxy
-      - database
+      - db
       - redis
 
   mm-celery-prom-exporter:
@@ -71,14 +71,14 @@ services:
       - mm-redis
     networks:
       - proxy
-      - database
+      - db
       - redis
 
 networks:
   proxy:
     external: true
     name: nginx-proxy-net
-  database:
+  db:
     external: true
     name: postgres-net
   redis:

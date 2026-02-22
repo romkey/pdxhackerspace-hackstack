@@ -11,7 +11,9 @@ services:
       - ../../lib/openwakeword:/models
     env_file:
       - .env
+    networks:
+      - hass
 networks:
-  default:
+  hass:
     name: hass-net
     external: true

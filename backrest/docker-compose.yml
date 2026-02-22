@@ -14,10 +14,12 @@ services:
     env_file:
       - .env
     restart: unless-stopped
+    networks:
+      - proxy
 #    ports:
 #      - 9898:9898
 networks:
-  default:
+  proxy:
     external: true
     name: nginx-proxy-net
 volumes:

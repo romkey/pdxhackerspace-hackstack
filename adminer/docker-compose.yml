@@ -4,15 +4,19 @@ services:
     hostname: adminer
     container_name: adminer
     restart: unless-stopped
+    networks:
+      - proxy
+      - db
+      - mariadb
 #    ports:
 #      - 8080:8080
 networks:
-  default:
+  proxy:
     name: nginx-proxy-net
     external: true
   mariadb:
     name: mariadb-net
     external: true
-  postgresql:
+  db:
     name: postgres-net
     external: true

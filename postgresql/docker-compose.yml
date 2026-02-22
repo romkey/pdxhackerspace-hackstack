@@ -5,7 +5,7 @@ services:
     container_name: postgresql
     restart: unless-stopped
     networks:
-      - default
+      - db
       - proxy
     volumes:
       - ../../lib/postgresql:/var/lib/postgresql/data
@@ -21,7 +21,7 @@ services:
       - 5432:5432
 
 networks:
-  default:
+  db:
     name: postgres-net
   proxy:
     name: nginx-proxy-net

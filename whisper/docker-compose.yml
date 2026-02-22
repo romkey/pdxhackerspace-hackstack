@@ -12,7 +12,9 @@ services:
       - ../../lib/whisper:/data
     env_file:
       - .env
+    networks:
+      - hass
 networks:
-  default:
+  hass:
     name: hass-net
     external: true

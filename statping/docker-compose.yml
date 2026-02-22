@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     networks:
       - proxy
-      - postgresql
+      - db
       - mariadb
     volumes:
       - ../../lib/statping:/app
@@ -18,7 +18,7 @@ networks:
   proxy:
     name: nginx-proxy-net
     external: true
-  postgresql:
+  db:
     name: postgres-net
     external: true
   mariadb:

@@ -10,10 +10,13 @@ services:
 #        - 8088:8088
     env_file:
       - .env
+    networks:
+      - proxy
+      - mqtt
 networks:
-  default:
+  proxy:
     external: true
     name: nginx-proxy-net
-  mosquitto:
+  mqtt:
     external: true
     name: mosquitto-net

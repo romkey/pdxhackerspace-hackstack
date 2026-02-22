@@ -7,7 +7,9 @@ services:
     volumes:
      - /home/weather/weewx-report:/usr/share/nginx/html:ro
      - ../../log/weather-nginx:/opt/log/nginx
+    networks:
+      - proxy
 networks:
-  default:
+  proxy:
     external: true
     name: nginx-proxy-net

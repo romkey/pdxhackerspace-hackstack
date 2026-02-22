@@ -14,7 +14,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
     networks:
-      - default
+      - hass
       - proxy
       - mqtt
       - db
@@ -27,7 +27,7 @@ services:
       - 8123:8123
       - 5060:5060    
 networks:
-  default:
+  hass:
     driver: bridge
     name: hass-net
   proxy:

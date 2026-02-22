@@ -6,7 +6,7 @@ services:
     privileged: true
     restart: unless-stopped
     networks:
-      - mosquitto
+      - mqtt
     env_file:
       - .env
     deploy:
@@ -17,6 +17,6 @@ services:
               capabilities:
                 - gpu
 networks:
-  mosquitto:
+  mqtt:
     name: mosquitto-net
     external: true

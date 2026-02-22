@@ -5,16 +5,16 @@ services:
     hostname: vaultwarden
     restart: unless-stopped
     networks:
-      database: null    
-      default: null
+      - proxy
+      - db
     volumes:
       - ../../lib/vaultwarden:/data
     env_file:
       - .env
 networks:
-  default:
+  proxy:
     external: true
     name: nginx-proxy-net
-  database:
+  db:
     external: true
     name: postgres-net

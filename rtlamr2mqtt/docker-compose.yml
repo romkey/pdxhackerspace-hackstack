@@ -11,7 +11,9 @@ services:
       - ../../lib/rtlamr2mqtt/data:/var/lib/rtlamr2mqtt
     env_file:
       - .env
+    networks:
+      - mqtt
 networks:
-  default:
+  mqtt:
     name: mosquitto-net
     external: true

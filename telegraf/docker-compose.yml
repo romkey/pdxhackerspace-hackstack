@@ -12,13 +12,13 @@ services:
       - .env
     networks:
       - influxdb
-      - postgres
+      - db
       - mariadb
 networks:
   influxdb:
     name: influxdb-net
     external: true
-  postgres:
+  db:
     name: postgres-net
     external: true
   mariadb:

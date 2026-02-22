@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     shm_size: 256mb
     networks:
-      - default
+      - frigate
       - proxy
 #    devices:
 #      - /dev/dri/renderD128:/dev/dri/renderD128 # for intel hwaccel
@@ -28,7 +28,7 @@ services:
     env_file:
       - .env
 networks:
-  default:
+  frigate:
     name: frigate-net
   proxy:
     external: true

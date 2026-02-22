@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     networks:
       proxy: null
-      database: null
+      db: null
     volumes:
       - ./config.yml:/wiki/config.yml
       - ../../lib/wikijs:/wiki/data
@@ -17,6 +17,6 @@ networks:
   proxy:
     external: true
     name: nginx-proxy-net
-  database:
+  db:
     external: true
     name: postgres-net

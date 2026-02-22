@@ -17,6 +17,7 @@ Hackstack's priorities are:
   easy when possible
 
 - [Philosphy and Design](docs/design.md)
+- [Docker Networks](docs/design.md#docker-networks)
 - [Examples](docs/examples.md)
 - [Installation](docs/installation.md)
 - [Core](docs/core.md)

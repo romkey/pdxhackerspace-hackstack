@@ -12,6 +12,8 @@ services:
 #      - 8501:8501
     env_file:
       - .env
+    networks:
+      - proxy
     deploy:
       resources:
         reservations:
@@ -20,6 +22,6 @@ services:
               count: "${GPU_COUNT}"
               capabilities: [gpu]
 networks:
-  default:
+  proxy:
     name: nginx-proxy-net
     external: true

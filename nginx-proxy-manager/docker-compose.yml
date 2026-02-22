@@ -21,6 +21,8 @@ services:
       test: ["CMD", "/usr/bin/check-health"]
       interval: 10s
       timeout: 3s
+    networks:
+      - proxy
 networks:
-  default:
+  proxy:
     name: nginx-proxy-net
