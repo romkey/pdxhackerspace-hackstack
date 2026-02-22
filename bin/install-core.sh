@@ -8,6 +8,7 @@ CORE_APPS="
 nginx-proxy-manager
 dnsmasq
 glances
+watchtower
 "
 
 echo "==> Configuring apps..."

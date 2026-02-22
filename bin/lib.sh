@@ -62,3 +62,18 @@ start_app() {
         echo "$1 is already running."
     fi
 }
+
+# Start a single named service within an app's compose file, leaving other
+# services in that file untouched.
+# Usage: start_app_service <app_dir> <service_name>
+start_app_service() {
+    app_dir="$REPO_ROOT/$1"
+    service="$2"
+    if ! docker compose -f "$app_dir/docker-compose.yml" ps "$service" 2>/dev/null | grep -q 'Up'; then
+        echo "Starting $1/$service..."
+        docker compose -f "$app_dir/docker-compose.yml" up -d "$service"
+        echo "$1/$service started."
+    else
+        echo "$1/$service is already running."
+    fi
+}
