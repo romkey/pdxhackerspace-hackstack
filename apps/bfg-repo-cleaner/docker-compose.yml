@@ -3,7 +3,7 @@ services:
     image: docker2snap/bfg-repo-cleaner:${IMAGE_VERSION:-latest}
     container_name: bfg-repo-cleaner
     hostname: bfg-repo-cleaner
-    restart: no
+    restart: "no"
     command: /bin/bash
     volumes:
       - /opt/docker:/opt/docker

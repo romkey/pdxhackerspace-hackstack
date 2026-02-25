@@ -37,6 +37,7 @@ ollama
 dnsmasq
 dozzle
 sensors2mqtt
+watchtower
 "
 
 echo "==> Configuring apps..."

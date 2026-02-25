@@ -6,11 +6,11 @@ services:
     volumes:
       - ./config:/config
       - ../../lib/backrest:/data
-      - /backups/chaos/backrest/cache:/cache
-      - /backups/chaos/backrest/repos:/repos
-      - /opt:/userdata
-      - /etc:/useretc
-      - /home:/userhome
+      - ${BACKREST_CACHE_PATH}:/cache
+      - ${BACKREST_REPOS_PATH}:/repos
+      - ${BACKREST_USERDATA_PATH:-/opt}:/userdata
+      - ${BACKREST_USERETC_PATH:-/etc}:/useretc
+      - ${BACKREST_USERHOME_PATH:-/home}:/userhome
     env_file:
       - .env
     restart: unless-stopped
