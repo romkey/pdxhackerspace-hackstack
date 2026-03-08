@@ -5,10 +5,15 @@
 #   SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 #   REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 #   . "$SCRIPT_DIR/lib.sh"
+#
+# App service directories are expected at $REPO_ROOT/apps/<name>.
+# APPS_ROOT is set automatically to $REPO_ROOT/apps.
 
 if [ -z "$REPO_ROOT" ]; then
     REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 fi
+
+APPS_ROOT="$REPO_ROOT/apps"
 
 _get_system_tz() {
     if [ -f /etc/timezone ]; then
@@ -21,7 +26,7 @@ _get_system_tz() {
 }
 
 configure_app() {
-    dir="$REPO_ROOT/$1"
+    dir="$APPS_ROOT/$1"
     config_file="$2"
 
     if [ -n "$config_file" ] && [ -f "$dir/config/$config_file.default" ] && [ ! -f "$dir/config/$config_file" ]; then
@@ -53,7 +58,7 @@ install_default_config() {
 }
 
 start_app() {
-    app_dir="$REPO_ROOT/$1"
+    app_dir="$APPS_ROOT/$1"
     if ! docker compose -f "$app_dir/docker-compose.yml" ps 2>/dev/null | grep -q 'Up'; then
         echo "Starting $1..."
         docker compose -f "$app_dir/docker-compose.yml" up -d
@@ -67,7 +72,7 @@ start_app() {
 # services in that file untouched.
 # Usage: start_app_service <app_dir> <service_name>
 start_app_service() {
-    app_dir="$REPO_ROOT/$1"
+    app_dir="$APPS_ROOT/$1"
     service="$2"
     if ! docker compose -f "$app_dir/docker-compose.yml" ps "$service" 2>/dev/null | grep -q 'Up'; then
         echo "Starting $1/$service..."
