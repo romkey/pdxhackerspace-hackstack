@@ -1,0 +1,22 @@
+services:
+  geowiki:
+    image: ghcr.io/romkey/pdxhackerspace-geowiki:${IMAGE_VERSION:-latest}
+    container_name: geowiki
+    hostname: geowiki
+    restart: unless-stopped
+    volumes:
+      - ../../lib/geowiki:/app/storage
+      - ../../log/geowiki:/app/log
+    env_file:
+      - .env
+    networks:
+      - db
+      - proxy
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  db:
+    external: true
+    name: postgres-net
