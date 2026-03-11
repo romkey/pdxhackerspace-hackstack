@@ -1,0 +1,29 @@
+{
+	servers {
+		trusted_proxies static 172.18.0.17 # The IP nc showed as the source
+	}
+}
+
+http://ctrlh:8888, :8888 {
+	request_header X-Forwarded-For "192.168.0.0"
+	request_header X-Real-IP "192.168.0.0"
+
+	reverse_proxy home-assistant:8123 {
+# for debugging - to see headers run:  nc -v -l -p 8089
+#	reverse_proxy 192.168.13.2:8089 {
+		# Force removal of existing headers
+		# (don't actually do this, this removes the headers we add as well)
+		#        header_up -X-Forwarded-For
+		#        header_up -X-Real-IP
+
+		# 2. Use the '+' prefix to FORCE add these headers
+		header_up X-Forwarded-For "192.168.0.0"
+		header_up X-Real-IP "192.168.0.0"
+
+
+		# 3. Add a canary header to prove Caddy is reading this block
+		header_up +X-Spoof-Active "True"
+
+		header_up X-Forwarded-Proto {scheme}
+	}
+}

@@ -1,0 +1,28 @@
+services:
+  caddy-home-assistant-liar:
+    image: caddy:${IMAGE_VERSION:-latest}
+    container_name: caddy-home-assistant-liar
+    hostname: caddy-home-assistant-liar
+    restart: unless-stopped
+#    ports:
+#      - 80:80
+    volumes:
+      - ./config:/etc/caddy
+      - ../../lib/caddy-home-assistant-liar/data:/data
+      - ../../lib/caddy-home-assistant-liar/config:/config
+    env_file:
+      - .env
+    networks:
+      - proxy
+      - hass
+      - caddy
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  hass:
+    external: true
+    name: hass-net
+  caddy:
+    name: caddy-home-assistant-liar-net
