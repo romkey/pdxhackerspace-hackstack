@@ -54,7 +54,7 @@ sudo tee /etc/docker/daemon.json > /dev/null <<EOF
   "data-root": "${DOCKER_DATA_ROOT}",
 
   "default-address-pools": [
-    { "base": "172.17.0.0/16", "size": 24 }
+    { "base": "172.17.0.0/12", "size": 24 }
   ],
 
   "log-driver": "journald",
@@ -65,6 +65,19 @@ sudo tee /etc/docker/daemon.json > /dev/null <<EOF
 EOF
 
 echo "Docker daemon configured (data-root: $DOCKER_DATA_ROOT)."
+
+# ── Kernel: enable memory overcommit (required for Redis) ────────────────────
+echo "Configuring vm.overcommit_memory for Redis..."
+
+sudo tee /etc/sysctl.d/60-redis.conf > /dev/null <<'EOF'
+# Allow memory overcommit so Redis background saves and replication don't fail
+# under low-memory conditions. Required by Redis (and jemalloc).
+# See: https://github.com/jemalloc/jemalloc/issues/1328
+vm.overcommit_memory = 1
+EOF
+
+sudo sysctl -q -p /etc/sysctl.d/60-redis.conf
+echo "vm.overcommit_memory=1 applied."
 
 # ── journald: volatile (in-memory) storage capped at 256 MB ──────────────────
 echo "Configuring journald for in-memory Docker logging..."
