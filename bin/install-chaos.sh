@@ -34,6 +34,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 #   peanut                needs: proxy
 #
 # Tier 2 - needs proxy + db, mariadb, mqtt, llama, or mail
+#   event-manager         needs: proxy, db, mail
 #   invidious             needs: proxy, db
 #   member-manager        needs: proxy, db, mail
 #   partdb                needs: proxy, db
@@ -76,6 +77,7 @@ dozzle
 glances
 cyberchef
 peanut
+event-manager
 invidious
 member-manager
 partdb

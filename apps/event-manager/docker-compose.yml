@@ -1,0 +1,78 @@
+services:
+  web:
+    image: ghcr.io/romkey/pdxhackerspace-eventmanager:${IMAGE_VERSION:-latest}
+    container_name: event-manager
+    hostname: event-manager
+    restart: unless-stopped
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec puma -C config/puma.rb"
+    env_file:
+      - .env
+    networks:
+      - db
+      - proxy
+      - redis
+      - mail
+    volumes:
+      - ../../lib/event-manager/storage:/app/storage
+      - ../../log/event-manager:/app/log
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/health/liveness || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  redis:
+    image: redis:${REDIS_IMAGE_VERSION:-7-alpine}
+    container_name: event-manager-redis
+    hostname: event-manager-redis
+    restart: unless-stopped
+    volumes:
+      - ../../lib/event-manager/redis:/data
+    networks:
+      - redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  sidekiq:
+    image: ghcr.io/romkey/pdxhackerspace-eventmanager:${IMAGE_VERSION:-latest}
+    container_name: event-manager-sidekiq
+    hostname: event-manager-sidekiq
+    restart: unless-stopped
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    env_file:
+      - .env
+    networks:
+      - db
+      - redis
+      - mail
+    volumes:
+      - ../../log/event-manager:/app/log
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bundle exec rails runner 'exit(Sidekiq::ProcessSet.new.size > 0 ? 0 : 1)' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  redis:
+    name: event-manager-redis-net
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  db:
+    external: true
+    name: postgres-net
+  mail:
+    external: true
+    name: postfix-net
