@@ -2,6 +2,7 @@
 #
 # install-chaos.sh
 # Configures and starts all core and chaos-host services in dependency order.
+# Also installs and enables CUPS for local printing.
 #
 # All networks used by services in this script are created by services within
 # this script. No external prerequisites required.
@@ -19,7 +20,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 #   ollama                creates: llama-net
 #   mdns-repeater         creates: mdns-net (and ipvlan_net)
 #   cloudflare-ddns       no networks
-#   postfix               no networks
+#   postfix               creates: postfix-net
 #   rsyslog               no networks
 #   snapserver            host network mode
 #
@@ -32,8 +33,9 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 #   cyberchef             needs: proxy
 #   peanut                needs: proxy
 #
-# Tier 2 - needs proxy + db, mariadb, mqtt, or llama
+# Tier 2 - needs proxy + db, mariadb, mqtt, llama, or mail
 #   invidious             needs: proxy, db
+#   member-manager        needs: proxy, db, mail
 #   partdb                needs: proxy, db
 #   planka                needs: proxy, db
 #   statping              needs: proxy, db
@@ -75,6 +77,7 @@ glances
 cyberchef
 peanut
 invidious
+member-manager
 partdb
 planka
 statping
@@ -91,6 +94,12 @@ jellyfin
 mopidy
 db-backup
 "
+
+echo "==> Installing system packages..."
+sudo apt-get install -y cups
+sudo systemctl enable --now cups
+echo "CUPS installed and enabled."
+echo ""
 
 echo "==> Configuring all apps..."
 for app in $CHAOS_APPS; do

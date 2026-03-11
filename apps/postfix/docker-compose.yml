@@ -20,9 +20,15 @@ services:
     ports:
       - 25:25
       - 587:587
+    networks:
+      - mail
 
   mailq:
     <<: *base
     container_name: mailq
     restart: "no"
     command: mailq
+
+networks:
+  mail:
+    name: postfix-net

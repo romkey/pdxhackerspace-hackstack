@@ -1,0 +1,83 @@
+services:
+  redis:
+    image: redis:${REDIS_IMAGE_VERSION:-7-alpine}
+    container_name: member-manager-redis
+    hostname: member-manager-redis
+    restart: unless-stopped
+    volumes:
+      - ../../lib/member-manager/redis:/data
+    networks:
+      - redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    image: ghcr.io/romkey/pdxhackerspace-member-manager:${IMAGE_VERSION:-latest}
+    container_name: member-manager
+    hostname: member-manager
+    command: ./bin/rails server -b 0.0.0.0 -p 3000
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - db
+      - proxy
+      - redis
+      - mail
+    volumes:
+      - ../../log/rsyslog/access:/tmp/access:ro
+      - ../../lib/member-manager/storage:/rails/storage:rw
+      - ../../lib/member-manager/access-backups:/access-backups:rw
+      - ./scripts:/opt/access:rw
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/health/liveness || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  sidekiq:
+    image: ghcr.io/romkey/pdxhackerspace-member-manager:${IMAGE_VERSION:-latest}
+    container_name: member-manager-sidekiq
+    hostname: member-manager-sidekiq
+    command: bundle exec sidekiq
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - db
+      - redis
+      - mail
+    volumes:
+      - ../../log/rsyslog/access:/tmp/access:ro
+      - ../../lib/member-manager/storage:/rails/storage:rw
+      - ../../lib/member-manager/access-backups:/access-backups:rw
+      - ./scripts:/opt/access:rw
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bundle exec rails runner 'exit(Sidekiq::ProcessSet.new.size > 0 ? 0 : 1)' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  redis:
+    name: member-manager-redis-net
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  db:
+    external: true
+    name: postgres-net
+  mail:
+    external: true
+    name: postfix-net
