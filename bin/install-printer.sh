@@ -41,7 +41,6 @@ sudo apt-get install -y \
     cups \
     libcupsimage2t64 \
     cups-filters \
-    cups-pdf \
     ghostscript \
     poppler-utils \
     qpdf \
