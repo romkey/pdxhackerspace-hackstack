@@ -7,9 +7,9 @@
 #   PRINTER_HOST  - network hostname or IP address of the Rongta RP326 device
 #   PRINTER_NAME  - CUPS queue name for the printer (e.g. s2-receipt)
 #   Rongta driver - must be installed before running this script;
-#                   it provides /usr/share/ppd/rongta/Printer80.ppd
+#                   it provides /usr/share/cups/model/rongta/Printer80.ppd
 
-PPD=/usr/share/ppd/rongta/Printer80.ppd
+PPD=/usr/share/cups/model/rongta/Printer80.ppd
 
 # ── Check prerequisites ────────────────────────────────────────────────────────
 err=0
