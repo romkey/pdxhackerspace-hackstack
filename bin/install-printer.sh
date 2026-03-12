@@ -107,6 +107,6 @@ sudo lpoptions -d "$PRINTER_NAME"
 
 echo "Printer '$PRINTER_NAME' installed and set as default."
 echo ""
-echo "Test with:  echo 'Test print' | lpr -P $PRINTER_NAME"
+echo "Test with:  echo 'Test print' | lp"
 echo "Status:     lpstat -p $PRINTER_NAME"
 echo "CUPS UI:    http://$(hostname -I | awk '{print $1}'):631"
