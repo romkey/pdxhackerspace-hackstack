@@ -39,7 +39,7 @@ fi
 echo "==> Installing CUPS and print filter packages..."
 sudo apt-get install -y \
     cups \
-    libcupsimage2 \
+    libcupsimage2t64 \
     cups-filters \
     cups-pdf \
     ghostscript \
