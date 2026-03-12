@@ -1,0 +1,84 @@
+services:
+  sentry-redis:
+    image: redis:${REDIS_IMAGE_VERSION:-alpine}
+    container_name: sentry-redis
+    hostname: sentry-redis
+    restart: unless-stopped
+    command: "redis-server --requirepass ${SENTRY_REDIS_PASSWORD}"
+    volumes:
+      - ../../lib/sentry/redis:/data
+    env_file:
+      - .env
+    networks:
+      - redis
+
+  sentry:
+    image: getsentry/sentry:${IMAGE_VERSION:-latest}
+    container_name: sentry
+    hostname: sentry
+    restart: unless-stopped
+    command: run web
+    networks:
+      - proxy
+      - db
+      - redis
+    volumes:
+      - ../../lib/sentry:/var/lib/sentry/files
+#    ports:
+#      - 9000:9000
+    env_file:
+      - .env
+    depends_on:
+      - sentry-redis
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:9000/_health/').read()\"",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  sentry-worker:
+    image: getsentry/sentry:${IMAGE_VERSION:-latest}
+    container_name: sentry-worker
+    hostname: sentry-worker
+    restart: unless-stopped
+    command: run worker
+    networks:
+      - db
+      - redis
+    volumes:
+      - ../../lib/sentry:/var/lib/sentry/files
+    env_file:
+      - .env
+    depends_on:
+      - sentry-redis
+
+  sentry-cron:
+    image: getsentry/sentry:${IMAGE_VERSION:-latest}
+    container_name: sentry-cron
+    hostname: sentry-cron
+    restart: unless-stopped
+    command: run cron
+    networks:
+      - db
+      - redis
+    volumes:
+      - ../../lib/sentry:/var/lib/sentry/files
+    env_file:
+      - .env
+    depends_on:
+      - sentry-redis
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  db:
+    external: true
+    name: postgres-net
+  redis:
+    name: sentry-redis-net
