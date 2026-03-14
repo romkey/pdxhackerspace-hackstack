@@ -20,9 +20,9 @@ listeners:
 database:
   name: psycopg2
   args:
-    user: synapse
+    user: matrix_user
     password: "CHANGEME"
-    database: synapse
+    database: matrix_db
     host: postgresql
     port: 5432
     cp_min: 5

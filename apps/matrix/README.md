@@ -25,17 +25,19 @@ reference web client — a full-featured Slack/Teams alternative.
 
 ### 1. Create the database
 
-Connect to the shared PostgreSQL instance and create the Synapse database.
-Synapse requires `LC_COLLATE` and `LC_CTYPE` to be `C`:
+Connect to the shared PostgreSQL instance and create the Matrix database.
+Synapse requires `LC_COLLATE` and `LC_CTYPE` to be `C`.  Note: these
+settings cannot be changed after the database is created; if you need to
+fix them later you must dump, drop, recreate, and restore.
 
 ```sql
-CREATE USER synapse WITH PASSWORD 'your-password';
-CREATE DATABASE synapse
+CREATE USER matrix_user WITH PASSWORD 'your-password';
+CREATE DATABASE matrix_db
   ENCODING 'UTF8'
   LC_COLLATE='C'
   LC_CTYPE='C'
   TEMPLATE template0
-  OWNER synapse;
+  OWNER matrix_user;
 ```
 
 ### 2. Configure environment
