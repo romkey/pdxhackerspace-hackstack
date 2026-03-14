@@ -1,0 +1,50 @@
+services:
+  synapse:
+    image: matrixdotorg/synapse:${SYNAPSE_IMAGE_VERSION:-latest}
+    container_name: synapse
+    hostname: synapse
+    restart: unless-stopped
+    volumes:
+      - ../../lib/matrix/synapse:/data
+    env_file:
+      - .env
+    networks:
+      - db
+      - proxy
+      - matrix
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://localhost:8008/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  element-web:
+    image: vectorim/element-web:${ELEMENT_IMAGE_VERSION:-latest}
+    container_name: element-web
+    hostname: element-web
+    restart: unless-stopped
+    volumes:
+      - ./config/element-config.json:/app/config.json:ro
+    networks:
+      - proxy
+      - matrix
+    depends_on:
+      synapse:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  db:
+    external: true
+    name: postgres-net
+  matrix:
+    name: matrix-net
