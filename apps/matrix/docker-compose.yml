@@ -5,7 +5,10 @@ services:
     hostname: synapse
     restart: unless-stopped
     volumes:
-      - ../../lib/matrix/synapse:/data
+      - ./config/homeserver.yaml:/data/homeserver.yaml:ro
+      - ../../lib/matrix/synapse/media:/data/media_store
+      - ../../lib/matrix/synapse/keys:/data/keys
+      - ../../lib/matrix/synapse/logs:/data/logs
     env_file:
       - .env
     networks:

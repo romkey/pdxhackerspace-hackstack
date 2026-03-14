@@ -54,7 +54,26 @@ Edit `.env` and fill in at minimum:
   ```
 - `SYNAPSE_MACAROON_SECRET_KEY` — generate with the same command
 
-### 3. Configure Element Web
+### 3. Configure Synapse
+
+```sh
+cp config/homeserver.yaml.default config/homeserver.yaml
+```
+
+Edit `config/homeserver.yaml` and replace every `CHANGEME` value:
+
+- `server_name` — your public Matrix domain (e.g. `matrix.example.com`)
+- `database.args.password` — the PostgreSQL password you set above
+- `registration_shared_secret` — a long random hex string
+- `macaroon_secret_key` — a second long random hex string
+
+Generate secrets with:
+
+```sh
+python3 -c "import secrets; print(secrets.token_hex(32))"
+```
+
+### 4. Configure Element Web
 
 ```sh
 cp config/element-config.json.default config/element-config.json
@@ -62,35 +81,6 @@ cp config/element-config.json.default config/element-config.json
 
 Edit `config/element-config.json` and replace both occurrences of
 `matrix.example.com` with your actual homeserver domain.
-
-### 4. Generate the Synapse config
-
-Synapse requires a `homeserver.yaml` to be generated before first start.
-The container will do this automatically on first run if the data directory is empty,
-but you can also generate it explicitly:
-
-```sh
-docker run --rm \
-  -v "$(pwd)/../../lib/matrix/synapse:/data" \
-  -e SYNAPSE_SERVER_NAME=matrix.example.com \
-  -e SYNAPSE_REPORT_STATS=no \
-  matrixdotorg/synapse:latest generate
-```
-
-Then edit `../../lib/matrix/synapse/homeserver.yaml` and update the `database:`
-section to point at PostgreSQL instead of SQLite:
-
-```yaml
-database:
-  name: psycopg2
-  args:
-    user: synapse
-    password: your-password
-    database: synapse
-    host: postgresql
-    cp_min: 5
-    cp_max: 10
-```
 
 ### 5. Start
 
