@@ -10,6 +10,7 @@ pid_file: /data/homeserver.pid
 
 listeners:
   - port: 8008
+    bind_addresses: ['0.0.0.0']
     tls: false
     type: http
     x_forwarded: true
