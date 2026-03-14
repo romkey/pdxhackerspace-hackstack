@@ -6,9 +6,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./config/homeserver.yaml:/data/homeserver.yaml:ro
+      - ./config/log.config:/data/log.config:ro
       - ../../lib/matrix/synapse/media:/data/media_store
       - ../../lib/matrix/synapse/keys:/data/keys
-      - ../../lib/matrix/synapse/logs:/data/logs
     env_file:
       - .env
     networks:

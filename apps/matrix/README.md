@@ -58,6 +58,7 @@ Edit `.env` and fill in at minimum:
 
 ```sh
 cp config/homeserver.yaml.default config/homeserver.yaml
+cp config/log.config.default config/log.config
 ```
 
 Edit `config/homeserver.yaml` and replace every `CHANGEME` value:
