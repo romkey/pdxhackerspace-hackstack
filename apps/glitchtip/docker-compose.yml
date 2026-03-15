@@ -13,6 +13,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   glitchtip:
     image: glitchtip/glitchtip:${IMAGE_VERSION:-latest}
@@ -21,6 +26,8 @@ services:
     restart: unless-stopped
     volumes:
       - ../../lib/glitchtip/uploads:/code/uploads
+#   ports:
+#     - 8000:8000
     env_file:
       - .env
     networks:
@@ -37,6 +44,11 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   glitchtip-worker:
     image: glitchtip/glitchtip:${IMAGE_VERSION:-latest}
@@ -55,6 +67,11 @@ services:
     depends_on:
       glitchtip-redis:
         condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   glitchtip-migrate:
     image: glitchtip/glitchtip:${IMAGE_VERSION:-latest}
@@ -70,6 +87,11 @@ services:
     depends_on:
       glitchtip-redis:
         condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   proxy:

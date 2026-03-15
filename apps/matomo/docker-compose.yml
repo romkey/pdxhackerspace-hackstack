@@ -11,6 +11,11 @@ services:
       - ../../lib/matomo:/var/www/html
     env_file:
       - .env
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
   matomo-nginx:
     image: nginx:${NGINX_IMAGE_VERSION:-alpine}
     container_name: matomo-nginx
@@ -26,6 +31,11 @@ services:
       - ./nginx/matomo.conf:/etc/nginx/conf.d/default.conf:z,ro
 #    ports:
 #      - 8080:80
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 networks:
   matomo:
     name: matomo-net

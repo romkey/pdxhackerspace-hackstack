@@ -25,6 +25,11 @@ services:
     ports:
       - 8123:8123
       - 5060:5060
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 networks:
   hass:
     driver: bridge

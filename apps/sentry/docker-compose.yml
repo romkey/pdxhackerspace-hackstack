@@ -11,6 +11,11 @@ services:
       - .env
     networks:
       - redis
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   sentry:
     image: getsentry/sentry:${IMAGE_VERSION:-latest}
@@ -19,6 +24,7 @@ services:
     restart: unless-stopped
     command: run web
     networks:
+      - sentry
       - proxy
       - db
       - redis
@@ -40,6 +46,11 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   sentry-worker:
     image: getsentry/sentry:${IMAGE_VERSION:-latest}
@@ -56,6 +67,11 @@ services:
       - .env
     depends_on:
       - sentry-redis
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   sentry-cron:
     image: getsentry/sentry:${IMAGE_VERSION:-latest}
@@ -72,8 +88,15 @@ services:
       - .env
     depends_on:
       - sentry-redis
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
+  sentry:
+    name: sentry-net
   proxy:
     external: true
     name: nginx-proxy-net

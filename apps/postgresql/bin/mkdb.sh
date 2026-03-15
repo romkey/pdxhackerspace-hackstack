@@ -73,23 +73,23 @@ fi
 
 echo "4. adding database URL for backups to .env"
 
-export BACKUP_DATABASES="BACKUP_DATABASES=postgres://${USER}:${PASSWORD}@postgresql/${DATABASE}"
+export BACKUP_DATABASE_URLS="BACKUP_DATABASE_URLS=postgres://${USER}:${PASSWORD}@postgresql/${DATABASE}"
 
 if  pwd | grep -q postgresql ; then
-    echo "You are in Postgresql's directory. You should add or replace BACKUP_DATABASES in your applications .env file"
-    echo "${BACKUP_DATABASES}"
+    echo "You are in Postgresql's directory. You should add or replace BACKUP_DATABASE_URLS in your applications .env file"
+    echo "${BACKUP_DATABASE_URLS}"
 else
-    if grep -qF BACKUP_DATABASES .env; then
-        echo ".env already has BACKUP_DATABASES variable, not updating"
+    if grep -qF BACKUP_DATABASE_URLS .env; then
+        echo ".env already has BACKUP_DATABASE_URLS variable, not updating"
         echo "You should update it by hand with the new variable"
     else
-        if echo "${BACKUP_DATABASES}" >> .env ; then
-            echo "Automatically added BACKUP_DATABASES to your .env file"
+        if echo "${BACKUP_DATABASE_URLS}" >> .env ; then
+            echo "Automatically added BACKUP_DATABASE_URLS to your .env file"
         else
-            echo "Failed to write to .env file, please add BACKUP_DATABASES by hand"
+            echo "Failed to write to .env file, please add BACKUP_DATABASE_URLS by hand"
         fi
     fi
-    echo "${BACKUP_DATABASES}"
+    echo "${BACKUP_DATABASE_URLS}"
 fi
 
 echo

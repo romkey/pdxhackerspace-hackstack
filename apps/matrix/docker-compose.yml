@@ -1,8 +1,8 @@
 services:
   synapse:
     image: matrixdotorg/synapse:${SYNAPSE_IMAGE_VERSION:-latest}
-    container_name: synapse
-    hostname: synapse
+    container_name: matrix
+    hostname: matrix
     restart: unless-stopped
     volumes:
       - ./config/homeserver.yaml:/data/homeserver.yaml:ro
@@ -21,11 +21,16 @@ services:
       timeout: 5s
       retries: 3
       start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   element-web:
     image: vectorim/element-web:${ELEMENT_IMAGE_VERSION:-latest}
-    container_name: element-web
-    hostname: element-web
+    container_name: matrix-web
+    hostname: matrix-web
     restart: unless-stopped
     volumes:
       - ./config/element-config.json:/app/config.json:ro
@@ -41,6 +46,11 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   proxy:

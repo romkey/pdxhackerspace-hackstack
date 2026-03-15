@@ -13,6 +13,11 @@ services:
       - .env
     networks:
       - hass
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 networks:
   hass:
     name: hass-net

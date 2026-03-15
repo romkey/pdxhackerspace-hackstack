@@ -15,6 +15,11 @@ services:
       - .env
     networks:
       - mqtt
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 networks:
   mqtt:
     name: mosquitto-net

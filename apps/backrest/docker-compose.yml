@@ -18,6 +18,11 @@ services:
       - proxy
 #    ports:
 #      - 9898:9898
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 networks:
   proxy:
     external: true

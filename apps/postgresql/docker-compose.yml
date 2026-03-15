@@ -13,12 +13,22 @@ services:
     shm_size: 128mb
     env_file:
       - .env
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   postgresql-ports:
     <<: *base
     container_name: postgresql-ports
     ports:
       - 5432:5432
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   db:

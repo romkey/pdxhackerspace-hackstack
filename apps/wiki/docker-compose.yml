@@ -12,6 +12,11 @@ services:
       - ../../lib/wikijs:/wiki/data
 #    ports:
 #      - "3001:3001"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   proxy:
