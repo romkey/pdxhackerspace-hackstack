@@ -31,12 +31,38 @@ To create credentials for SMTP clients that want to use the relay:
 ```
 echo PASSWORD | docker compose exec postfix saslpasswd2 -c -u ctrlh USERNAME
 ```
-Note that the account is `USERNAME@ctrlh` in this case - using a domain name is necessary becsause intermediate mail relays mail drop mail with unqualified names in it.
+Note that the account is `USERNAME@ctrlh` in this case - using a domain name is necessary because intermediate mail relays may drop mail with unqualified names in it.
 
 Each service should have its own credentials so that it can be managed independently of other services.
 
+### bin/mksmtp.sh
+
+`bin/mksmtp.sh` automates account creation.  It reads
+`POSTFIX_smtpd_sasl_local_domain` from `.env`, generates a random
+password, creates the SASL account, and prints all the parameters needed
+to configure the app:
+
+```sh
+bin/mksmtp.sh <app-name>
+```
+
+Example output:
+
+```
+================================================================
+SMTP credentials for: glitchtip
+================================================================
+  Host:     postfix
+  Port:     587
+  Username: glitchtip@mail-relay.example.com
+  Password: <generated>
+  URL:      smtp://glitchtip%40mail-relay.example.com:<generated>@postfix:587
+================================================================
+```
+
+Requires `pwgen` (`apt install pwgen`) and the postfix container to be running.
 
 To test credentials:
 ```
-docker compose exec testsaslauthd -u USERNAME@DOMAIN -p PASSWORD
+docker compose exec postfix testsaslauthd -u USERNAME@DOMAIN -p PASSWORD
 ```
