@@ -1,0 +1,85 @@
+services:
+  glitchtip-redis:
+    image: redis:${REDIS_IMAGE_VERSION:-7-alpine}
+    container_name: glitchtip-redis
+    hostname: glitchtip-redis
+    restart: unless-stopped
+    volumes:
+      - ../../lib/glitchtip/redis:/data
+    networks:
+      - redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  glitchtip:
+    image: glitchtip/glitchtip:${IMAGE_VERSION:-latest}
+    container_name: glitchtip
+    hostname: glitchtip
+    restart: unless-stopped
+    volumes:
+      - ../../lib/glitchtip/uploads:/code/uploads
+    env_file:
+      - .env
+    networks:
+      - db
+      - proxy
+      - redis
+      - mail
+    depends_on:
+      glitchtip-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://localhost:8000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  glitchtip-worker:
+    image: glitchtip/glitchtip:${IMAGE_VERSION:-latest}
+    container_name: glitchtip-worker
+    hostname: glitchtip-worker
+    restart: unless-stopped
+    command: ./bin/run-celery-with-beat.sh
+    volumes:
+      - ../../lib/glitchtip/uploads:/code/uploads
+    env_file:
+      - .env
+    networks:
+      - db
+      - redis
+      - mail
+    depends_on:
+      glitchtip-redis:
+        condition: service_healthy
+
+  glitchtip-migrate:
+    image: glitchtip/glitchtip:${IMAGE_VERSION:-latest}
+    container_name: glitchtip-migrate
+    hostname: glitchtip-migrate
+    restart: "no"
+    command: ./manage.py migrate
+    env_file:
+      - .env
+    networks:
+      - db
+      - redis
+    depends_on:
+      glitchtip-redis:
+        condition: service_healthy
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  db:
+    external: true
+    name: postgres-net
+  mail:
+    external: true
+    name: postfix-net
+  redis:
+    name: glitchtip-redis-net
