@@ -59,7 +59,9 @@ sudo tee /etc/docker/daemon.json > /dev/null <<EOF
 
   "log-driver": "journald",
   "log-opts": {
-    "tag": "docker/{{.Name}}"
+    "tag": "docker/{{.Name}}",
+    "max-size": "10m",
+    "max-file": "3"
   }
 }
 EOF
