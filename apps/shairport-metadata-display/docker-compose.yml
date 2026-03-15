@@ -9,8 +9,3 @@ services:
       - .env
     volumes:
       - ../../run/shairport-sync/fifos:/tmp/shairport-sync-metadata
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"

@@ -7,8 +7,3 @@ services:
     command: /bin/bash
     volumes:
       - /opt/docker:/opt/docker
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"

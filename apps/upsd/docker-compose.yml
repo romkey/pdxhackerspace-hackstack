@@ -13,8 +13,3 @@ services:
       - 3493:3493
     env_file:
       - .env
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"

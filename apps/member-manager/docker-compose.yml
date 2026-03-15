@@ -13,11 +13,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   web:
     image: ghcr.io/romkey/pdxhackerspace-member-manager:${IMAGE_VERSION:-latest}
@@ -46,11 +41,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   sidekiq:
     image: ghcr.io/romkey/pdxhackerspace-member-manager:${IMAGE_VERSION:-latest}
@@ -78,11 +68,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
 networks:
   redis:

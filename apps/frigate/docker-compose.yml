@@ -27,11 +27,6 @@ services:
 #      - 8555:10555/udp # WebRTC over udp
     env_file:
       - .env
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 networks:
   frigate:
     name: frigate-net

@@ -21,11 +21,6 @@ services:
       timeout: 5s
       retries: 3
       start_period: 30s
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   element-web:
     image: vectorim/element-web:${ELEMENT_IMAGE_VERSION:-latest}
@@ -46,11 +41,6 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
 networks:
   proxy:

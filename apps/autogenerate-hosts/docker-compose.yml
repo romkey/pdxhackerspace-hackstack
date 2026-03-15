@@ -9,8 +9,3 @@ services:
       - "${HOSTSFILE_PATH}:/dest"
     env_file:
       - .env
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"

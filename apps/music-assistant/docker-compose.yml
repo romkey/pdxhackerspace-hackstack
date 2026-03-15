@@ -22,11 +22,6 @@ services:
     ports:
       - 8095:8095
       - 8096:8096
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
 networks:
   proxy:

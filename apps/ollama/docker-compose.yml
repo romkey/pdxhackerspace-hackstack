@@ -18,11 +18,6 @@ services:
             - driver: nvidia
               count: "${GPU_COUNT}"
               capabilities: [gpu]
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 networks:
   llama:
     name: llama-net

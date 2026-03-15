@@ -15,11 +15,6 @@ services:
 #      - 6052:6052
     env_file:
       - .env
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 networks:
   proxy:
     external: true

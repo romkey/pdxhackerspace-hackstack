@@ -10,11 +10,6 @@ services:
       - ./services:/etc/avahi/services
     networks:
       - mdns
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 networks:
   mdns:
     name: mdns-net

@@ -15,11 +15,6 @@ services:
       - ../../lib/authentik/redis:/data
     networks:
       - redis
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   server:
     image: ghcr.io/goauthentik/server:${IMAGE_VERSION:-2025.8.3}
@@ -43,11 +38,6 @@ services:
       - proxy
       - redis
       - db
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   worker:
     image: ghcr.io/goauthentik/server:${IMAGE_VERSION:-2025.8.3}
@@ -76,11 +66,6 @@ services:
     networks:
       - redis
       - db
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
 networks:
   proxy:

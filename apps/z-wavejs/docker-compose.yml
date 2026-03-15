@@ -14,11 +14,6 @@ services:
 #    ports:
 #      - 8091:8091
 #      - 3000:3000
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 networks:
   hass:
     name: hass-net

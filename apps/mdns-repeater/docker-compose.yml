@@ -9,11 +9,6 @@ services:
       - mdns
     env_file:
       - .env
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 networks:
   ipvlan_net:
     driver: ipvlan

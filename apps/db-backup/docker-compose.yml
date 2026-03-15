@@ -12,11 +12,6 @@ services:
     networks:
       - db
       - mariadb
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
 networks:
   db:

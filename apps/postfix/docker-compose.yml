@@ -11,11 +11,6 @@ services:
 #      - ../../lib/postfix/sasl:/etc/sasl2
     env_file:
       - .env
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   postfix:
     <<: *base
@@ -27,22 +22,12 @@ services:
       - 587:587
     networks:
       - mail
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   mailq:
     <<: *base
     container_name: mailq
     restart: "no"
     command: mailq
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
 networks:
   mail:

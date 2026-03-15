@@ -12,11 +12,6 @@ services:
       - proxy
     env_file:
       - .env
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   agent:
     image: amir20/dozzle:${IMAGE_VERSION:-latest}
@@ -34,11 +29,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
       - 7007:7007
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 
 networks:
   proxy:

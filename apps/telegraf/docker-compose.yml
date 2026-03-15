@@ -14,11 +14,6 @@ services:
       - influxdb
       - db
       - mariadb
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
 networks:
   influxdb:
     name: influxdb-net

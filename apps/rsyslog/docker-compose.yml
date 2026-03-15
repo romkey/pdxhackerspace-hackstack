@@ -14,8 +14,3 @@ services:
       - .env
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
