@@ -54,7 +54,7 @@ services:
       - db
       - redis
       - mail
-      - lan
+      - worker
     depends_on:
       glitchtip-redis:
         condition: service_healthy
@@ -86,11 +86,6 @@ networks:
     name: postfix-net
   redis:
     name: glitchtip-redis-net
-  lan:
-    driver: ipvlan
-    driver_opts:
-      parent: "${NETWORK_INTERFACE}"
-#   ipam:
-#     config:
-#       - subnet: 192.168.1.0/24
-#         gateway: 192.168.1.1
+  worker:
+    driver: bridge
+    name: glitchtip-worker-net
