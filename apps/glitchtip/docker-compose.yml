@@ -52,6 +52,7 @@ services:
       - .env
     networks:
       - db
+      - proxy
       - redis
       - mail
     depends_on:
