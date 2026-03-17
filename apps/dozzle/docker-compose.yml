@@ -12,23 +12,12 @@ services:
       - proxy
     env_file:
       - .env
-
-  agent:
-    image: amir20/dozzle:${IMAGE_VERSION:-latest}
-    container_name: dozzle-agent
-    hostname: dozzle-agent
-    restart: unless-stopped
-    command: agent
     healthcheck:
       test: ["CMD", "/dozzle", "healthcheck"]
-      interval: 5s
+      interval: 3s
+      timeout: 30s
       retries: 5
-      start_period: 5s
-      start_interval: 5s
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    ports:
-      - 7007:7007
+      start_period: 30s
 
 networks:
   proxy:
