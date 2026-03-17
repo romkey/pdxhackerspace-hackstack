@@ -1,8 +1,0 @@
-services:
-  camera2prusa:
-    image: jtee3d/prusa_connect_rtsp:${IMAGE_VERSION:-latest}
-    container_name: camera2prusa
-    hostname: camera2prusa
-    restart: unless-stopped
-    env_file:
-      - .env
