@@ -26,12 +26,6 @@ services:
         ]
       timeout: 30s
 
-  mariadb-ports:
-    <<: *base
-    container_name: mariadb-ports
-    ports:
-      - 3306:3306
-
 networks:
   mariadb:
     name: mariadb-net

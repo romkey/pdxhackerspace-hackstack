@@ -14,12 +14,6 @@ services:
     env_file:
       - .env
 
-  postgresql-ports:
-    <<: *base
-    container_name: postgresql-ports
-    ports:
-      - 5432:5432
-
 networks:
   db:
     name: postgres-net
