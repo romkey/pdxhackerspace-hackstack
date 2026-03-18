@@ -1,0 +1,32 @@
+services:
+  cups:
+    image: lscr.io/linuxserver/cups:${IMAGE_VERSION:-latest}
+    container_name: cups
+    hostname: cups
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-America/Los_Angeles}
+    volumes:
+      - ../../lib/cups:/config
+      - ./config/cupsd.conf:/etc/cups/cupsd.conf:ro
+      - ./ppds:/usr/share/cups/model/custom:ro
+#   ports:
+#     - 631:631
+    networks:
+      - cups
+      - proxy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://localhost:631/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+networks:
+  cups:
+    name: cups-net
+  proxy:
+    external: true
+    name: nginx-proxy-net
