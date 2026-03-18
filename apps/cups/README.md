@@ -28,7 +28,8 @@ which ships with a comprehensive set of print filters and supporting programs:
 
 | Mount | Purpose |
 |---|---|
-| `../../lib/cups` → `/config` | All CUPS state: config, spool, logs, per-queue PPDs |
+| `../../lib/cups` → `/config` | All CUPS state: spool, logs, per-queue PPDs |
+| `./config/cupsd.conf` → `/etc/cups/cupsd.conf` (read-only) | Scheduler config; pre-configured to accept connections from `@LOCAL` (all Docker networks and LAN hosts) |
 | `./ppds` → `/usr/share/cups/model/custom` (read-only) | Custom PPD files; any PPD placed here appears as an available driver in the CUPS add-printer wizard |
 
 ## Adding custom PPDs
@@ -49,6 +50,10 @@ cp /path/to/Printer80.ppd apps/cups/ppds/
 ```sh
 cp .env.example .env
 # Edit .env if you need non-default PUID/PGID or TZ
+
+cp config/cupsd.conf.default config/cupsd.conf
+# Edit config/cupsd.conf if you need to restrict or expand access
+
 docker compose up -d
 ```
 

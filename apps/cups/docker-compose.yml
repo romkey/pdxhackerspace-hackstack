@@ -10,6 +10,7 @@ services:
       TZ: ${TZ:-America/Los_Angeles}
     volumes:
       - ../../lib/cups:/config
+      - ./config/cupsd.conf:/etc/cups/cupsd.conf:ro
       - ./ppds:/usr/share/cups/model/custom:ro
 #   ports:
 #     - 631:631
