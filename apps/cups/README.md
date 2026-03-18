@@ -1,21 +1,24 @@
 # cups
 
-Containerised CUPS print server using the
-[LinuxServer CUPS image](https://docs.linuxserver.io/images/docker-cups/),
-which ships with a comprehensive set of print filters and supporting programs:
+Containerised CUPS print server built from a Debian Bookworm base with a
+comprehensive set of print filters and drivers installed:
 
 | Package | Purpose |
 |---|---|
-| `cups` | Core print server and IPP listener |
-| `cups-filters` | PDF, PostScript, raster, and text filter chain |
+| `cups` + `cups-client` | Core print server and IPP listener |
+| `cups-filters` + `cups-browsed` | PDF, PostScript, raster, and text filter chain |
 | `ghostscript` | PS/PDF rendering |
 | `poppler-utils` | PDF inspection and conversion |
 | `qpdf` | PDF linearisation and repair |
 | `imagemagick` | Image format conversion (PNG, JPEG, TIFF, …) |
-| `foomatic-db` + `foomatic-db-engine` | Generic printer driver database |
-| `printer-driver-gutenprint` | High-quality open-source raster drivers |
-| `hplip` | HP printer drivers |
 | `libcupsimage2t64` | CUPS raster image library |
+| `foomatic-db` + `foomatic-db-engine` + `foomatic-db-compressed-ppds` | Generic printer driver database |
+| `printer-driver-gutenprint` | High-quality open-source raster drivers (Epson, Canon, etc.) |
+| `hplip` | HP printer drivers |
+| `printer-driver-foo2zjs` | Brother / generic PCL drivers |
+| `printer-driver-dymo` | Dymo label printers |
+| `printer-driver-splix` | Samsung / Xerox SPL-II raster |
+| `printer-driver-pxljr` | PostScript-capable PCL drivers |
 
 ## Networks
 
@@ -48,13 +51,10 @@ cp /path/to/Printer80.ppd apps/cups/ppds/
 ## First-time setup
 
 ```sh
-cp .env.example .env
-# Edit .env if you need non-default PUID/PGID or TZ
-
 cp config/cupsd.conf.default config/cupsd.conf
 # Edit config/cupsd.conf if you need to restrict or expand access
 
-docker compose up -d
+docker compose up -d --build
 ```
 
 The CUPS web UI is available at `http://cups:631` from other containers on
