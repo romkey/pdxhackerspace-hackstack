@@ -1,24 +1,21 @@
 # cups
 
-Containerised CUPS print server built from a Debian Bookworm base with a
-comprehensive set of print filters and drivers installed:
+Containerised CUPS print server using [`olbat/cupsd`](https://hub.docker.com/r/olbat/cupsd)
+— 1M+ pulls, updated weekly, Debian-based, amd64 + arm64.
+
+Included packages (from Debian):
 
 | Package | Purpose |
 |---|---|
-| `cups` + `cups-client` | Core print server and IPP listener |
-| `cups-filters` + `cups-browsed` | PDF, PostScript, raster, and text filter chain |
-| `ghostscript` | PS/PDF rendering |
-| `poppler-utils` | PDF inspection and conversion |
-| `qpdf` | PDF linearisation and repair |
-| `imagemagick` | Image format conversion (PNG, JPEG, TIFF, …) |
-| `libcupsimage2t64` | CUPS raster image library |
-| `foomatic-db` + `foomatic-db-engine` + `foomatic-db-compressed-ppds` | Generic printer driver database |
-| `printer-driver-gutenprint` | High-quality open-source raster drivers (Epson, Canon, etc.) |
-| `hplip` | HP printer drivers |
-| `printer-driver-foo2zjs` | Brother / generic PCL drivers |
-| `printer-driver-dymo` | Dymo label printers |
-| `printer-driver-splix` | Samsung / Xerox SPL-II raster |
-| `printer-driver-pxljr` | PostScript-capable PCL drivers |
+| `cups` + `cups-client` + `cups-filters` | Core print server, IPP, full filter pipeline |
+| `printer-driver-all` | Debian meta-package: gutenprint, splix, foo2zjs, dymo, and dozens more |
+| `openprinting-ppds` | OpenPrinting PPD collection |
+| `hpijs-ppds` + `hp-ppd` | HP printer PPDs |
+| `foomatic-db` | Generic printer driver database |
+| `printer-driver-cups-pdf` | Virtual PDF printer |
+| `smbclient` | Windows/SMB shared printer support |
+
+Default admin credentials: **`print` / `print`**
 
 ## Networks
 
@@ -54,7 +51,7 @@ cp /path/to/Printer80.ppd apps/cups/ppds/
 cp config/cupsd.conf.default config/cupsd.conf
 # Edit config/cupsd.conf if you need to restrict or expand access
 
-docker compose up -d --build
+docker compose up -d
 ```
 
 The CUPS web UI is available at `http://cups:631` from other containers on

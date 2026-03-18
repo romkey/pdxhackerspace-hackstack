@@ -1,12 +1,12 @@
 services:
   cups:
-    build: .
-    image: cups:${IMAGE_VERSION:-latest}
+    image: olbat/cupsd:${IMAGE_VERSION:-latest}
     container_name: cups
     hostname: cups
     restart: unless-stopped
     volumes:
-      - ../../lib/cups:/config
+      - /var/run/dbus:/var/run/dbus
+      - ../../lib/cups:/var/lib/cups
       - ./config/cupsd.conf:/etc/cups/cupsd.conf:ro
       - ./ppds:/usr/share/cups/model/custom:ro
 #   ports:
