@@ -1,13 +1,10 @@
 services:
   cups:
-    image: lscr.io/linuxserver/cups:${IMAGE_VERSION:-latest}
+    build: .
+    image: cups:${IMAGE_VERSION:-latest}
     container_name: cups
     hostname: cups
     restart: unless-stopped
-    environment:
-      PUID: ${PUID:-1000}
-      PGID: ${PGID:-1000}
-      TZ: ${TZ:-America/Los_Angeles}
     volumes:
       - ../../lib/cups:/config
       - ./config/cupsd.conf:/etc/cups/cupsd.conf:ro
