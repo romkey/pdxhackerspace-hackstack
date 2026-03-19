@@ -1,4 +1,4 @@
 data/configuration.yaml
-data/state.json
-data/database.db
+config/state.json
+config/database.db
 data/log/
