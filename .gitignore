@@ -11,10 +11,12 @@
 
 *~
 
-avahi-dns/services
+lib/*
+log/*
+run/*
 
-home-assistant/config/
+apps/avahi-dns/services
 
-redis/conf/
+apps/home-assistant/config/
 
-upsd/config/
+apps/upsd/config/
