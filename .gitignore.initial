@@ -14,4 +14,4 @@
 lib/*
 log/*
 run/*
-local/**
+local/

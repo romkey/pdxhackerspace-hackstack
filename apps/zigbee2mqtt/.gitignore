@@ -1,4 +1,5 @@
-data/configuration.yaml
+config/configuration.yaml
+config/coordinator_backup.json
 config/state.json
 config/database.db
-data/log/
+config/log/
