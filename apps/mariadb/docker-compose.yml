@@ -7,7 +7,6 @@ services:
     restart: unless-stopped
     networks:
       - mariadb
-      - proxy
     volumes:
       - ../../lib/mariadb:/var/lib/mysql:Z
     env_file:
@@ -29,6 +28,3 @@ services:
 networks:
   mariadb:
     name: mariadb-net
-  proxy:
-    name: nginx-proxy-net
-    external: true

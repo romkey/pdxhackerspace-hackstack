@@ -1,14 +1,13 @@
 services:
   zigbee2mqtt:
-#    image: koenkk/zigbee2mqtt:2.0.0
     image: koenkk/zigbee2mqtt:${IMAGE_VERSION:-latest}
     container_name: zigbee2mqtt
     hostname: zigbee2mqtt
     restart: unless-stopped
     devices:
-      - "${CONTROLLER_DEVICE}:/dev/ttyACM0"
+      - "${CONTROLLER_DEVICE}:/dev/ttyzig0"
     volumes:
-      - ./data:/app/data
+      - ./config:/app/data
       - /run/udev:/run/udev:ro
 #    ports:
 #      - 8080:8080
