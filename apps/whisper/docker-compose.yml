@@ -4,8 +4,9 @@ services:
     container_name: whisper
     hostname: whisper
     restart: unless-stopped
-    entrypoint: python3
-    command: -m wyoming_faster_whisper --uri tcp://0.0.0.0:10300 --model tiny-int8 --beam-size 1 --language en --data-dir /data --download-dir /data
+#    entrypoint: python3
+    command:  --model tiny-int8 --data-dir /data --download-dir /data
+#    command: -m wyoming_faster_whisper --uri tcp://0.0.0.0:10300 --model tiny-int8 --beam-size 1 --language en --data-dir /data --download-dir /data
 #    ports:
 #      - 10300:10300
     volumes:

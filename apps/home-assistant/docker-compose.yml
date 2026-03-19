@@ -14,17 +14,20 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
     networks:
-      - hass
-      - proxy
-      - mqtt
-      - db
-      - mdns
-      - llama
+      hass:
+      proxy:
+      mqtt:
+      db:
+      mdns:
+      llama:
+      caddy:
+      lan:
+        ipv4_address: ${IPV4_ADDRESS}
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    ports:
-      - 8123:8123
-      - 5060:5060
+#    ports:
+#      - 8123:8123
+#      - 5060:5060
 networks:
   hass:
     driver: bridge
@@ -44,3 +47,9 @@ networks:
   llama:
     external: true
     name: llama-net
+  lan:
+    external: true
+    name: lan_macvlan
+  caddy:
+    external: true
+    name: caddy-home-assistant-liar-net
