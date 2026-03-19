@@ -15,8 +15,67 @@ lib/*
 log/*
 run/*
 
-apps/avahi-dns/services
+avahi-dns/services
 
-apps/home-assistant/config/
+home-assistant/config/
 
-apps/upsd/config/
+upsd/config/
+
+# [apps] apps/access-control-webhook/.gitignore
+apps/access-control-webhook/config/.ssh/
+apps/access-control-webhook/config/hooks.json
+apps/access-control-webhook/config/run/automation_rsa
+
+# [apps] apps/airconnect/.gitignore
+apps/airconnect/config/*.xml
+
+# [apps] apps/autogenerate-hosts/.gitignore
+apps/autogenerate-hosts/.env
+apps/autogenerate-hosts/app/npm-hosts
+
+# [apps] apps/backrest/.gitignore
+apps/backrest/config/config.json*
+
+# [apps] apps/dnsmasq/.gitignore
+apps/dnsmasq/config/dnsmasq.conf
+apps/dnsmasq/config/hosts.d/
+
+# [apps] apps/glances/.gitignore
+apps/glances/glances.conf
+apps/glances/glances.pwd
+
+# [apps] apps/invidious/.gitignore
+apps/invidious/config/config.yml
+apps/invidious/config/sql/
+
+# [apps] apps/jellyfin/.gitignore
+apps/jellyfin/config/
+
+# [apps] apps/mopidy/.gitignore
+apps/mopidy/config/mopidy.conf
+
+# [apps] apps/mosquitto/.gitignore
+apps/mosquitto/config/mosquitto.conf
+apps/mosquitto/config/mos_passwd
+
+# [apps] apps/mqtt-explorer/.gitignore
+apps/mqtt-explorer/config/settings.json
+
+# [apps] apps/nginx-proxy-manager/.gitignore
+apps/nginx-proxy-manager/config/
+apps/nginx-proxy-manager/letsencrypt/
+
+# [apps] apps/shairport-sync/.gitignore
+apps/shairport-sync/config/shairport-sync.conf
+
+# [apps] apps/snapserver/.gitignore
+apps/snapserver/config/snapcast.conf
+
+# [apps] apps/wiki/.gitignore
+apps/wiki/config.yml
+
+# [apps] apps/zigbee2mqtt/.gitignore
+apps/zigbee2mqtt/data/configuration.yaml
+apps/zigbee2mqtt/data/state.json
+apps/zigbee2mqtt/data/database.db
+apps/zigbee2mqtt/data/log/
