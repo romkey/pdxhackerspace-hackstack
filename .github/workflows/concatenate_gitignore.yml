@@ -59,4 +59,4 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .gitignore
           git commit -m "Update top-level .gitignore with directory paths"
-          git push
+          git push origin HEAD:${GITHUB_REF_NAME}
