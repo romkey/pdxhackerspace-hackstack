@@ -31,6 +31,12 @@ apps/autogenerate-hosts/app/npm-hosts
 # [apps] apps/backrest/.gitignore
 apps/backrest/config/config.json*
 
+# [apps] apps/caddy-home-assistant-liar/.gitignore
+apps/caddy-home-assistant-liar/config/Caddyfile
+
+# [apps] apps/cups/.gitignore
+apps/cups/config/cupsd.conf
+
 # [apps] apps/dnsmasq/.gitignore
 apps/dnsmasq/config/dnsmasq.conf
 apps/dnsmasq/config/hosts.d/
