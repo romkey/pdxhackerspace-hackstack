@@ -15,12 +15,6 @@ lib/*
 log/*
 run/*
 
-avahi-dns/services
-
-home-assistant/config/
-
-upsd/config/
-
 # [apps] apps/access-control-webhook/.gitignore
 apps/access-control-webhook/config/.ssh/
 apps/access-control-webhook/config/hooks.json
@@ -76,6 +70,6 @@ apps/wiki/config.yml
 
 # [apps] apps/zigbee2mqtt/.gitignore
 apps/zigbee2mqtt/data/configuration.yaml
-apps/zigbee2mqtt/data/state.json
-apps/zigbee2mqtt/data/database.db
+apps/zigbee2mqtt/config/state.json
+apps/zigbee2mqtt/config/database.db
 apps/zigbee2mqtt/data/log/
