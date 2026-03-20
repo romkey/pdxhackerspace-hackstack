@@ -91,3 +91,18 @@ apps/zigbee2mqtt/config/coordinator_backup.json
 apps/zigbee2mqtt/config/state.json
 apps/zigbee2mqtt/config/database.db
 apps/zigbee2mqtt/config/log/
+
+# [experiments] experiments/grafana/.gitignore
+experiments/grafana/config/grafana.ini
+
+# [experiments] experiments/homebox/.gitignore
+experiments/homebox/.env
+
+# [experiments] experiments/influxdb/.gitignore
+experiments/influxdb/config/influx-configs
+
+# [experiments] experiments/rtlamr2mqtt/.gitignore
+experiments/rtlamr2mqtt/config.yaml
+
+# [experiments] experiments/telegraf/.gitignore
+experiments/telegraf/config/telegraf.conf
