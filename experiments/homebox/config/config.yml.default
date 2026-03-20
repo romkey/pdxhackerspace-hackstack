@@ -1,0 +1,20 @@
+# Copy to ../../lib/homebox/config.yml and adjust.
+# The container entrypoint expects the config at /data/config.yml (same volume as SQLite).
+
+mode: production
+
+web:
+  port: "7745"
+  # Behind nginx-proxy, `trust_proxy` below (or HBOX_OPTIONS_TRUST_PROXY=true) is recommended.
+
+storage:
+  prefix_path: data
+  conn_string: "file:///?no_tmp_dir=true"
+
+database:
+  driver: sqlite3
+  sqlite_path: "/data/homebox.db?_pragma=busy_timeout=2000&_pragma=journal_mode=WAL&_fk=1&_time_format=sqlite"
+
+options:
+  trust_proxy: true
+  allow_analytics: false

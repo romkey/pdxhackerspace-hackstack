@@ -1,0 +1,34 @@
+services:
+  homebox:
+    image: ghcr.io/sysadminsmedia/homebox:${IMAGE_VERSION:-latest}
+    container_name: homebox
+    hostname: homebox
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ../../lib/homebox:/data
+#   ports:
+#     - 3100:7745
+    networks:
+      - proxy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "-O",
+          "-",
+          "http://localhost:7745/api/v1/status",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
