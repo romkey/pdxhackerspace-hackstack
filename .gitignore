@@ -66,11 +66,21 @@ apps/mqtt-explorer/config/settings.json
 apps/nginx-proxy-manager/config/
 apps/nginx-proxy-manager/letsencrypt/
 
+# [apps] apps/peanut/.gitignore
+apps/peanut/config/settings.yml
+
 # [apps] apps/shairport-sync/.gitignore
 apps/shairport-sync/config/shairport-sync.conf
 
 # [apps] apps/snapserver/.gitignore
 apps/snapserver/config/snapcast.conf
+
+# [apps] apps/upsd/.gitignore
+apps/upsd/config/entrypoint.sh
+apps/upsd/config/ups.conf
+apps/upsd/config/upsd.conf
+apps/upsd/config/upsd.users
+apps/upsd/config/upsmon.conf
 
 # [apps] apps/wiki/.gitignore
 apps/wiki/config.yml
