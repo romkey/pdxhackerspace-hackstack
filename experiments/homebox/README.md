@@ -1,44 +1,44 @@
 # homebox (experiment)
 
-[HomeBox](https://github.com/sysadminsmedia/homebox) is a self-hosted home inventory and organization app (SQLite, low resource use). This stack runs the maintained **`ghcr.io/sysadminsmedia/homebox`** image (continuation of the original hay-kot project).
+[HomeBox](https://github.com/sysadminsmedia/homebox) is a self-hosted home inventory and organization app. This stack runs the maintained **`ghcr.io/sysadminsmedia/homebox`** image and uses the **shared PostgreSQL** service (`postgresql` on `postgres-net`) for the database; uploads and `config.yml` stay on **`../../lib/homebox`** (mounted at `/data`).
 
 ## Configuration
 
-### Environment
+### 1. PostgreSQL database
 
-Copy `.env.example` to `.env`:
+Create a dedicated database and user with the shared cluster helper (from **`apps/postgresql`**):
+
+```bash
+../../apps/postgresql/bin/mkdb.sh homebox
+```
+
+That creates **`homebox_db`** owned by **`homebox_user`** and prints a password. Put that password in **`.env`** as **`HBOX_DATABASE_PASSWORD`** (see `.env.example`).
+
+### 2. Environment
+
+Copy `.env.example` to **`.env`** and set **`HBOX_DATABASE_PASSWORD`** (and **`IMAGE_VERSION`** if you pin a tag).
 
 ```bash
 cp .env.example .env
 ```
 
-Set `IMAGE_VERSION` if you want to pin a tag other than `latest` (see [GHCR packages](https://github.com/sysadminsmedia/homebox/pkgs/container/homebox)).
+### 3. Config file (required)
 
-Additional runtime tuning can use `HBOX_*` variables; see the [HomeBox documentation](https://homebox.software/).
+The image expects **`/data/config.yml`** on the persistent volume.
 
-### Config file (required)
+```bash
+mkdir -p ../../lib/homebox
+cp config/config.yml.default ../../lib/homebox/config.yml
+```
 
-The image expects **`/data/config.yml`** on the persistent volume (same directory as the SQLite database).
+Edit **`../../lib/homebox/config.yml`** if you change DB name, user, host, or TLS. By default it targets **`postgresql:5432`** with **`ssl_mode: disable`** on the internal Docker network.
 
-1. Ensure the data directory exists (repository convention):
-
-   ```bash
-   mkdir -p ../../lib/homebox
-   ```
-
-2. Install the config once:
-
-   ```bash
-   cp config/config.yml.default ../../lib/homebox/config.yml
-   ```
-
-3. Edit `../../lib/homebox/config.yml` as needed (public URL / hostname, OIDC, mailer, registration policy, etc.).
-
-For **`latest-rootless`** or **`latest-hardened`**, the upstream image may require ownership on `/data` (e.g. `chown 65532:65532`); see the [HomeBox quick start](https://homebox.software/en/quick-start/).
+For **`latest-rootless`** or **`latest-hardened`**, see the [HomeBox quick start](https://homebox.software/en/quick-start/) for `/data` ownership (e.g. `chown 65532:65532`).
 
 ## Networks
 
-- **`nginx-proxy-net`** — attach your reverse proxy vhost to the container’s internal port **7745**.
+- **`postgres-net`** — database (`postgresql` hostname)
+- **`nginx-proxy-net`** — reverse proxy to container port **7745**
 
 ## Usage
 
@@ -62,4 +62,5 @@ docker compose logs -f
 
 ### Backup
 
-Back up the directory **`../../lib/homebox`** (includes `config.yml`, SQLite DB, and uploads).
+- **PostgreSQL:** include `homebox_db` in your normal DB backups (e.g. `BACKUP_DATABASE_URLS` pattern used elsewhere in this repo).
+- **Files:** back up **`../../lib/homebox`** (`config.yml`, uploads under the storage prefix on `/data`).

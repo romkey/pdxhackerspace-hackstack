@@ -12,6 +12,7 @@ services:
 #     - 3100:7745
     networks:
       - proxy
+      - db
     healthcheck:
       test:
         [
@@ -32,3 +33,6 @@ networks:
   proxy:
     external: true
     name: nginx-proxy-net
+  db:
+    external: true
+    name: postgres-net

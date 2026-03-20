@@ -1,5 +1,5 @@
 # Copy to ../../lib/homebox/config.yml and adjust.
-# The container entrypoint expects the config at /data/config.yml (same volume as SQLite).
+# The container entrypoint expects the config at /data/config.yml (uploads live under /data).
 
 mode: production
 
@@ -7,13 +7,20 @@ web:
   port: "7745"
   # Behind nginx-proxy, `trust_proxy` below (or HBOX_OPTIONS_TRUST_PROXY=true) is recommended.
 
+# File/blob storage (attachments). Matches the upstream image defaults; data is on the /data volume.
 storage:
   prefix_path: data
   conn_string: "file:///?no_tmp_dir=true"
 
 database:
-  driver: sqlite3
-  sqlite_path: "/data/homebox.db?_pragma=busy_timeout=2000&_pragma=journal_mode=WAL&_fk=1&_time_format=sqlite"
+  driver: postgres
+  host: postgresql
+  port: "5432"
+  username: homebox_user
+  database: homebox_db
+  # Use `disable` on the internal Docker network unless PostgreSQL is using TLS.
+  ssl_mode: disable
+  # Prefer setting the password in .env as HBOX_DATABASE_PASSWORD (not committed).
 
 options:
   trust_proxy: true
