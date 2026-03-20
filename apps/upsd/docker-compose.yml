@@ -1,14 +1,17 @@
 services:
   upsd:
-    image: gpdm/nut-upsd:${IMAGE_VERSION:-latest}
+    image: instantlinux/nut-upsd
     container_name: upsd
     hostname: upsd
     restart: unless-stopped
     privileged: true
+    entrypoint: /etc/nut/local/entrypoint.sh
     devices:
-      - "${UPS_DEVICE}:/dev/ups0:rw"
+#      - "${UPS_DEVICE}:/dev/ups0:rw"
+       - /dev/bus/usb:/dev/bus/usb
     volumes:
-      - ./config:/etc/nut
+      - ./config:/etc/nut/local
+#      - /dev/bus/usb:/dev/bus/usb
     ports:
       - 3493:3493
     env_file:

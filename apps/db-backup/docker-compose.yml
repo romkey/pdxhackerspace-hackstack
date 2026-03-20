@@ -1,20 +1,28 @@
 services:
-  db-backup:
-    image: ghcr.io/romkey/hackstack-db-backup:${IMAGE_VERSION:-latest}
-    container_name: db-backup
-    hostname: db-backup
+  dbbackup:
+    image: ghcr.io/romkey/hackstack-db-backup:latest
+    hostname: dbbackup
+    container_name: dbbackup
     restart: unless-stopped
     volumes:
-      - ${DBBACKUP_PARENT_HOST_PATH:-/opt}:/opt
-      - ${DBBACKUP_DEST_PATH}:/dest
+      - /opt:/opt:ro
+      - backup_nfs:/dest
+    networks:
+      - postgresql
+      - mariadb
     env_file:
       - .env
-    networks:
-      - db
-      - mariadb
+
+volumes:
+  backup_nfs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=${NFS_SERVER},${NFS_OPTIONS:-nfsvers=4,soft,rw}
+      device: ":${NFS_PATH}"
 
 networks:
-  db:
+  postgresql:
     external: true
     name: postgres-net
   mariadb:
