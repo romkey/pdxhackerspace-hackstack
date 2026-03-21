@@ -4,6 +4,14 @@ services:
     container_name: member-manager-redis
     hostname: member-manager-redis
     restart: unless-stopped
+    # No AOF; RDB at most every 15m if keys changed (Sidekiq queue may be replay-lost on hard crash).
+    command:
+      - redis-server
+      - --appendonly
+      - "no"
+      - --save
+      - "900"
+      - "1"
     volumes:
       - ../../lib/member-manager/redis:/data
     networks:

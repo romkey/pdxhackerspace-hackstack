@@ -17,6 +17,10 @@ cp .env.example .env
 
 Configuration files are stored in the `config/` directory.
 
+## Healthcheck
+
+The image defines a working check: `node healthcheck.mjs` hits `http://127.0.0.1:$WEB_PORT/api/ping`. Do not use `wget`/`curl` probes—the runtime image is minimal and may not include them.
+
 ## Usage
 
 ### Starting the service

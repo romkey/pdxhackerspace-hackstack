@@ -4,7 +4,16 @@ services:
     container_name: sentry-redis
     hostname: sentry-redis
     restart: unless-stopped
-    command: "redis-server --requirepass ${SENTRY_REDIS_PASSWORD}"
+    # No AOF; RDB at most every 15m if keys changed (lower SSD wear than image defaults).
+    command:
+      - redis-server
+      - --requirepass
+      - ${SENTRY_REDIS_PASSWORD}
+      - --appendonly
+      - "no"
+      - --save
+      - "900"
+      - "1"
     volumes:
       - ../../lib/sentry/redis:/data
     env_file:

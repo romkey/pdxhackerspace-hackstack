@@ -29,7 +29,7 @@ This document complements the healthchecks defined under `apps/*/docker-compose.
 | **weather** | `wget --spider` nginx `:80` | |
 | **llama-cpp** | HTTP `/health` or `/v1/models` | Matches common `llama-server` layouts. |
 | **statping** | HTTP `:8080` | |
-| **peanut** | `wget --spider` `:8080` | |
+| **peanut** | Image default: `node healthcheck.mjs` → `/api/ping` on `WEB_PORT` | Do not override with `wget`; the Node image has no wget. |
 | **geowiki** | HTTP `:3000` | Uses `PORT` from `.env` (default 3000). |
 | **access-control-webhook** | `wget --spider` `:9000` | |
 | **netbootxyz** | `wget --spider` nginx `:80` | |

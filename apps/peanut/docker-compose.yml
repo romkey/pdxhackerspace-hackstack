@@ -12,12 +12,7 @@ services:
       - proxy
     env_file:
       - .env
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8080/ || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 45s
+    # Use image HEALTHCHECK: `node healthcheck.mjs` → GET /api/ping (no wget in image; hard-coded :8080 wget fails if WEB_PORT differs).
 
 networks:
   proxy:

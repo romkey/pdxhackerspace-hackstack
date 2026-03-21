@@ -10,7 +10,7 @@ PostgreSQL and Redis — no ClickHouse, Kafka, or Snuba required.
 |---|---|---|
 | `glitchtip` | `glitchtip/glitchtip` | Django web app + API |
 | `glitchtip-worker` | `glitchtip/glitchtip` | Celery worker + beat scheduler |
-| `glitchtip-redis` | `redis` | Celery broker and cache |
+| `glitchtip-redis` | `redis` | Celery broker and cache (no AOF; `save 900 1` only—see [redis-persistence-hackstack.md](../../docs/redis-persistence-hackstack.md)) |
 | `glitchtip-migrate` | `glitchtip/glitchtip` | One-shot database migration runner |
 
 ## Networks

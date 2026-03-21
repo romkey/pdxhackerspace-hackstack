@@ -3,7 +3,15 @@ services:
     image: docker.io/library/redis:${REDIS_IMAGE_VERSION:-alpine}
     container_name: authentik-redis
     hostname: authentik-redis
-    command: --save 60 1 --loglevel warning
+    # No AOF, no RDB: cache/sessions only; users re-login after unclean restart (minimal SSD wear).
+    command:
+      - redis-server
+      - --save
+      - ""
+      - --appendonly
+      - "no"
+      - --loglevel
+      - warning
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping | grep PONG"]

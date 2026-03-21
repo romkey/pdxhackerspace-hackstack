@@ -4,6 +4,14 @@ services:
     container_name: glitchtip-redis
     hostname: glitchtip-redis
     restart: unless-stopped
+    # No AOF; RDB at most every 15m if keys changed (Celery queue may be replay-lost on hard crash).
+    command:
+      - redis-server
+      - --appendonly
+      - "no"
+      - --save
+      - "900"
+      - "1"
     volumes:
       - ../../lib/glitchtip/redis:/data
     networks:

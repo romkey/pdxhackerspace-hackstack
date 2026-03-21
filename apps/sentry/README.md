@@ -2,7 +2,7 @@
 
 Self-hosted error tracking and application monitoring.
 
-This stack includes a dedicated Redis container for Sentry background jobs and caching.
+This stack includes a dedicated Redis container for Sentry background jobs and caching. Redis is started with **no AOF** and a single **`save 900 1`** rule to reduce SSD wear (see [redis-persistence-hackstack.md](../../docs/redis-persistence-hackstack.md)).
 
 ## Configuration
 

@@ -11,7 +11,7 @@ Image: [romkey/pdxhackerspace-member-manager](https://github.com/romkey/pdxhacke
 |-----------|------|
 | `member-manager` | Rails web server (port 3000, behind reverse proxy) |
 | `member-manager-sidekiq` | Sidekiq background job worker |
-| `member-manager-redis` | Private Redis instance for job queuing (not shared) |
+| `member-manager-redis` | Private Redis for Sidekiq (no AOF; `save 900 1` only—see [redis-persistence-hackstack.md](../../docs/redis-persistence-hackstack.md)) |
 
 ## Network dependencies
 

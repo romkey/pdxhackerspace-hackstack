@@ -4,6 +4,10 @@ Identity Provider and SSO solution
 
 ## Configuration
 
+### Redis (`authentik-redis`)
+
+Redis runs with **no AOF** and **no RDB** (`save ""`) to limit SSD wear. Cache and sessions are **volatile** across unclean restarts—users may need to **sign in again**. See [redis-persistence-hackstack.md](../../docs/redis-persistence-hackstack.md).
+
 ### Environment Variables
 
 Copy `.env.example` to `.env` and configure:
