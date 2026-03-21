@@ -40,7 +40,7 @@ This document complements the healthchecks defined under `apps/*/docker-compose.
 | **piper** | TCP `:10200` | Default Wyoming port; change if you override the listener. |
 | **whisper** | TCP `:10300` | Same as above; long `start_period` for model load. |
 | **postfix** | TCP `:587` | Submission port listening. |
-| **music-assistant** | `wget --spider` `:8095` | `network_mode: host`. |
+| **music-assistant** | `wget -qO-` GET `:8095` | `network_mode: host`. (`wget --spider` uses **HEAD** and MA logs it as unhandled.) |
 | **dnsmasq** | `pidof dnsmasq` | |
 | **rsyslog** | `pidof rsyslogd` | |
 | **snapserver** | TCP `:1704` | Snapcast stream port; needs `bash`. |
