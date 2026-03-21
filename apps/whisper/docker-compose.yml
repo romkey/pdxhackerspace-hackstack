@@ -13,6 +13,16 @@ services:
       - ../../lib/whisper:/data
     env_file:
       - .env
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "timeout 2 bash -c '</dev/tcp/127.0.0.1/10300' || exit 1",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
     networks:
       - hass
 networks:

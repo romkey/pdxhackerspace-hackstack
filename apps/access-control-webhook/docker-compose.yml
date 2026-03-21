@@ -17,6 +17,12 @@ services:
       - "com.centurylinklabs.watchtower.enable=false"
     networks:
       - proxy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:9000/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 networks:
   proxy:
     external: true

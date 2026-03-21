@@ -10,6 +10,12 @@ services:
       - mariadb
 #    ports:
 #      - 8080:8080
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:8080/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 networks:
   proxy:
     name: nginx-proxy-net

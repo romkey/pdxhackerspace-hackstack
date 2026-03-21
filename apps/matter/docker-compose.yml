@@ -14,6 +14,16 @@ services:
     networks:
       - hass
       - mdns
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "timeout 2 bash -c '</dev/tcp/127.0.0.1/5580' || exit 1",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 45s
 networks:
   hass:
     name: hass-net

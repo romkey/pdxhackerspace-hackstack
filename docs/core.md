@@ -1,6 +1,8 @@
 ### Core Services
 
-These are essential services (like databases and reverse proxies) that other services use. 
+These are essential services (like databases and reverse proxies) that other services use.
+
+Healthcheck conventions for `apps/*/docker-compose.yml` are summarized in [apps-compose-healthchecks.md](apps-compose-healthchecks.md).
 
 #### avahi-mdns
 

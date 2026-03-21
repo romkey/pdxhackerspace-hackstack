@@ -11,6 +11,16 @@ services:
       - ../../lib/piper:/data
     env_file:
       - .env
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "timeout 2 bash -c '</dev/tcp/127.0.0.1/10200' || exit 1",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     networks:
       - hass
 networks:

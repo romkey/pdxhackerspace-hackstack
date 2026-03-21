@@ -18,6 +18,12 @@ services:
     ports:
       - 6600:6600
       - 6680:6680
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:6680/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 networks:
   proxy:

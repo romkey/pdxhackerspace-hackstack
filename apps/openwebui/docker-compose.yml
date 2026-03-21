@@ -14,6 +14,12 @@ services:
       - ../../lib/openwebui:/app/backend/data
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:8080/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 networks:
   proxy:
     name: nginx-proxy-net

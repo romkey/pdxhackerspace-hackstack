@@ -16,3 +16,13 @@ services:
       - 3493:3493
     env_file:
       - .env
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "timeout 2 bash -c '</dev/tcp/127.0.0.1/3493' || exit 1",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s

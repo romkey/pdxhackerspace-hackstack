@@ -8,6 +8,12 @@ services:
       - "${CONTROLLER_DEVICE}:/dev/zwave"
     volumes:
       - ../../lib/z-wavejs:/usr/src/app/store
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:8091/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     networks:
       - hass
       - proxy

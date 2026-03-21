@@ -2,6 +2,7 @@ services:
   ollama:
     image: ollama/ollama:${IMAGE_VERSION:-latest}
     container_name: ollama
+    hostname: ollama
     restart: unless-stopped
     volumes:
       - ../../lib/ollama:/root/.ollama
@@ -11,6 +12,12 @@ services:
       - llama
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:11434/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     deploy:
       resources:
         reservations:

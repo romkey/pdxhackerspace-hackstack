@@ -2,6 +2,7 @@ services:
   mdns-repeater:
     image: monstrenyatko/mdns-repeater:${IMAGE_VERSION:-latest}
     container_name: mdns-repeater
+    hostname: mdns-repeater
     restart: unless-stopped
     command: mdns-repeater-app -f -d eth0 eth1
     networks:
@@ -9,6 +10,12 @@ services:
       - mdns
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep -q '[m]dns-repeater' || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 networks:
   ipvlan_net:
     driver: ipvlan

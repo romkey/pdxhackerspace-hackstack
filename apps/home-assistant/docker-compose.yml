@@ -25,6 +25,12 @@ services:
         ipv4_address: ${IPV4_ADDRESS}
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:8123/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
 #    ports:
 #      - 8123:8123
 #      - 5060:5060

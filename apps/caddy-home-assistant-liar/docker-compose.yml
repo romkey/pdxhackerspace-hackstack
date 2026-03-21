@@ -12,6 +12,12 @@ services:
       - ../../lib/caddy-home-assistant-liar/config:/config
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:2019/config/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     networks:
       - proxy
       - hass
