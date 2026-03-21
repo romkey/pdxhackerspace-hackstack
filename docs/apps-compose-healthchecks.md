@@ -11,7 +11,7 @@ This document complements the healthchecks defined under `apps/*/docker-compose.
 | App | Check type | Notes |
 |-----|------------|--------|
 | **postgresql** | `pg_isready` | Cluster accepting connections. |
-| **mosquitto** | `mosquitto_sub` on `$SYS/broker/uptime` | **Fails if anonymous subscribers are disabled**; adjust or disable healthcheck if you require auth for all clients. |
+| **mosquitto** | `mosquitto_sub` on `$SYS/broker/uptime` with **`MOSQUITTO_HEALTHCHECK_USERNAME` / `MOSQUITTO_HEALTHCHECK_PASSWORD`** from `.env` | Required when anonymous access is disabled; user must exist in `mos_passwd` and (if using ACLs) be allowed `$SYS/#`. |
 | **vaultwarden** | HTTP `/alive` | |
 | **home-assistant** | HTTP `:8123` | Long `start_period` for first boot. |
 | **jellyfin** | HTTP `:8096/health` | |

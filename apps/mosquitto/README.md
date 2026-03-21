@@ -2,11 +2,22 @@
 
 Mosquitto provides MQTT service.
 
-Configuration file lives in `docker/mosquitto/config/mosquitto.conf`
+Configuration file lives in `apps/mosquitto/config/mosquitto.conf` (copy from `mosquitto.conf.example`).
 
-Password file lives in `lib/mosquitto/mos_passwd`
+Password file lives in `apps/mosquitto/config/mos_passwd` (see `.gitignore`; create with `bin/mkuser.sh`).
 
-You may use `docker/mosquitto/bin/mkuser.sh` to add a new user with a strong password to the broker, or run
+## Healthcheck (authenticated brokers)
+
+The container healthcheck runs `mosquitto_sub` to `$SYS/broker/uptime`. When **`allow_anonymous false`** (or you use a `password_file` without anonymous access), set in **`.env`**:
+
+- `MOSQUITTO_HEALTHCHECK_USERNAME`
+- `MOSQUITTO_HEALTHCHECK_PASSWORD`
+
+Use a dedicated low-privilege MQTT user that exists in `mos_passwd`. If you use **`acl_file`**, that user must be allowed to **subscribe/read** topics under **`$SYS/#`** (or at least `$SYS/broker/uptime`).
+
+Avoid shell metacharacters in the healthcheck password if possible (`$`, `` ` ``, `"`, `\`).
+
+You may use `apps/mosquitto/bin/mkuser.sh` to add a new user with a strong password to the broker, or run
 ```
 docker compose exec mosquitto mosquitto_passwd
 ```

@@ -13,11 +13,12 @@ services:
       - 1883:1883
     env_file:
       - .env
+    # Auth broker: use MOSQUITTO_HEALTHCHECK_* from .env (must match mos_passwd; needs $SYS read in ACLs if you use acl_file).
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "mosquitto_sub -h localhost -p 1883 -t '$$SYS/broker/uptime' -C 1 -W 3 || exit 1",
+          'mosquitto_sub -h localhost -p 1883 -u "$$MOSQUITTO_HEALTHCHECK_USERNAME" -P "$$MOSQUITTO_HEALTHCHECK_PASSWORD" -t "$$SYS/broker/uptime" -C 1 -W 5 || exit 1',
         ]
       interval: 30s
       timeout: 10s
