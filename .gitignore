@@ -101,8 +101,12 @@ experiments/homebox/.env
 # [experiments] experiments/influxdb/.gitignore
 experiments/influxdb/config/influx-configs
 
+# [experiments] experiments/nextcloud/.gitignore
+experiments/nextcloud/.env
+
 # [experiments] experiments/rtlamr2mqtt/.gitignore
-experiments/rtlamr2mqtt/config.yaml
+experiments/rtlamr2mqtt/.env
+experiments/rtlamr2mqtt/config/rtlamr2mqtt.yaml
 
 # [experiments] experiments/telegraf/.gitignore
 experiments/telegraf/config/telegraf.conf
