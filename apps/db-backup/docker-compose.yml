@@ -1,17 +1,18 @@
 services:
-  dbbackup:
+  db-backup:
     image: ghcr.io/romkey/hackstack-db-backup:latest
-    hostname: dbbackup
-    container_name: dbbackup
+    hostname: db-backup
+    container_name: db-backup
     restart: unless-stopped
+    user: "${BACKUP_UID:-0}:${BACKUP_GID:-0}"
+    env_file:
+      - .env
     volumes:
-      - /opt:/opt:ro
+      - ${DBBACKUP_PARENT_HOST_PATH}:/opt:ro
       - backup_nfs:/dest
     networks:
       - postgresql
       - mariadb
-    env_file:
-      - .env
 
 volumes:
   backup_nfs:

@@ -1,0 +1,20 @@
+services:
+  nextcloud:
+    image: nextcloud
+    restart: unless-stopped
+#    ports:
+#      - 8080:80
+    volumes:
+      - ../../lib/nextcloud:/var/www/html
+    networks:
+      - proxy
+      - db
+    env_file:
+      - .env
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  db:
+    name: postgres-net
+    external: true
