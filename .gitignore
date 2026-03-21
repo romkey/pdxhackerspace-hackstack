@@ -97,6 +97,7 @@ experiments/grafana/config/grafana.ini
 
 # [experiments] experiments/homebox/.gitignore
 experiments/homebox/.env
+experiments/homebox/config/config.yml
 
 # [experiments] experiments/influxdb/.gitignore
 experiments/influxdb/config/influx-configs
