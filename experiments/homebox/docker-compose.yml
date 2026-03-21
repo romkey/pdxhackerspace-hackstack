@@ -8,8 +8,8 @@ services:
       - .env
     volumes:
       - ../../lib/homebox:/data
-#   ports:
-#     - 3100:7745
+#    ports:
+#      - 3100:7745
     networks:
       - proxy
       - db

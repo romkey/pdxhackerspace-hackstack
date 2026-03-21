@@ -6,8 +6,7 @@ for `.env` files containing `BACKUP_DATABASE_URLS`, backs them up on a
 configurable interval, and applies tiered retention (hourly/daily/weekly/
 monthly/yearly).
 
-Image: [romkey/hackstack-db-backup](https://github.com/romkey/hackstack-db-backup)
-(`ghcr.io/romkey/hackstack-db-backup`)
+Image: [romkey/hackstack-db-backup](https://github.com/romkey/hackstack-db-backup) on GHCR. The compose file uses **`IMAGE_VERSION`** from `.env` (default **`latest`** in the image reference).
 
 ## How it works
 

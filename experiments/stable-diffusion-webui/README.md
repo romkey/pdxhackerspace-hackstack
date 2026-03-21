@@ -6,7 +6,7 @@ Stable Diffusion image generation web interface
 
 ### Environment Variables
 
-Copy `.env.example` to `.env` and configure:
+Copy `.env.example` to `.env`. Compose reads **`GPU_COUNT`** from this file for GPU reservations (default **`1`** if unset); other variables are for the application as documented upstream.
 
 ```bash
 cp .env.example .env

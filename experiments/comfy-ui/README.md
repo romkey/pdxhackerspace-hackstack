@@ -6,7 +6,7 @@ Stable Diffusion web interface
 
 ### Environment Variables
 
-Copy `.env.example` to `.env` and configure:
+Copy `.env.example` to `.env` and configure **`GPU_COUNT`** (used by Compose for the GPU reservation; default is **`1`** if unset):
 
 ```bash
 cp .env.example .env

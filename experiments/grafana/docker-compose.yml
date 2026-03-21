@@ -9,14 +9,15 @@ services:
       - ../../log/grafana:/var/log/grafana
       - ./config:/etc/grafana
 #    ports:
-#     - 3000:3000
+#      - 3000:3000
     networks:
       - proxy
       - influxdb
+
 networks:
   proxy:
+    external: true
     name: nginx-proxy-net
-    external: true
   influxdb:
-    name: influxdb-net
     external: true
+    name: influxdb-net

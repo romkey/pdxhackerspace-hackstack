@@ -13,6 +13,15 @@ cp .env.example .env
 # Edit .env with your settings
 ```
 
+### Config file
+
+Copy the template into `config/` (tracked file is `config/rtlamr2mqtt.yaml.default`):
+
+```bash
+cp config/rtlamr2mqtt.yaml.default config/rtlamr2mqtt.yaml
+# Edit config/rtlamr2mqtt.yaml — it is mounted at /etc/rtlamr2mqtt.yaml in the container
+```
+
 ## Usage
 
 ### Starting the service

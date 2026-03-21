@@ -5,22 +5,21 @@ services:
     container_name: comfy-ui
     hostname: comfy-ui
     restart: unless-stopped
-    networks:
-      - proxy
     volumes:
       - ../../lib/comfy-ui:/storage
 #    ports:
 #      - 8188:8188
-    env_file:
-      - .env
+    networks:
+      - proxy
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              count: "${GPU_COUNT}"
+              count: "${GPU_COUNT:-1}"
               capabilities: [gpu]
+
 networks:
   proxy:
-    name: nginx-proxy-net
     external: true
+    name: nginx-proxy-net

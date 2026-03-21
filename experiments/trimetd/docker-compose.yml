@@ -11,5 +11,5 @@ services:
 
 networks:
   mqtt:
-    name: mosquitto-net
     external: true
+    name: mosquitto-net

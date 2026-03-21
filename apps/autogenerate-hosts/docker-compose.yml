@@ -9,3 +9,9 @@ services:
     volumes:
       - "${DB_PATH}:${DB_PATH}"
       - "${HOSTSFILE_PATH}:/dest"
+    networks:
+      - autogenerate-hosts
+
+networks:
+  autogenerate-hosts:
+    name: autogenerate-hosts-net

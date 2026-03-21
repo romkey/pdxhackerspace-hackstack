@@ -6,3 +6,9 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    networks:
+      - camera2prusa
+
+networks:
+  camera2prusa:
+    name: camera2prusa-net

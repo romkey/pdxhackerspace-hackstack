@@ -1,20 +1,23 @@
 services:
   nextcloud:
-    image: nextcloud
+    image: nextcloud:${IMAGE_VERSION:-latest}
+    container_name: nextcloud
+    hostname: nextcloud
     restart: unless-stopped
-#    ports:
-#      - 8080:80
+    env_file:
+      - .env
     volumes:
       - ../../lib/nextcloud:/var/www/html
+#    ports:
+#      - 8080:80
     networks:
       - proxy
       - db
-    env_file:
-      - .env
+
 networks:
   proxy:
+    external: true
     name: nginx-proxy-net
-    external: true
   db:
-    name: postgres-net
     external: true
+    name: postgres-net

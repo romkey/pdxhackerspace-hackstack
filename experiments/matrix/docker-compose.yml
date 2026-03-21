@@ -1,16 +1,16 @@
 services:
   synapse:
     image: matrixdotorg/synapse:${SYNAPSE_IMAGE_VERSION:-latest}
-    container_name: matrix
-    hostname: matrix
+    container_name: synapse
+    hostname: synapse
     restart: unless-stopped
+    env_file:
+      - .env
     volumes:
       - ./config/homeserver.yaml:/data/homeserver.yaml:ro
       - ./config/log.config:/data/log.config:ro
       - ../../lib/matrix/synapse/media:/data/media_store
       - ../../lib/matrix/synapse/keys:/data/keys
-    env_file:
-      - .env
     networks:
       - db
       - proxy
@@ -24,8 +24,8 @@ services:
 
   element-web:
     image: vectorim/element-web:${ELEMENT_IMAGE_VERSION:-latest}
-    container_name: matrix-web
-    hostname: matrix-web
+    container_name: element-web
+    hostname: element-web
     restart: unless-stopped
     volumes:
       - ./config/element-config.json:/app/config.json:ro

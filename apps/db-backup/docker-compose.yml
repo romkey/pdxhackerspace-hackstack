@@ -1,8 +1,8 @@
 services:
   db-backup:
-    image: ghcr.io/romkey/hackstack-db-backup:latest
-    hostname: db-backup
+    image: ghcr.io/romkey/hackstack-db-backup:${IMAGE_VERSION:-latest}
     container_name: db-backup
+    hostname: db-backup
     restart: unless-stopped
     user: "${BACKUP_UID:-0}:${BACKUP_GID:-0}"
     env_file:

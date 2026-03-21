@@ -1,1 +1,2 @@
-config.yaml
+.env
+config/rtlamr2mqtt.yaml

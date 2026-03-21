@@ -4,14 +4,14 @@ services:
     container_name: stable-diffusion-web-ui
     hostname: stable-diffusion-web-ui
     restart: unless-stopped
+    env_file:
+      - .env
     volumes:
       - ../../lib/stable-diffusion-web-ui/outputs:/sd/outputs
       - ../../lib/stable-diffusion-web-ui/models:/sd/models
       - ../../log/stable-diffusion-web-ui:/sd/logs
 #    ports:
 #      - 8501:8501
-    env_file:
-      - .env
     networks:
       - proxy
     deploy:
@@ -19,9 +19,10 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              count: "${GPU_COUNT}"
+              count: "${GPU_COUNT:-1}"
               capabilities: [gpu]
+
 networks:
   proxy:
-    name: nginx-proxy-net
     external: true
+    name: nginx-proxy-net

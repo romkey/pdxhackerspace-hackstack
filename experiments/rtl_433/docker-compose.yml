@@ -4,17 +4,18 @@ services:
     container_name: rtl_433
     hostname: rtl_433
     restart: unless-stopped
+    env_file:
+      - .env
     entrypoint: "/usr/local/bin/rtl_433"
     command: "-F ${MQTT_BROKER} ${RTL433_EXTRA_OPTIONS}"
-    networks:
-      - mqtt
     devices:
       - "${SDR_DEVICE}"
     volumes:
       - ./config:/etc/rtl_433
-    env_file:
-      - .env
+    networks:
+      - mqtt
+
 networks:
   mqtt:
-    name: mosquitto-net
     external: true
+    name: mosquitto-net

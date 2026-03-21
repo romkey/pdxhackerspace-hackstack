@@ -4,12 +4,15 @@ services:
     container_name: portainer
     hostname: portainer
     restart: unless-stopped
-#    ports:
-#      - 9443:9443
-#      - 8000:8000
     volumes:
       - ../../lib/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
+#    ports:
+#      - 9443:9443
+#      - 8000:8000
+    networks:
+      - proxy
+
 networks:
   proxy:
     external: true

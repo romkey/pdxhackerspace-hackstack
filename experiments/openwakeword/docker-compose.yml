@@ -5,15 +5,16 @@ services:
     hostname: openwakeword
     restart: unless-stopped
     command: --preload-model 'ok_nabu' --custom-model-dir /models
-#    ports:
-#      - 10400:10400
-    volumes:
-      - ../../lib/openwakeword:/models
     env_file:
       - .env
+    volumes:
+      - ../../lib/openwakeword:/models
+#    ports:
+#      - 10400:10400
     networks:
       - hass
+
 networks:
   hass:
-    name: hass-net
     external: true
+    name: hass-net

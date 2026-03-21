@@ -4,15 +4,16 @@ services:
     container_name: influxdb
     hostname: influxdb
     restart: unless-stopped
-#    ports:
-#      - 8086:8086
+    env_file:
+      - .env
     volumes:
       - ../../lib/influxdb:/var/lib/influxdb2
       - ./config:/etc/influxdb2
-    env_file:
-      - .env
+#    ports:
+#      - 8086:8086
     networks:
       - influxdb
+
 networks:
   influxdb:
     name: influxdb-net
