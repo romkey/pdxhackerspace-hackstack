@@ -1,0 +1,20 @@
+services:
+  llama-router:
+    image: ghcr.io/romkey/llama-router:latest
+    container_name: llama-router
+    hostname: llama-router
+    ports:
+#      - "80:80"
+#      - "11434:11434"
+       - 9200:9200
+    volumes:
+      - ../../lib/llama-router:/app/data
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - proxy
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true
