@@ -4,30 +4,25 @@ services:
     container_name: homebox
     hostname: homebox
     restart: unless-stopped
-    env_file:
-      - .env
     volumes:
       - ../../lib/homebox:/data
-#    ports:
-#      - 3100:7745
-    networks:
-      - proxy
-      - db
+    env_file:
+      - .env
     healthcheck:
       test:
         [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "-O",
-          "-",
-          "http://localhost:7745/api/v1/status",
+          "CMD-SHELL",
+          "wget -q -O - http://127.0.0.1:7745/api/v1/status >/dev/null || exit 1",
         ]
       interval: 30s
-      timeout: 5s
+      timeout: 10s
       retries: 3
       start_period: 15s
+#   ports:
+#     - 3100:7745
+    networks:
+      - proxy
+      - db
 
 networks:
   proxy:

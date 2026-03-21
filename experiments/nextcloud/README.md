@@ -13,6 +13,10 @@ Configuration reference: [Nextcloud Docker environment variables](https://github
 - **`nginx-proxy-net`** — reverse proxy to the web container (port **80** inside the container unless you change it)
 - **`postgres-net`** — PostgreSQL as `postgresql:5432`
 
+## Healthcheck
+
+`curl` to **`http://127.0.0.1/status.php`** inside the container. **HTTP 503** usually means maintenance mode, upgrade in progress, or DB/config issues—not a bad healthcheck definition.
+
 ## Usage
 
 ```bash

@@ -1,20 +1,45 @@
 services:
   llama-router:
-    image: ghcr.io/romkey/llama-router:latest
+    image: ghcr.io/romkey/llama-router:${IMAGE_VERSION:-latest}
     container_name: llama-router
     hostname: llama-router
-    ports:
-#      - "80:80"
-#      - "11434:11434"
-       - 9200:9200
+    restart: unless-stopped
     volumes:
       - ../../lib/llama-router:/app/data
     env_file:
       - .env
-    restart: unless-stopped
+    # GET /health on dashboard (80), Ollama API (11434), or llama.cpp API (8080). Uses python3 — slim image has no curl.
+    healthcheck:
+      test:
+        - CMD
+        - python3
+        - -c
+        - |
+            import urllib.request
+            for u in (
+                "http://127.0.0.1:80/health",
+                "http://127.0.0.1:11434/health",
+                "http://127.0.0.1:8080/health",
+            ):
+                try:
+                    urllib.request.urlopen(u, timeout=5)
+                    raise SystemExit(0)
+                except Exception:
+                    pass
+            raise SystemExit(1)
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+#   ports:
+#     - 80:80
+#     - 8080:8080
+#     - 11434:11434
+#     - 9200:9200
     networks:
       - proxy
+
 networks:
   proxy:
-    name: nginx-proxy-net
     external: true
+    name: nginx-proxy-net

@@ -40,6 +40,10 @@ For **`latest-rootless`** or **`latest-hardened`**, see the [HomeBox quick start
 - **`postgres-net`** — database (`postgresql` hostname)
 - **`nginx-proxy-net`** — reverse proxy to container port **7745**
 
+## Healthcheck
+
+`wget` to **`http://127.0.0.1:7745/api/v1/status`** inside the container (no dependency on `localhost` DNS).
+
 ## Usage
 
 ### Start

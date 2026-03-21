@@ -4,21 +4,21 @@ services:
     container_name: nextcloud
     hostname: nextcloud
     restart: unless-stopped
-    env_file:
-      - .env
     volumes:
       - ../../lib/nextcloud:/var/www/html
-#    ports:
-#      - 8080:80
-    networks:
-      - proxy
-      - db
+    env_file:
+      - .env
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/status.php -o /dev/null || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 120s   # first-time install / upgrade can be slow; bump if needed
+      start_period: 120s
+#   ports:
+#     - 8080:80
+    networks:
+      - proxy
+      - db
 
 networks:
   proxy:
