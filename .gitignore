@@ -102,6 +102,9 @@ experiments/homebox/config/config.yml
 # [experiments] experiments/influxdb/.gitignore
 experiments/influxdb/config/influx-configs
 
+# [experiments] experiments/llama-router/.gitignore
+experiments/llama-router/.env
+
 # [experiments] experiments/nextcloud/.gitignore
 experiments/nextcloud/.env
 
