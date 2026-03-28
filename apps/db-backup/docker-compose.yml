@@ -35,3 +35,6 @@ networks:
   mariadb:
     external: true
     name: mariadb-net
+  quantdb:
+    external: true
+    name: quantdb-net

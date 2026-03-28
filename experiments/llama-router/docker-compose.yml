@@ -4,8 +4,13 @@ services:
     container_name: llama-router
     hostname: llama-router
     restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
     volumes:
       - ../../lib/llama-router:/app/data
+      - ../../lib/llama-router/wireguard:/shared/wireguard
     env_file:
       - .env
     # GET /health on dashboard (80), Ollama API (11434), or llama.cpp API (8080). Uses python3 — slim image has no curl.
@@ -31,11 +36,12 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
-#   ports:
+    ports:
 #     - 80:80
 #     - 8080:8080
-#     - 11434:11434
-#     - 9200:9200
+     - 11434:11434
+     - 9200:9200
+     - "51820:51820/udp"
     networks:
       - proxy
 
