@@ -35,7 +35,7 @@ AI_SATELLITE_APPS="
 nginx-proxy-manager
 ollama
 dnsmasq
-dozzle
+dozzle-agent
 sensors2mqtt
 watchtower
 "

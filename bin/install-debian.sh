@@ -12,7 +12,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 DOCKER_DATA_ROOT="$REPO_ROOT/docker-lib"
 
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y pwgen curl software-properties-common
+sudo apt install -y pwgen curl software-properties-common emacs-nox git neovim bash-completion tmux vim-nox wget
 
 if ! command -v docker > /dev/null 2>&1; then
     echo "Docker not found. Installing Docker..."
