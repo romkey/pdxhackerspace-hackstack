@@ -1,0 +1,31 @@
+services:
+  mediawiki:
+    image: mediawiki:${IMAGE_VERSION:-lts}
+    container_name: mediawiki
+    hostname: mediawiki
+    restart: unless-stopped
+    volumes:
+      - ../../lib/mediawiki/images:/var/www/html/images
+      # After the web installer: save LocalSettings.php to ../../lib/mediawiki/ then uncomment:
+      # - ../../lib/mediawiki/LocalSettings.php:/var/www/html/LocalSettings.php
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/ -o /dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+#   ports:
+#     - 8080:80
+    networks:
+      - proxy
+      - mariadb
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  mariadb:
+    external: true
+    name: mariadb-net
