@@ -1,6 +1,6 @@
 services:
   web:
-    image: ghcr.io/romkey/pdxhackerspace-eventmanager:${IMAGE_VERSION:-latest}
+    image: ghcr.io/pdxhackerspace/eventmanager:${IMAGE_VERSION:-latest}
     container_name: event-manager
     hostname: event-manager
     restart: unless-stopped
