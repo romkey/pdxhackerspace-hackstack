@@ -1,0 +1,17 @@
+services:
+  sendspin:
+    image: ghcr.io/longlivethehud/sendspin-docker:latest
+    container_name: sendspin
+    restart: unless-stopped
+    network_mode: host
+    devices:
+      - /dev/snd:/dev/snd
+    group_add:
+      - audio
+    env_file:
+      - .env
+    command: >
+      --daemon
+      --server ${SENDSPIN_SERVER}
+      --name "${SENDSPIN_NAME}"
+      --id ${SENDSPIN_ID}
