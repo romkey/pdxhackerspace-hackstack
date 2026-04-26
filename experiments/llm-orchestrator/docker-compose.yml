@@ -1,0 +1,29 @@
+services:
+  orchestrator:
+    image: ghcr.io/romkey/pdxhackerspace-llm-orchestrator/orchestrator:latest
+    container_name: llm-orchestrator
+    hostname: llm-orchestrator
+    restart: unless-stopped
+    ports:
+      - "${ORCHESTRATOR_PORT:-8000}:${ORCHESTRATOR_PORT:-8000}"
+    networks:
+      - llm-net
+    env_file:
+      - .env
+    volumes:
+      - ../../lib/llm-orchestrator:-/root/.cache/huggingface
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${ORCHESTRATOR_PORT:-8000}/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  # Shared network for orchestrator <-> vLLM container communication.
+  # The orchestrator creates this at startup if it doesn't exist;
+  # declaring it here ensures Compose knows about it too.
+  llm-net:
+    name: llm-net
+    driver: bridge
