@@ -11,6 +11,7 @@ services:
 #      - "6334:6334"   # gRPC
     networks:
       - qdrant
+      - proxy
     healthcheck:
       test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/6333'"]
       interval: 10s
@@ -21,3 +22,6 @@ services:
 networks:
   qdrant:
     name: qdrant-net
+  proxy:
+    name: nginx-proxy-net
+    external: true
