@@ -23,7 +23,7 @@ services:
       retries: 5
 
   web:
-    image: ghcr.io/romkey/pdxhackerspace-member-manager:${IMAGE_VERSION:-latest}
+    image: ghcr.io/pdxhackerspace/member-manager:${IMAGE_VERSION:-latest}
     container_name: member-manager
     hostname: member-manager
     command: ./bin/rails server -b 0.0.0.0 -p 3000
@@ -51,7 +51,7 @@ services:
       start_period: 40s
 
   sidekiq:
-    image: ghcr.io/romkey/pdxhackerspace-member-manager:${IMAGE_VERSION:-latest}
+    image: ghcr.io/pdxhackerspace/member-manager:${IMAGE_VERSION:-latest}
     container_name: member-manager-sidekiq
     hostname: member-manager-sidekiq
     command: bundle exec sidekiq
