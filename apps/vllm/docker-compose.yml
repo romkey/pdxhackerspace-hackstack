@@ -1,0 +1,39 @@
+services:
+  vllm:
+    image: vllm/vllm-openai:${IMAGE_VERSION:-latest}
+    container_name: vllm
+    hostname: vllm
+    restart: unless-stopped
+    ipc: host
+    volumes:
+      - ../../lib/vllm/huggingface:/root/.cache/huggingface
+      - ./config/entrypoint.sh:/vllm-entrypoint.sh:ro
+    entrypoint: ["/bin/sh", "/vllm-entrypoint.sh"]
+    env_file:
+      - .env
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: ${GPU_COUNT:-1}
+              capabilities: [gpu]
+#   ports:
+#     - 8000:8000
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:8000/v1/models >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 300s
+    networks:
+      - llama
+      - proxy
+
+networks:
+  llama:
+    external: true
+    name: llama-net
+  proxy:
+    external: true
+    name: nginx-proxy-net
