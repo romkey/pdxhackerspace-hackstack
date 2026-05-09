@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-RUN apk --no-cache update && apk add --no-cache rsyslog tzdata
+RUN apk --no-cache update && apk add --no-cache rsyslog tzdata curl bash
 
 EXPOSE 514 514/udp
 

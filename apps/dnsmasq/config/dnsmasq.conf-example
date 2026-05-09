@@ -1,6 +1,6 @@
 # this should be the IP address of the interface we want to accept queries
 # finding that 0.0.0.0 does not work
-listen-address=192.168.13.2,127.0.0.1
+listen-address=192.168.13.2
 
 log-queries
 domain-needed
@@ -11,7 +11,6 @@ filterwin2k
 domain=ctrlh
 expand-hosts
 no-hosts
-local=/ctrlh/
 
 local-ttl=5
 max-cache-ttl=5
@@ -21,7 +20,10 @@ hostsdir=/etc/hosts.d
 # hostname directory for automatically generated host files
 hostsdir=/etc/autohosts.d
 
+server=/ctrlh/192.168.13.1
 server=/corginium.ctrlh/192.168.13.11
+server=/frigate.ctrlh/192.168.13.100
+server=/zigbee2mqtt.ctrlh/192.168.13.13
 
 # fall back to the router (UDM Pro)
 # this gives it the opportunity to service requests for

@@ -2,7 +2,7 @@ services:
   ak-outpost:
     image: ghcr.io/goauthentik/proxy:${IMAGE_VERSION:-latest}
     container_name: ak-outpost
-    hostname: ak-outpost
+    hostname: ak_outpost
     restart: unless-stopped
 #    ports:
 #      - 9000:9000

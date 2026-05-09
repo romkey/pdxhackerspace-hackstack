@@ -1,7 +1,7 @@
 services:
   postgresql:
-#    image: postgres:${IMAGE_VERSION:-16}
-    image: pgautoupgrade/pgautoupgrade:18-alpine
+    image: postgres:${IMAGE_VERSION:-16}
+#    image: pgautoupgrade/pgautoupgrade:18-alpine
     hostname: postgresql
     container_name: postgresql
     restart: unless-stopped
@@ -12,13 +12,13 @@ services:
     networks:
       - db
     volumes:
-      - ../../lib/postgresql:/var/lib/postgresql
+      - ../../lib/postgresql:/var/lib/postgresql/data
       - ../../log/postgresql:/var/log/postgresql/
     shm_size: 128mb
     env_file:
       - .env
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q || exit 1"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -q"]
       interval: 10s
       timeout: 5s
       retries: 5

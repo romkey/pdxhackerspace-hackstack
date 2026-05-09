@@ -10,7 +10,7 @@ services:
     privileged: true
     networks:
       - proxy
-      - mdns
+#      - mdns
 #    ports:
 #      - 6052:6052
     env_file:
@@ -25,6 +25,6 @@ networks:
   proxy:
     external: true
     name: nginx-proxy-net
-  mdns:
-    external: true
-    name: mdns-net
+#  mdns:
+#    external: true
+#    name: mdns-net

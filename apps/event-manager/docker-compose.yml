@@ -1,6 +1,6 @@
 services:
   web:
-    image: ghcr.io/romkey/pdxhackerspace-eventmanager:${IMAGE_VERSION:-latest}
+    image: ghcr.io/pdxhackerspace/event-manager:${IMAGE_VERSION:-latest}
     container_name: event-manager
     hostname: event-manager
     restart: unless-stopped
@@ -28,7 +28,7 @@ services:
   redis:
     image: redis:${REDIS_IMAGE_VERSION:-7-alpine}
     container_name: event-manager-redis
-    hostname: event-manager-redis
+    hostname: redis
     restart: unless-stopped
     # No AOF; RDB at most every 15m if keys changed (Sidekiq queue may be replay-lost on hard crash).
     command:
@@ -49,7 +49,7 @@ services:
       retries: 5
 
   sidekiq:
-    image: ghcr.io/romkey/pdxhackerspace-eventmanager:${IMAGE_VERSION:-latest}
+    image: ghcr.io/pdxhackerspace/event-manager:${IMAGE_VERSION:-latest}
     container_name: event-manager-sidekiq
     hostname: event-manager-sidekiq
     restart: unless-stopped

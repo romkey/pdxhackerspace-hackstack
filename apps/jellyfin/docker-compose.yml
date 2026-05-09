@@ -28,7 +28,7 @@ services:
       start_period: 60s
     networks:
       - proxy
-      - mdns
+#      - mdns
       - db
       - hass
 networks:

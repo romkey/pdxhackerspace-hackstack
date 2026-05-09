@@ -1,0 +1,52 @@
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:main-stable
+    hostname: litellm
+    container_name: litellm
+    restart: unless-stopped
+#    ports:
+#      - "4000:4000"
+    volumes:
+      - ./config/config.yaml:/app/config.yaml
+    env_file:
+      - .env
+    environment:
+      - REDIS_URL=redis://redis:6379
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - proxy
+      - db
+      - redis
+      - mail
+
+  redis:
+    image: redis:7-alpine
+    container_name: litellm-redis
+    command: redis-server --save 3600 1 --appendonly no
+    volumes:
+      - ../../lib/litellm/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - redis
+
+networks:
+  redis:
+    name: litellm-redis-net
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  db:
+    name: postgres-net
+    external: true
+  mail:
+    name: postfix-net
+    external: true
+    
