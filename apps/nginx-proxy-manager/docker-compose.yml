@@ -4,6 +4,10 @@ services:
     container_name: nginx-proxy-manager
     hostname: nginx-proxy-manager
     restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
 # ports must be exposed
 # 81 must be exposed to allow initial configuration
 # 80 and 443 must be exposed for proxy operation

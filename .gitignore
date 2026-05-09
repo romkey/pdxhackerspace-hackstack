@@ -16,6 +16,9 @@ log/*
 run/*
 local/
 
+# Written by bin/install-audio-satellite.sh when AirPlay is enabled
+bin/.install-audio-satellite-airplay
+
 # [apps] apps/access-control-webhook/.gitignore
 apps/access-control-webhook/config/.ssh/
 apps/access-control-webhook/config/hooks.json
@@ -104,6 +107,9 @@ experiments/influxdb/config/influx-configs
 
 # [experiments] experiments/llama-router/.gitignore
 experiments/llama-router/.env
+
+# [experiments] experiments/mediawiki/.gitignore
+experiments/mediawiki/.env
 
 # [experiments] experiments/nextcloud/.gitignore
 experiments/nextcloud/.env

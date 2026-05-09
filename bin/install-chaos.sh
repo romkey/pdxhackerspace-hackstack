@@ -1,15 +1,24 @@
 #!/bin/sh
 #
 # install-chaos.sh
-# Configures and starts all core and chaos-host services in dependency order.
-# Also installs and enables CUPS for local printing.
+# Two-phase install: (1) setup configs and system packages without starting
+# containers; (2) start with "start" after .env/config are ready.
 #
 # All networks used by services in this script are created by services within
-# this script. No external prerequisites required.
+# this script once you run the start phase. No external prerequisites required.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 . "$SCRIPT_DIR/lib.sh"
+
+case "${1:-}" in
+    "") MODE=configure ;;
+    start) MODE=start ;;
+    *)
+        two_phase_usage
+        exit 1
+        ;;
+esac
 
 # ============================================================
 # Service list in dependency order:
@@ -97,20 +106,28 @@ mopidy
 db-backup
 "
 
-echo "==> Installing system packages..."
-sudo apt-get install -y cups
-sudo systemctl enable --now cups
-echo "CUPS installed and enabled."
-echo ""
+if [ "$MODE" = "configure" ]; then
+    echo "==> Phase 1: setup (no Docker containers will be started)"
+    echo ""
 
-echo "==> Configuring all apps..."
-for app in $CHAOS_APPS; do
-    echo "  Configuring $app..."
-    configure_app "$app"
-done
+    echo "==> Installing system packages..."
+    sudo apt-get install -y cups
+    sudo systemctl enable --now cups
+    echo "CUPS installed and enabled."
+    echo ""
 
-echo ""
-echo "==> Starting apps in dependency order..."
+    echo "==> Configuring all apps..."
+    for app in $CHAOS_APPS; do
+        echo "  Configuring $app..."
+        configure_app "$app"
+    done
+
+    print_config_checklist $CHAOS_APPS
+    echo "Setup phase complete."
+    exit 0
+fi
+
+echo "==> Phase 2: starting apps in dependency order..."
 for app in $CHAOS_APPS; do
     start_app "$app"
 done

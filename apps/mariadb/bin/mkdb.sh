@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# MySQL/MariaDB single-quoted string (user name, password).
+mysql_escape_sq() {
+    printf '%s' "${1//\'/\'\'}"
+}
+
+# Backtick-quoted identifier (database name).
+mysql_ident_bt() {
+    printf '`%s`' "${1//\`/\`\`}"
+}
+
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <application name>"
     exit 1
@@ -48,14 +58,15 @@ fi
 echo "✓ MariaDB container is running"
 echo
 
+eu=$(mysql_escape_sq "$USER")
+ep=$(mysql_escape_sq "$PASSWORD")
+dbq=$(mysql_ident_bt "$DATABASE")
+
+sql="CREATE USER IF NOT EXISTS '${eu}'@'%' IDENTIFIED BY '${ep}'; CREATE DATABASE IF NOT EXISTS ${dbq}; GRANT ALL PRIVILEGES ON ${dbq}.* TO '${eu}'@'%'; FLUSH PRIVILEGES;"
+
 echo "1. creating user, database, and grants"
 echo "    docker compose -f $COMPOSE_FILE exec -T mariadb mariadb -u root -p*** ..."
-if docker compose -f "$COMPOSE_FILE" exec -T mariadb mariadb -u root -p"${MARIADB_ROOT_PASSWORD}" << EOF
-CREATE USER IF NOT EXISTS '${USER}'@'%' IDENTIFIED BY '${PASSWORD}';
-CREATE DATABASE IF NOT EXISTS \`${DATABASE}\`;
-GRANT ALL PRIVILEGES ON \`${DATABASE}\`.* TO '${USER}'@'%';
-FLUSH PRIVILEGES;
-EOF
+if docker compose -f "$COMPOSE_FILE" exec -T mariadb mariadb -u root -p"${MARIADB_ROOT_PASSWORD}" -e "$sql"
 then
     echo "    ✓ User, database, and grants applied"
 else

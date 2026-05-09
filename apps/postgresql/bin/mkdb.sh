@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# PostgreSQL identifiers (role/database names) must be double-quoted when they contain "-" etc.
+psql_ident() {
+    printf '"%s"' "${1//\"/\"\"}"
+}
+
+# Single-quoted SQL string literal (PASSWORD).
+psql_literal() {
+    printf "'%s'" "${1//\'/\'\'}"
+}
+
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <application name>"
     exit 1
@@ -65,9 +75,8 @@ fi
 
 echo "3. setting user password"
 echo "    Setting password for ${USER}..."
-if docker compose -f "$COMPOSE_FILE" exec -T postgresql psql -U "${POSTGRES_USER}" -d postgres << EOF
-ALTER ROLE ${USER} WITH PASSWORD '${PASSWORD}';
-EOF
+alter_sql="ALTER ROLE $(psql_ident "$USER") WITH PASSWORD $(psql_literal "$PASSWORD");"
+if docker compose -f "$COMPOSE_FILE" exec -T postgresql psql -U "${POSTGRES_USER}" -d postgres -c "$alter_sql"
 then
     echo "    ✓ Password set successfully"
 else
