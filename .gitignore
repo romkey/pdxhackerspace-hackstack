@@ -55,6 +55,9 @@ apps/invidious/config/sql/
 # [apps] apps/jellyfin/.gitignore
 apps/jellyfin/config/
 
+# [apps] apps/litellm/.gitignore
+apps/litellm/config/config.yaml
+
 # [apps] apps/mopidy/.gitignore
 apps/mopidy/config/mopidy.conf
 
