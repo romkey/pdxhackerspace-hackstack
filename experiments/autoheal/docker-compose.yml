@@ -1,0 +1,11 @@
+services:
+  autoheal:
+    image: willfarrell/autoheal:${IMAGE_VERSION:-latest}
+    container_name: autoheal
+    hostname: autoheal
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro

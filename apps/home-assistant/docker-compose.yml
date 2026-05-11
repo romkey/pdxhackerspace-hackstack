@@ -21,8 +21,8 @@ services:
 #      mdns:
 #      llama:
 #      caddy:
-#      lan:
-#        ipv4_address: ${IPV4_ADDRESS}
+      lan:
+        ipv4_address: ${IPV4_ADDRESS}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
@@ -54,8 +54,15 @@ networks:
     external: true
     name: llama-net
   lan:
-    external: true
     name: lan_macvlan
+    driver: macvlan
+    driver_opts: 
+      parent: enp45s0                          # your host's NIC
+    ipam:
+      config:
+        - subnet: 192.168.12.0/24
+          gateway: 192.168.12.1
+          ip_range: 192.168.12.0/24        # optional: restricts the pool to .208-.215
   caddy:
     external: true
     name: caddy-home-assistant-liar-net
