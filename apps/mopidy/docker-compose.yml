@@ -8,11 +8,11 @@ services:
     privileged: true
     networks:
       - proxy
-      - mdns
+#      - mdns
     volumes:
       - ../../lib/mopidy:/app:rw
       - ../../run/mopidy:/app/cache
-      - ./config:/config:ro
+      - ./config:/config
       - /media/nas/music:/media
     user: 84044:audio
     ports:

@@ -9,7 +9,7 @@ services:
       - 3000:8080
     networks:
       - proxy
-      - llama
+#      - llama
     volumes:
       - ../../lib/openwebui:/app/backend/data
     env_file:

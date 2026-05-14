@@ -2,19 +2,9 @@
 #     docker compose up postfix -d
 #     docker compose exec postfix mailq
 services:
-  postfix-base: &base
-    image: boky/postfix:${IMAGE_VERSION:-latest}
-    restart: "no"
-    volumes:
-      - ../../lib/postfix/spool:/var/spool/postfix:rw
-      - ../../lib/postfix/sasldb2:/etc/sasldb2
-#      - ../../lib/postfix/sasl:/etc/sasl2
-    env_file:
-      - .env
-
   postfix:
-    <<: *base
-    hostname: postfix
+    image: boky/postfix:${IMAGE_VERSION:-latest}
+    hostname: mail-relay
     container_name: postfix
     restart: unless-stopped
     ports:
@@ -22,6 +12,12 @@ services:
       - 587:587
     networks:
       - mail
+    volumes:
+      - ../../lib/postfix/spool:/var/spool/postfix:rw
+      - ../../lib/postfix/sasldb2:/etc/sasldb2
+#      - ../../lib/postfix/sasl:/etc/sasl2
+    env_file:
+      - .env
     healthcheck:
       test:
         [
@@ -32,12 +28,6 @@ services:
       timeout: 5s
       retries: 3
       start_period: 30s
-
-  mailq:
-    <<: *base
-    container_name: mailq
-    restart: "no"
-    command: mailq
 
 networks:
   mail:

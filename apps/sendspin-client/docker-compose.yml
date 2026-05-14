@@ -12,6 +12,6 @@ services:
       - .env
     command: >
       --daemon
-      --server ${SENDSPIN_SERVER}
+      --url ${SENDSPIN_SERVER}
       --name "${SENDSPIN_NAME}"
       --id ${SENDSPIN_ID}

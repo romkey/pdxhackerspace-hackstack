@@ -1,0 +1,57 @@
+services:
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    hostname: redis
+    networks:
+      - redis
+
+  web:
+    image: ghcr.io/romkey/pdxhackerspace-gunky:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    command: ["./bin/rails", "server", "-b", "0.0.0.0"]
+    hostname: gunky
+    container_name: gunky
+
+#    ports:
+#      - "${PORT:-80}:80"
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - ../../lib/gunky:/rails/storage
+    networks:
+      - redis
+      - proxy
+      - db
+#      - cups
+
+  sidekiq:
+    image: ghcr.io/romkey/pdxhackerspace-gunky:${IMAGE_TAG:-latest}
+    command: bundle exec sidekiq
+    restart: unless-stopped
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - ../../lib/gunky:/rails/storage
+    networks:
+      - redis
+      - proxy
+      - db
+#      - cups
+
+networks:
+  redis:
+    name: gunky-redis-net
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  db:
+    name: postgres-net
+    external: true
+  cups:
+    name: cups-net
+    external: true

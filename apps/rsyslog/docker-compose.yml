@@ -10,6 +10,7 @@ services:
       - ./rsyslog.conf:/etc/rsyslog.conf
       - ./rsyslog.d:/etc/rsyslog.d
       - ../../log/rsyslog:/var/log
+      - ./scripts:/scripts
     env_file:
       - .env
     labels:

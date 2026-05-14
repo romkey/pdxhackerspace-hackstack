@@ -1,31 +1,23 @@
 services:
   backrest:
-    image: garethgeorge/backrest:${IMAGE_VERSION:-latest}
+    image: garethgeorge/backrest
     container_name: backrest
     hostname: backrest
     volumes:
       - ./config:/config
       - ../../lib/backrest:/data
-      - ${BACKREST_CACHE_PATH}:/cache
-      - ${BACKREST_REPOS_PATH}:/repos
-      - ${BACKREST_USERDATA_PATH:-/opt}:/userdata
-      - ${BACKREST_USERETC_PATH:-/etc}:/useretc
-      - ${BACKREST_USERHOME_PATH:-/home}:/userhome
+      - /backups/chaos/backrest/cache:/cache
+      - /backups/chaos/backrest/repos:/repos
+      - /opt/hackstack:/userdata
+      - /etc:/useretc
+      - /home:/userhome
     env_file:
       - .env
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:9898/ >/dev/null || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-    networks:
-      - proxy
 #    ports:
 #      - 9898:9898
 networks:
-  proxy:
+  default:
     external: true
     name: nginx-proxy-net
 volumes:
@@ -33,5 +25,5 @@ volumes:
     driver: local
     driver_opts:
       type: nfs
-      o: nfsvers=4,addr=nas.cats,rw
+      o: nfsvers=4,addr=nas.ctrlh,rw
       device: ":/backups/ummon/restic"

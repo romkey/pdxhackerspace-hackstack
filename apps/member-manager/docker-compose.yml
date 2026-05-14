@@ -2,7 +2,7 @@ services:
   redis:
     image: redis:${REDIS_IMAGE_VERSION:-7-alpine}
     container_name: member-manager-redis
-    hostname: member-manager-redis
+    hostname: redis
     restart: unless-stopped
     # No AOF; RDB at most every 15m if keys changed (Sidekiq queue may be replay-lost on hard crash).
     command:
