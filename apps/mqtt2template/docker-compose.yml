@@ -1,0 +1,53 @@
+services:
+  mqtt2template:
+    build: ./mqtt2template
+    restart: unless-stopped
+    container_name: mqtt2template
+    hostname: mqtt2template
+    networks:
+      - mqtt
+    volumes:
+      - ./config/config.json:/config/config.json
+      - ../../lib/mqtt2template/templates:/templates
+      - ../../lib/mqtt2template/websites/outside:/output/outside
+      - ../../lib/mqtt2template/websites/printers:/output/printers
+    env_file:
+      - .env
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+
+  mqtt2template-nginx:
+    image: nginx:latest
+    container_name: mqtt2template-nginx
+    hostname: mqtt2template-nginx
+    restart: unless-stopped
+    networks:
+      - proxy
+    volumes:
+     - ../../lib/mqtt2template/websites/outside:/usr/share/nginx/html/outside:ro
+     - ../../lib/mqtt2template/websites/printers:/usr/share/nginx/html/printers:ro
+     - ../../lib/home-assistant/websites/printers:/usr/share/nginx/html/printers/images:ro
+     - ./config/nginx.conf:/etc/nginx/nginx.conf
+     - ./config/sites:/etc/nginx/sites
+     - ../../log/mqtt2template:/var/log/nginx
+    env_file:
+      - .env
+
+#  mqtt2template-rotater:
+#    build: ./rotater
+#    restart: unless-stopped
+#    container_name: mqtt2rotater
+#    volumes:
+#      - ./config:/config
+#      - ../../lib/home-assistant/websites/printers:/input
+#      - ../../lib/mqtt2template/websites/printers/images:/output
+#    labels:
+#      - "com.centurylinklabs.watchtower.enable=false"
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  mqtt:
+    external: true
+    name: mosquitto-net
