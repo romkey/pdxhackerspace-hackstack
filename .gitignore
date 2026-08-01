@@ -78,9 +78,6 @@ apps/peanut/config/settings.yml
 # [apps] apps/shairport-sync/.gitignore
 apps/shairport-sync/config/shairport-sync.conf
 
-# [apps] apps/snapserver/.gitignore
-apps/snapserver/config/snapcast.conf
-
 # [apps] apps/upsd/.gitignore
 apps/upsd/config/entrypoint.sh
 apps/upsd/config/ups.conf
@@ -123,3 +120,6 @@ experiments/rtlamr2mqtt/config/rtlamr2mqtt.yaml
 
 # [experiments] experiments/telegraf/.gitignore
 experiments/telegraf/config/telegraf.conf
+
+# [experiments] experiments/uptime-kuma/.gitignore
+experiments/uptime-kuma/.env
