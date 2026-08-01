@@ -1,0 +1,49 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:${IMAGE_VERSION:-2}
+    container_name: uptime-kuma
+    hostname: uptime-kuma
+    restart: unless-stopped
+    volumes:
+      - ../../lib/uptime-kuma:/app/data
+      # Only needed for "Docker Container" monitors. :ro does not limit what the
+      # Docker API allows, so leave it commented out unless those monitors are used.
+      # - /var/run/docker.sock:/var/run/docker.sock:ro
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "/app/extra/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+#   ports:
+#     - 3001:3001
+    networks:
+      - proxy
+      # Join the networks holding the services you want to reach by container name.
+      # - mariadb
+      # - postgres
+      # - mosquitto
+      # - hass
+      # - influxdb
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+# mariadb:
+#   external: true
+#   name: mariadb-net
+# postgres:
+#   external: true
+#   name: postgres-net
+# mosquitto:
+#   external: true
+#   name: mosquitto-net
+# hass:
+#   external: true
+#   name: hass-net
+# influxdb:
+#   external: true
+#   name: influxdb-net

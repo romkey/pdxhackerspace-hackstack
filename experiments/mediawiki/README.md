@@ -71,6 +71,48 @@ docker compose logs -f
 
 HTTP **`GET /`** on **`127.0.0.1:80`** via PHP inside the container (the official image does not ship `curl` at runtime).
 
+## Migrating from Wiki.js
+
+**`bin/migrate-wikijs.sh`** copies pages out of the **`apps/wiki`** (Wiki.js) PostgreSQL database, converts them from Markdown or HTML to wikitext with pandoc, and writes them into MediaWiki through its maintenance scripts so link tables and the search index stay consistent.
+
+Wiki.js database credentials are read from **`apps/wiki/.env`** if it exists, otherwise from the **`db:`** block of **`apps/wiki/config.yml`**.
+
+Requirements: `postgresql`, `wiki` and `mediawiki` containers running, MediaWiki already installed (`LocalSettings.php` in place), and either `pandoc` on the host or the ability to pull the **`pandoc/core`** image.
+
+Preview the page-title mapping without writing anything:
+
+```bash
+./bin/migrate-wikijs.sh --dry-run
+```
+
+Then migrate, optionally bringing Wiki.js uploads over as MediaWiki files:
+
+```bash
+./bin/migrate-wikijs.sh --assets
+```
+
+Useful options (`--help` lists them all):
+
+| Option | Effect |
+|---|---|
+| `--dry-run` | Print the title mapping and stop |
+| `--titles` | Title pages from the Wiki.js title instead of the page path |
+| `--prefix TEXT` | Prepend a prefix or namespace to every title, e.g. `Wiki:` |
+| `--include-unpublished` | Also migrate Wiki.js drafts |
+| `--locale CODE` | Migrate a locale other than `en` |
+| `--assets` | Export Wiki.js uploads and import them as files |
+| `--export-only` / `--import-only` | Split the run so converted wikitext can be reviewed first |
+| `--user NAME` | Attribute edits to an existing MediaWiki account |
+
+By default `guides/laser-cutter` becomes **`Guides/Laser cutter`**, and links between migrated pages are retargeted at the new titles. Converted files are left in **`../../run/mediawiki/wikijs-migration`** so a run can be reviewed or repeated; re-running is safe, since importing identical text is a no-op.
+
+Known limits:
+
+- Pages that are neither `markdown` nor `html` in Wiki.js (for example `asciidoc`) are reported and skipped.
+- Section anchors keep their Wiki.js spelling, so a link to `#ppe` may need to become `#PPE` to match MediaWiki's heading anchors.
+- Page history, comments, users and permissions are not migrated; each page arrives as a single revision.
+- `--assets` needs uploads enabled (`$wgEnableUploads`) and flattens Wiki.js folders, since MediaWiki file names are global. Colliding names are reported and skipped.
+
 ## Backup
 
 - MariaDB: include your wiki database in normal DB backups; **`mkdb.sh`** can add **`BACKUP_DATABASE_URLS`** to `.env`.
