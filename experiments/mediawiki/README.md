@@ -52,6 +52,15 @@ Set **`IMAGE_VERSION`** if you pin a tag. Optionally set **`TZ`**.
 
 ## Usage
 
+From the repo root:
+
+```bash
+bin/install-experimental.sh        # copy .env, set TZ
+bin/install-experimental.sh start  # after mkdb.sh and proxy/mariadb are up
+```
+
+Or manually:
+
 ```bash
 docker compose up -d
 docker compose down
@@ -60,7 +69,7 @@ docker compose logs -f
 
 ## Healthcheck
 
-HTTP **`GET /`** on **`127.0.0.1:80`** inside the container.
+HTTP **`GET /`** on **`127.0.0.1:80`** via PHP inside the container (the official image does not ship `curl` at runtime).
 
 ## Backup
 
