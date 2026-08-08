@@ -11,7 +11,8 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/ -o /dev/null || exit 1"]
+      # Official image has PHP but not curl/wget at runtime.
+      test: ["CMD-SHELL", "php -r \"exit(@file_get_contents('http://127.0.0.1/') === false ? 1 : 0);\""]
       interval: 30s
       timeout: 10s
       retries: 3
