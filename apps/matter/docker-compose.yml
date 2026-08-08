@@ -12,8 +12,11 @@ services:
     env_file:
       - .env
     networks:
-      - hass
-      - mdns
+      hass:
+#      mdns:
+      lan:
+        ipv4_address: ${IPV4_ADDRESS}
+
     healthcheck:
       test:
         [
@@ -28,6 +31,16 @@ networks:
   hass:
     name: hass-net
     external: true
-  mdns:
-    external: true
-    name: mdns-net
+#  mdns:
+#    external: true
+#    name: mdns-net
+  lan:
+    name: lan_macvlan
+    driver: macvlan
+    driver_opts: 
+      parent: enp45s0                          # your host's NIC
+    ipam:
+      config:
+        - subnet: 192.168.12.0/24
+          gateway: 192.168.12.1
+          ip_range: 192.168.12.0/24        # optional: restricts the pool to .208-.215

@@ -26,6 +26,7 @@ services:
     image: glitchtip/glitchtip:${IMAGE_VERSION:-latest}
     container_name: glitchtip
     hostname: glitchtip
+    command: ./bin/run-migrate-and-runserver.sh
     restart: unless-stopped
     volumes:
       - ../../lib/glitchtip/uploads:/code/uploads
