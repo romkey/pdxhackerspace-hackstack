@@ -8,6 +8,7 @@ services:
       - proxy
       - db
       - mariadb
+      - qdrant
     volumes:
       - ../../lib/statping:/app
 #    ports:
@@ -29,4 +30,10 @@ networks:
     external: true
   mariadb:
     name: mariadb-net
+    external: true
+  qdrant:
+    name: qdrant-net
+    external: true
+  postfix:
+    name: postfix-net
     external: true
