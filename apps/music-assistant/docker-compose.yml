@@ -19,9 +19,10 @@ services:
 #      - proxy
 #      - mdns
 #      - hass
-    ports:
-      - 8095:8095
-      - 8096:8096
+#    ports:
+#      - 8095:8095
+#      - 8096:8096
+#      - 8097:8097
     # Use GET (wget -qO-), not wget --spider — spider sends HEAD and MA logs it as unhandled.
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8095/ >/dev/null || exit 1"]

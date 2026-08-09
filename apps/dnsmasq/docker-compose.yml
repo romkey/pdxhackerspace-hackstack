@@ -15,8 +15,9 @@ services:
       - "com.centurylinklabs.watchtower.enable=false"
       - "autoheal=true"
     healthcheck:
-      test: ["CMD-SHELL", "pidof dnsmasq >/dev/null || exit 1"]
+#      test: ["CMD-SHELL", "pidof dnsmasq >/dev/null || exit 1"]
+      test: ["CMD-SHELL", "nslookup -timeout=2 staging.ctrlh 127.0.0.1 >/dev/null && dig +time=2 +tries=1 @127.0.0.1 google.com >/dev/null || exit 1"]
       interval: 30s
-      timeout: 5s
+      timeout: 8s
       retries: 3
       start_period: 10s

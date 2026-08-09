@@ -4,16 +4,26 @@ services:
     container_name: cups
     hostname: cups
     restart: unless-stopped
+    entrypoint: /entrypoint.sh
     volumes:
       - /var/run/dbus:/var/run/dbus
-      - ../../lib/cups:/var/lib/cups
-      - ./config/cupsd.conf:/etc/cups/cupsd.conf:ro
+      - ../../lib/cups/etc:/etc/cups
+#      - ../../lib/cups/printers.conf:/etc/cups/printers.conf
+      - ../../lib/cups/lib:/var/lib/cups
+#      - ../../lib/cups/ppds:/etc/cups/ppds
+      - ../../lib/cups/custom-filters:/custom-filters
+#      - ./config/cupsd.conf:/etc/cups/cupsd.conf:ro
+      - ./config/entrypoint.sh:/entrypoint.sh:ro
       - ./ppds:/usr/share/cups/model/custom:ro
-#   ports:
-#     - 631:631
+    ports:
+      - 631:631
     networks:
-      - cups
-      - proxy
+      cups:
+      proxy:
+      lan:
+        ipv4_address: ${IPV4_ADDRESS}
+    env_file:
+      - .env
     healthcheck:
       test: ["CMD-SHELL", "curl -fSs http://localhost:631/ || exit 1"]
       interval: 30s
@@ -27,3 +37,14 @@ networks:
   proxy:
     external: true
     name: nginx-proxy-net
+  lan:
+    name: lan_macvlan
+    external: true
+    driver: macvlan
+    driver_opts: 
+      parent: enp45s0                          # your host's NIC
+    ipam:
+      config:
+        - subnet: 192.168.12.0/24
+          gateway: 192.168.12.1
+          ip_range: 192.168.12.0/24        # optional: restricts the pool to .208-.215

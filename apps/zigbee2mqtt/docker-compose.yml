@@ -9,8 +9,8 @@ services:
     volumes:
       - ./config:/app/data
       - /run/udev:/run/udev:ro
-#    ports:
-#      - 8080:8080
+    ports:
+      - 8080:8080
     env_file:
       - .env
     healthcheck:

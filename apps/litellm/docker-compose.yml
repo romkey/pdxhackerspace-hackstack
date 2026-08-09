@@ -49,4 +49,3 @@ networks:
   mail:
     name: postfix-net
     external: true
-    
