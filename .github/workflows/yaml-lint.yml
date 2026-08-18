@@ -1,0 +1,51 @@
+name: YAML Lint
+
+on:
+  pull_request:
+    paths:
+      - '**/docker-compose.yml'
+      - '**/docker-compose.*.yml'
+      - '.github/workflows/yaml-lint.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - '**/docker-compose.yml'
+      - '**/docker-compose.*.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: YAML Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Create yamllint config
+        run: |
+          cat > .yamllint.yml << 'EOF'
+          extends: relaxed
+          rules:
+            line-length:
+              max: 200
+            truthy:
+              check-keys: false
+            comments:
+              min-spaces-from-content: 1
+            indentation:
+              spaces: 2
+              indent-sequences: true
+          EOF
+
+      - name: Lint docker-compose files
+        run: |
+          find . -name 'docker-compose*.yml' -not -path './.github/*' | xargs yamllint -c .yamllint.yml || true
+        continue-on-error: true  # Don't fail on lint warnings

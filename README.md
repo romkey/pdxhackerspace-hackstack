@@ -1,5 +1,10 @@
 # PDX Hackerspace Docker Hackstack
 
+[![YAML Lint](https://img.shields.io/github/actions/workflow/status/romkey/pdxhackerspace-hackstack/yaml-lint.yml?branch=main&label=YAML%20Lint)](https://github.com/romkey/pdxhackerspace-hackstack/actions/workflows/yaml-lint.yml)
+[![Docker Compose Lint](https://img.shields.io/github/actions/workflow/status/romkey/pdxhackerspace-hackstack/docker-compose-lint.yml?branch=main&label=Docker%20Compose%20Lint)](https://github.com/romkey/pdxhackerspace-hackstack/actions/workflows/docker-compose-lint.yml)
+[![License: MIT](https://img.shields.io/github/license/romkey/pdxhackerspace-hackstack)](LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+
 This repo configures a set of services that PDX Hackerspace uses to provide services for its members and for infrastructure, administration and yes, fun and entertainment.
 
 Hackstack uses Docker (with compose) to 
