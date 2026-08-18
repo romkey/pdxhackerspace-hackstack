@@ -5,7 +5,7 @@ services:
     hostname: weather-nginx
     restart: unless-stopped
     volumes:
-      - /home/weather/weewx-report:/usr/share/nginx/html:ro
+      - ../../lib/weewx/public_html:/usr/share/nginx/html:ro
       - ../../log/weather-nginx:/opt/log/nginx
     networks:
       - proxy

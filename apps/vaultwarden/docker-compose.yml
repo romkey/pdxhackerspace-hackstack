@@ -7,6 +7,7 @@ services:
     networks:
       - proxy
       - db
+      - mail
     volumes:
       - ../../lib/vaultwarden:/data
     env_file:
@@ -24,3 +25,6 @@ networks:
   db:
     external: true
     name: postgres-net
+  mail:
+    external: true
+    name: postfix-net

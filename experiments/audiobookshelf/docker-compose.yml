@@ -1,0 +1,40 @@
+services:
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    hostname: audiobookshelf
+    container_name: audiobookshelf
+#    ports:
+#      - 13378:80
+    restart: unless-stopped
+    volumes:
+      # These volumes are needed to keep your library persistent
+      # and allow media to be accessed by the ABS server.
+      - ../../lib/audiobookshelf/config:/config
+      - ../../lib/audiobookshelf/metadata:/metadata
+      # Audiobook and podcast libraries are NFS shares (see volumes: below,
+      # configured via .env)
+      - audiobooks:/audiobooks
+      - podcasts:/podcasts
+    env_file:
+      - .env
+    networks:
+      - proxy
+
+volumes:
+  audiobooks:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${AUDIOBOOKS_NFS_HOST},rw,${NFS_MOUNT_OPTS}"
+      device: ":${AUDIOBOOKS_NFS_PATH}"
+  podcasts:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${PODCASTS_NFS_HOST},rw,${NFS_MOUNT_OPTS}"
+      device: ":${PODCASTS_NFS_PATH}"
+
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true

@@ -1,0 +1,91 @@
+services:
+  redis:
+    image: redis:${REDIS_IMAGE_VERSION:-7-alpine}
+    container_name: member-zone-redis
+    hostname: redis
+    restart: unless-stopped
+    # No AOF; RDB at most every 15m if keys changed (Sidekiq queue may be replay-lost on hard crash).
+    command:
+      - redis-server
+      - --appendonly
+      - "no"
+      - --save
+      - "900"
+      - "1"
+    volumes:
+      - ../../lib/member-zone/redis:/data
+    networks:
+      - redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    image: ghcr.io/pdxhackerspace/member-zone:${IMAGE_VERSION:-latest}
+    container_name: member-zone
+    hostname: member-zone
+    command: ./bin/rails server -b 0.0.0.0 -p 3000
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - db
+      - proxy
+      - redis
+      - mail
+    volumes:
+      - ../../log/rsyslog/access:/tmp/access:ro
+      - ../../lib/member-zone/storage:/rails/storage:rw
+      - ../../lib/member-zone/access-backups:/access-backups:rw
+      - ./scripts:/opt/access:rw
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/health/liveness || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  sidekiq:
+    image: ghcr.io/pdxhackerspace/member-zone:${IMAGE_VERSION:-latest}
+    container_name: member-zone-sidekiq
+    hostname: member-zone-sidekiq
+    command: bundle exec sidekiq
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - db
+      - redis
+      - mail
+    volumes:
+      - ../../log/rsyslog/access:/tmp/access:ro
+      - ../../lib/member-zone/storage:/rails/storage:rw
+      - ../../lib/member-zone/access-backups:/access-backups:rw
+      - ./scripts:/opt/access:rw
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bundle exec rails runner 'exit(Sidekiq::ProcessSet.new.size > 0 ? 0 : 1)' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  redis:
+    name: member-zone-redis-net
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  db:
+    external: true
+    name: postgres-net
+  mail:
+    external: true
+    name: postfix-net

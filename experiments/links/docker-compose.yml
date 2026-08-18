@@ -1,0 +1,87 @@
+name: links-server
+
+services:
+  web:
+    image: ${LINKS_IMAGE:-ghcr.io/romkey/pdxhackerspace-links:latest}
+    container_name: links-web
+    hostname: links
+    restart: unless-stopped
+#    ports:
+#      - "3000:80"
+    volumes:
+      - ./apps:/apps
+      - ../../lib/links/storage:/rails/storage
+    env_file:
+      - .env
+    environment:
+      RAILS_ENV: production
+      CUPS_SERVER: ${CUPS_SERVER:-localhost:631}
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+#      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      APP_VERSION: ${APP_VERSION:-dev}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT:-production}
+      SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-0}
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - proxy
+      - db
+      - cups
+      - redis
+
+  sidekiq:
+    image: ${LINKS_IMAGE:-ghcr.io/romkey/pdxhackerspace-links:latest}
+    restart: unless-stopped
+    container_name: links-sidekiq
+    command: bundle exec sidekiq
+    volumes:
+      - ./apps:/apps
+      - ../../lib/links/storage:/rails/storage
+    env_file:
+      - .env
+    environment:
+      RAILS_ENV: production
+      CUPS_SERVER: ${CUPS_SERVER:-localhost:631}
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+#      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      APP_VERSION: ${APP_VERSION:-dev}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT:-production}
+      SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-0}
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - proxy
+      - db
+      - cups
+      - redis
+
+  redis:
+    image: redis:8
+    restart: unless-stopped
+    container_name: links-redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+    networks:
+      - redis
+
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  db:
+    name: postgres-net
+    external: true
+  cups:
+    name: cups-net
+    external: true
+  redis:
+    name: links-redis-net
+    
