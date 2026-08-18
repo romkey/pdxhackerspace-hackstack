@@ -2,6 +2,7 @@
 
 [![YAML Lint](https://img.shields.io/github/actions/workflow/status/romkey/pdxhackerspace-hackstack/yaml-lint.yml?branch=main&label=YAML%20Lint)](https://github.com/romkey/pdxhackerspace-hackstack/actions/workflows/yaml-lint.yml)
 [![Docker Compose Lint](https://img.shields.io/github/actions/workflow/status/romkey/pdxhackerspace-hackstack/docker-compose-lint.yml?branch=main&label=Docker%20Compose%20Lint)](https://github.com/romkey/pdxhackerspace-hackstack/actions/workflows/docker-compose-lint.yml)
+[![Gitignore](https://img.shields.io/github/actions/workflow/status/romkey/pdxhackerspace-hackstack/concatenate_gitignore.yml?branch=main&label=Gitignore)](https://github.com/romkey/pdxhackerspace-hackstack/actions/workflows/concatenate_gitignore.yml)
 [![License: MIT](https://img.shields.io/github/license/romkey/pdxhackerspace-hackstack)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
 
