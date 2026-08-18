@@ -10,10 +10,11 @@ services:
     volumes:
       - ../../lib/netboot/config:/config # optional
       - ../../lib/netboot/assets:/assets # optional
+    # hackstack: ports required (TFTP/PXE only; web UI via nginx-proxy-net)
     ports:
-      - 3000:3000  # optional, destination should match ${WEB_APP_PORT} variable above.
+#      - 3000:3000  # optional, destination should match ${WEB_APP_PORT} variable above.
       - 69:69/udp
-      - 3080:80  # optional, destination should match ${NGINX_PORT} variable above.
+#      - 3080:80  # optional, destination should match ${NGINX_PORT} variable above.
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/ || exit 1"]

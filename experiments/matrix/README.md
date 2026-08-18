@@ -1,4 +1,4 @@
-# matrix
+# matrix (experiment)
 
 Self-hosted Matrix homeserver ([Synapse](https://github.com/element-hq/synapse)) with
 the [Element Web](https://github.com/element-hq/element-web) browser client.

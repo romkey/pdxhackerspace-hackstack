@@ -67,15 +67,11 @@ FORBIDDEN_DB_IMAGES = [
 
 # Exceptions for certain rules
 RESTART_EXCEPTIONS = {'bfg-repo-cleaner', 'mailq', 'postfix-base'}  # CLI tools and YAML anchors that shouldn't restart
-PORT_EXCEPTIONS = {
-    'nginx-proxy-manager',  # Needs ports for proxy
-    'mosquitto',            # MQTT broker
-    'postfix',              # Mail relay
-    'rsyslog',              # Syslog server
-    'upsd',                 # UPS daemon
-    'netboot',              # PXE boot
-    'dozzle',               # Agent needs port
-}
+# Published ports require `# hackstack: ports required` in the compose file (see Rule 12).
+PORT_EXCEPTIONS: set[str] = set()
+
+# Comment placed in docker-compose.yml to permit published ports (see validate_service Rule 12)
+PORTS_REQUIRED_MARKER = 'hackstack: ports required'
 HOST_MODE_EXCEPTIONS = {
     'snapserver',
     'shairport-sync', 
@@ -96,6 +92,34 @@ MULTI_SERVICE_EXCEPTIONS = {
     # Database variants for port exposure
     ('mariadb', 'mariadb-ports'): 'mariadb',
     ('postgresql', 'postgresql-ports'): 'postgresql',
+}
+
+# Explicit hostname/container_name overrides (service_dir, service_name) -> field -> value
+NAME_OVERRIDES = {
+    ('postfix', 'postfix'): {'hostname': 'mail-relay'},
+    ('weather', 'weather'): {'hostname': 'weather-nginx'},
+    ('dozzle-agent', 'agent'): {'hostname': 'dozzle-agent', 'container_name': 'dozzle-agent'},
+    ('llm-orchestrator', 'orchestrator'): {
+        'hostname': 'llm-orchestrator',
+        'container_name': 'llm-orchestrator',
+    },
+    ('member-zone', 'web'): {'hostname': 'member-zone', 'container_name': 'member-zone'},
+    ('member-zone', 'sidekiq'): {
+        'hostname': 'member-zone-sidekiq',
+        'container_name': 'member-zone-sidekiq',
+    },
+    ('member-zone', 'redis'): {'container_name': 'member-zone-redis'},
+    ('event-manager', 'web'): {'hostname': 'event-manager', 'container_name': 'event-manager'},
+    ('event-manager', 'sidekiq'): {
+        'hostname': 'event-manager-sidekiq',
+        'container_name': 'event-manager-sidekiq',
+    },
+    ('event-manager', 'redis'): {'container_name': 'event-manager-redis'},
+    ('gunky', 'web'): {'hostname': 'gunky', 'container_name': 'gunky'},
+    ('links', 'web'): {'hostname': 'links', 'container_name': 'links-web'},
+    ('links', 'sidekiq'): {'container_name': 'links-sidekiq'},
+    ('links', 'redis'): {'container_name': 'links-redis'},
+    ('litellm', 'redis'): {'container_name': 'litellm-redis'},
 }
 
 # Environment variables that are allowed to be embedded (not from .env)
@@ -138,16 +162,18 @@ def validate_compose_file(file_path: Path, report: ValidationReport):
     if 'version' in data:
         report.error("no-version", "docker-compose files should not have a 'version' field", file_str)
     
-    # Rule: Check for .env.example if env_file is used
+    # Rule: Check for .env.example if env_file is used or compose references ${VAR}
     services = data.get('services', {})
     uses_env_file = any(
         svc.get('env_file') for svc in services.values() if svc
     )
-    if uses_env_file:
+    uses_compose_env_vars = bool(re.search(r'\$\{[A-Z_][A-Z0-9_]*', raw_content))
+    if uses_env_file or uses_compose_env_vars:
         env_example = compose_dir / '.env.example'
         if not env_example.exists():
+            reason = "using env_file" if uses_env_file else "referencing ${VAR} in compose"
             report.error("env-example-missing",
-                "Missing .env.example file (required when using env_file)",
+                f"Missing .env.example file (required when {reason})",
                 file_str)
     
     # Rule: Config directory naming convention
@@ -211,24 +237,25 @@ def validate_service(service_name: str, config: dict, file_path: Path,
     # Check for multi-service stack exceptions
     exception_key = (service_dir, service_name)
     allowed_prefix = MULTI_SERVICE_EXCEPTIONS.get(exception_key)
-    
-    if hostname and hostname != service_name:
-        # Allow if it matches the exception prefix pattern
-        if allowed_prefix and (hostname.startswith(allowed_prefix) or hostname == allowed_prefix):
-            pass  # Exception allowed
-        else:
-            report.error("name-match", 
-                f"hostname '{hostname}' should match service name '{service_name}'",
-                file_str, service_name)
-    
-    if container_name and container_name != service_name:
-        # Allow if it matches the exception prefix pattern
-        if allowed_prefix and (container_name.startswith(allowed_prefix) or container_name == allowed_prefix):
-            pass  # Exception allowed
-        else:
-            report.error("name-match",
-                f"container_name '{container_name}' should match service name '{service_name}'",
-                file_str, service_name)
+    name_override = NAME_OVERRIDES.get(exception_key, {})
+
+    def name_allowed(field: str, actual: str, expected: str) -> bool:
+        override = name_override.get(field)
+        if override is not None and actual == override:
+            return True
+        if allowed_prefix and (actual.startswith(allowed_prefix) or actual == allowed_prefix):
+            return True
+        return actual == expected
+
+    if hostname and not name_allowed('hostname', hostname, service_name):
+        report.error("name-match",
+            f"hostname '{hostname}' should match service name '{service_name}'",
+            file_str, service_name)
+
+    if container_name and not name_allowed('container_name', container_name, service_name):
+        report.error("name-match",
+            f"container_name '{container_name}' should match service name '{service_name}'",
+            file_str, service_name)
     
     # Rule 4: restart: unless-stopped
     restart = config.get('restart')
@@ -307,9 +334,14 @@ def validate_service(service_name: str, config: dict, file_path: Path,
     
     # Rule 12: Ports should be commented out (warning)
     ports = config.get('ports')
-    if ports and service_dir not in PORT_EXCEPTIONS:
+    ports_permitted = (
+        service_dir in PORT_EXCEPTIONS
+        or PORTS_REQUIRED_MARKER in raw_content
+    )
+    if ports and not ports_permitted:
         report.warning("no-ports",
-            f"Ports should typically be commented out (found: {ports})",
+            f"Ports should typically be commented out (found: {ports}); "
+            f"add `# {PORTS_REQUIRED_MARKER}` above `ports:` if exposure is required",
             file_str, service_name)
     
     # Rule 13-16: Volume path conventions

@@ -1,4 +1,4 @@
-# rtl_433
+# rtl_433 (experiment)
 
 RTL-SDR 433MHz sensor decoder
 

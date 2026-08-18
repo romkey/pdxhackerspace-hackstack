@@ -8,6 +8,12 @@ services:
       - .env
     networks:
       - mqtt
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f trimetd >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
 networks:
   mqtt:

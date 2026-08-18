@@ -1,4 +1,4 @@
-# camera2prusa
+# camera2prusa (experiment)
 
 Camera streaming to Prusa Connect
 

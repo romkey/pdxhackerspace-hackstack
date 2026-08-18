@@ -4,6 +4,7 @@ services:
     hostname: rsyslog
     container_name: rsyslog
     restart: unless-stopped
+    # hackstack: ports required
     ports:
       - 514:514
     volumes:

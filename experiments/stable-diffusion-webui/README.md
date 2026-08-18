@@ -1,4 +1,4 @@
-# stable-diffusion-webui
+# stable-diffusion-webui (experiment)
 
 Stable Diffusion image generation web interface
 

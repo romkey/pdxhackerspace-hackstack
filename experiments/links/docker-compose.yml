@@ -2,7 +2,7 @@ name: links-server
 
 services:
   web:
-    image: ${LINKS_IMAGE:-ghcr.io/romkey/pdxhackerspace-links:latest}
+    image: ghcr.io/romkey/pdxhackerspace-links:${IMAGE_VERSION:-latest}
     container_name: links-web
     hostname: links
     restart: unless-stopped
@@ -14,7 +14,7 @@ services:
     env_file:
       - .env
     environment:
-      RAILS_ENV: production
+      RAILS_ENV: ${RAILS_ENV:-production}
       CUPS_SERVER: ${CUPS_SERVER:-localhost:631}
       DATABASE_URL: ${DATABASE_URL}
       REDIS_URL: ${REDIS_URL}
@@ -31,9 +31,15 @@ services:
       - db
       - cups
       - redis
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:3000/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   sidekiq:
-    image: ${LINKS_IMAGE:-ghcr.io/romkey/pdxhackerspace-links:latest}
+    image: ghcr.io/romkey/pdxhackerspace-links:${IMAGE_VERSION:-latest}
     restart: unless-stopped
     container_name: links-sidekiq
     command: bundle exec sidekiq
@@ -43,7 +49,7 @@ services:
     env_file:
       - .env
     environment:
-      RAILS_ENV: production
+      RAILS_ENV: ${RAILS_ENV:-production}
       CUPS_SERVER: ${CUPS_SERVER:-localhost:631}
       DATABASE_URL: ${DATABASE_URL}
       REDIS_URL: ${REDIS_URL}
@@ -60,9 +66,15 @@ services:
       - db
       - cups
       - redis
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f sidekiq >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   redis:
-    image: redis:8
+    image: redis:${REDIS_IMAGE_VERSION:-8}
     restart: unless-stopped
     container_name: links-redis
     healthcheck:

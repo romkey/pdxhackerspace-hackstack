@@ -15,9 +15,15 @@ services:
       - .env
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f mqtt2template >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
   mqtt2template-nginx:
-    image: nginx:latest
+    image: nginx:${IMAGE_VERSION:-latest}
     container_name: mqtt2template-nginx
     hostname: mqtt2template-nginx
     restart: unless-stopped
@@ -32,6 +38,12 @@ services:
      - ../../log/mqtt2template:/var/log/nginx
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
 #  mqtt2template-rotater:
 #    build: ./rotater

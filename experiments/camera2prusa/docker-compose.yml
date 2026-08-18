@@ -8,6 +8,12 @@ services:
       - .env
     networks:
       - camera2prusa
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f camera2prusa >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
 networks:
   camera2prusa:

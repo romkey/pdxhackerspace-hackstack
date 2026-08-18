@@ -1,4 +1,4 @@
-# osticket
+# osticket (experiment)
 
 Open source help desk and ticketing (experiment).
 

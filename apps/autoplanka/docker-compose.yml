@@ -1,6 +1,6 @@
 services:
   auto_planka:
-    image: ghcr.io/romkey/auto_planka:latest
+    image: ghcr.io/romkey/auto_planka:${IMAGE_VERSION:-latest}
     container_name: auto_planka
     restart: unless-stopped
     volumes:
@@ -8,7 +8,7 @@ services:
     environment:
       - POSTGRESQL=${POSTGRESQL}
       # Path to config file (default: config.json)
-      - CONFIG_PATH=/config/config.json
+      - CONFIG_PATH=${CONFIG_PATH:-/config/config.json}
       # Seconds between sync runs (default: 60)
       - SLEEP_INTERVAL=${SLEEP_INTERVAL:-60}
       # Role for board membership: editor or viewer (default: editor)
@@ -19,6 +19,12 @@ services:
       - .env
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f auto_planka >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
 networks:
   default:

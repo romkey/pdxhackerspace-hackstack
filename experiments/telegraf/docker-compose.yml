@@ -14,6 +14,12 @@ services:
       - influxdb
       - db
       - mariadb
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f telegraf >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
 networks:
   influxdb:

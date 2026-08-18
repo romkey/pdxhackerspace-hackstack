@@ -14,6 +14,12 @@ services:
       - ./config:/etc/rtl_433
     networks:
       - mqtt
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f rtl_433 >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
 networks:
   mqtt:

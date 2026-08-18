@@ -1,4 +1,4 @@
-# avahi-mdns
+# avahi-mdns (experiment)
 
 mDNS/DNS-SD service discovery daemon
 

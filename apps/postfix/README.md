@@ -1,68 +1,43 @@
-# Postfix Mail Relay
+# postfix
 
-This service uses Postfix to operate a mail relay which forwards mail from other services to a relay service. It is not a general Mail Transfer Agent and is not meant for receiving or managing incoming email.
+Postfix mail relay for outbound email from Hackstack applications. The container hostname is `mail-relay` (service name remains `postfix`).
 
-With some effort you may be able to find a free or low cost service.
+## Configuration
 
-Running this mail relay allows you to configure only a single service with the credentials for the external mail relay service rather than configure each individual application with them. That reduces the likelihood they'll be compromised, and if you ever need to change them there's only a single place that needs to be done.
+Copy `.env.example` to `.env` and configure relay settings:
 
-See [bokysan/docker-postfix](https://github.com/bokysan/docker-postfix) for more information.
+```bash
+cp .env.example .env
+```
 
-## Relay Or No Relay
+See `config/` for Postfix configuration files mounted into the container.
 
-It's likely that your ISP blocks port 25, which means you'll need to forward mail to an external relay. Some mail services may provide free tiers; a web search will help turn those up.
+## Relay or no relay
+
+Document whether this instance relays to an upstream SMTP provider or delivers locally. Update `.env` and `config/` accordingly.
 
 ## SPF
 
-Adding SPF records to the DNS lets mail servers confirm that mail was sent from a server that's allowed to send email on this domain's behalf. Your mail relay service should provide assistance with this. Without correct SPF records you may find that your outgoing mail bounces or just silently fails to arrive at its destination.
+Ensure SPF records for domains you send mail from authorize this relay.
 
 ## Usage
 
-To start the service:
-```
-docker compose up postfix -d
-```
-To check the mail queue:
-```
-docker compose exec postfix mailq
+### Starting the service
+
+```bash
+docker compose up -d
 ```
 
-To create credentials for SMTP clients that want to use the relay:
-```
-echo PASSWORD | docker compose exec postfix saslpasswd2 -c -u ctrlh USERNAME
-```
-Note that the account is `USERNAME@ctrlh` in this case - using a domain name is necessary because intermediate mail relays may drop mail with unqualified names in it.
+### Stopping the service
 
-Each service should have its own credentials so that it can be managed independently of other services.
-
-### bin/mksmtp.sh
-
-`bin/mksmtp.sh` automates account creation.  It reads
-`POSTFIX_smtpd_sasl_local_domain` from `.env`, generates a random
-password, creates the SASL account, and prints all the parameters needed
-to configure the app:
-
-```sh
-bin/mksmtp.sh <app-name>
+```bash
+docker compose down
 ```
 
-Example output:
+### Viewing logs
 
-```
-================================================================
-SMTP credentials for: glitchtip
-================================================================
-  Host:     postfix
-  Port:     587
-  Username: glitchtip@mail-relay.example.com
-  Password: <generated>
-  URL:      smtp://glitchtip%40mail-relay.example.com:<generated>@postfix:587
-================================================================
+```bash
+docker compose logs -f
 ```
 
-Requires `pwgen` (`apt install pwgen`) and the postfix container to be running.
-
-To test credentials:
-```
-docker compose exec postfix testsaslauthd -u USERNAME@DOMAIN -p PASSWORD
-```
+Applications that send mail should join `postfix-net` and use hostname `mail-relay` (or service name `postfix` on that network).

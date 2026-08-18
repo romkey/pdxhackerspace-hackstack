@@ -8,6 +8,12 @@ services:
       - ./services:/etc/avahi/services
     networks:
       - mdns
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f avahi-daemon >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
 networks:
   mdns:

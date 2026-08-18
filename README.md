@@ -8,10 +8,9 @@
 
 This repo configures a set of services that PDX Hackerspace uses to provide services for its members and for infrastructure, administration and yes, fun and entertainment.
 
-Hackstack uses Docker (with compose) to 
+Hackstack uses Docker (with compose) to run each application in its own compose project under `/opt/docker`, with shared databases, reverse proxy, and backup infrastructure documented in the guides below.
 
 Hackstack's priorities are:
-- consistency - all applications follow similar conventions in how
   they are configured, managed, store data and are backed up
 - ease of management - Hackstack is meant to be manageable by users
   with basic Linux knowledge and without advanced Docker or

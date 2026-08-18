@@ -13,6 +13,12 @@ services:
       - ../../lib/rtlamr2mqtt/data:/var/lib/rtlamr2mqtt
     networks:
       - mqtt
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f rtlamr2mqtt >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
 networks:
   mqtt:

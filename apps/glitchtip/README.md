@@ -1,8 +1,9 @@
 # glitchtip
 
 [GlitchTip](https://glitchtip.com) is a Sentry-compatible self-hosted error
-tracking and uptime monitoring platform.  Unlike Sentry, it runs with only
-PostgreSQL and Redis — no ClickHouse, Kafka, or Snuba required.
+tracking and uptime monitoring platform. Unlike Sentry, it runs with only
+PostgreSQL and Redis — no ClickHouse, Kafka, or Snuba required. Use this
+stack instead of the removed `apps/sentry/` stub.
 
 ## Services
 

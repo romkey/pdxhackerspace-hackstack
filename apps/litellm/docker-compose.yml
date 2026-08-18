@@ -1,6 +1,6 @@
 services:
   litellm:
-    image: ghcr.io/berriai/litellm:main-stable
+    image: ghcr.io/berriai/litellm:${IMAGE_VERSION:-main-stable}
     hostname: litellm
     container_name: litellm
     restart: unless-stopped
@@ -11,7 +11,7 @@ services:
     env_file:
       - .env
     environment:
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
     command: ["--config", "/app/config.yaml", "--port", "4000"]
     depends_on:
       redis:
@@ -21,9 +21,15 @@ services:
       - db
       - redis
       - mail
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:4000/health/liveliness >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   redis:
-    image: redis:7-alpine
+    image: redis:${REDIS_IMAGE_VERSION:-7-alpine}
     container_name: litellm-redis
     command: redis-server --save 3600 1 --appendonly no
     volumes:
