@@ -5,7 +5,7 @@ autosave_on_changes false
 persistence true
 persistence_file /mosquitto/data/mosquitto.db
 
-password_file /mosquitto//config/mos_passwd
+password_file /mosquitto/config/mos_passwd
 
 log_type all
 log_dest file /mosquitto/log/mosquitto.log

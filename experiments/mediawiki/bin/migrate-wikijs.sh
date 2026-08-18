@@ -16,11 +16,10 @@ set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 MEDIAWIKI_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 REPO_ROOT="$(cd "$MEDIAWIKI_DIR/../.." && pwd)"
-APPS_ROOT="$REPO_ROOT/apps"
 
-WIKI_DIR="$APPS_ROOT/wiki"
-PG_COMPOSE="$APPS_ROOT/postgresql/docker-compose.yml"
-MW_COMPOSE="$MEDIAWIKI_DIR/docker-compose.yml"
+# shellcheck source=wikijs-lib.sh
+. "$SCRIPT_DIR/wikijs-lib.sh"
+
 WORK_DIR="$REPO_ROOT/run/mediawiki/wikijs-migration"
 
 LOCALE=en
@@ -34,6 +33,10 @@ DO_EXPORT=1
 DO_IMPORT=1
 FIX_LINKS=1
 DRY_RUN=0
+ATTRIBUTE=0
+ATTRIBUTE_BY=author
+USERS_FILE=""
+BOT_EDITS=1
 PANDOC_IMAGE="${PANDOC_IMAGE:-pandoc/core:latest}"
 MARKDOWN_FORMAT="${MARKDOWN_FORMAT:-gfm}"
 
@@ -51,9 +54,20 @@ Options:
                         deriving titles from the page path
   --include-unpublished Also migrate pages Wiki.js has not published
   --assets              Also export Wiki.js assets and import them as files
-  --user NAME           Attribute edits to an existing MediaWiki account
-                        (default: the MediaWiki maintenance system user)
+  --attribute           Credit each page to the MediaWiki account of its
+                        Wiki.js author, using the mapping written by
+                        migrate-wikijs-users.sh
+  --attribute-by author|creator
+                        Whether to credit the last editor of the page or the
+                        person who created it (default: $ATTRIBUTE_BY)
+  --users-file PATH     Account mapping to use with --attribute
+                        (default: users.tsv in the work directory)
+  --user NAME           Account for pages with no attribution, or for every
+                        page without --attribute (default: the MediaWiki
+                        maintenance system user)
   --summary TEXT        Edit summary (default: "$SUMMARY")
+  --no-bot              Do not mark the imported edits as bot edits, so they
+                        appear in Recent changes by default
   --no-fix-links        Leave Wiki.js internal links as external-style links
   --work-dir DIR        Export directory (default: $WORK_DIR)
   --export-only         Export and convert, but do not write to MediaWiki
@@ -74,8 +88,12 @@ while [ "$#" -gt 0 ]; do
         --titles) USE_TITLES=1; shift ;;
         --include-unpublished) INCLUDE_UNPUBLISHED=1; shift ;;
         --assets) DO_ASSETS=1; shift ;;
+        --attribute) ATTRIBUTE=1; shift ;;
+        --attribute-by) ATTRIBUTE_BY="$2"; shift 2 ;;
+        --users-file) USERS_FILE="$2"; shift 2 ;;
         --user) MW_USER="$2"; shift 2 ;;
         --summary) SUMMARY="$2"; shift 2 ;;
+        --no-bot) BOT_EDITS=0; shift ;;
         --no-fix-links) FIX_LINKS=0; shift ;;
         --work-dir) WORK_DIR="$2"; shift 2 ;;
         --export-only) DO_IMPORT=0; shift ;;
@@ -86,119 +104,28 @@ while [ "$#" -gt 0 ]; do
     esac
 done
 
-die() {
-    echo "Error: $*" >&2
-    exit 1
-}
-
 SRC_DIR="$WORK_DIR/src"
 WIKITEXT_DIR="$WORK_DIR/wikitext"
 ASSET_DIR="$WORK_DIR/assets"
 MANIFEST="$WORK_DIR/manifest.tsv"
 LINK_RULES="$WORK_DIR/links.sed"
+: "${USERS_FILE:=$WORK_DIR/users.tsv}"
 
 case "$LOCALE" in
     [a-zA-Z][a-zA-Z]|[a-zA-Z][a-zA-Z]-[a-zA-Z][a-zA-Z]) ;;
     *) die "locale '$LOCALE' is not a Wiki.js locale code (e.g. en, en-us)" ;;
 esac
 
-# ── Wiki.js credentials ──────────────────────────────────────────────────────
+case "$ATTRIBUTE_BY" in
+    author|creator) ;;
+    *) die "--attribute-by must be 'author' or 'creator'" ;;
+esac
 
-# Value of KEY from a shell-style .env file, without executing the file.
-env_value() {
-    local file="$1" key="$2" line value
-    [ -f "$file" ] || return 1
-    line=$(grep -E "^[[:space:]]*(export[[:space:]]+)?${key}=" "$file" | tail -n 1)
-    [ -n "$line" ] || return 1
-    value=${line#*=}
-    value=${value%$'\r'}
-    case "$value" in
-        \"*\") value=${value#\"}; value=${value%\"} ;;
-        \'*\') value=${value#\'}; value=${value%\'} ;;
-    esac
-    printf '%s' "$value"
-}
-
-# Value of KEY from the top-level db: block of a Wiki.js config.yml.
-yaml_db_value() {
-    local file="$1" key="$2"
-    [ -f "$file" ] || return 1
-    awk -v key="$key" -v q="'" '
-        /^[^[:space:]#]/ { in_db = ($0 ~ /^db:[[:space:]]*$/); next }
-        in_db {
-            line = $0
-            if (match(line, "^[[:space:]]+" key ":[[:space:]]*")) {
-                v = substr(line, RLENGTH + 1)
-                # A quoted value ends at its closing quote; an unquoted one
-                # ends at a trailing comment. Passwords may contain "#".
-                if (substr(v, 1, 1) == "\"" || substr(v, 1, 1) == q) {
-                    quote = substr(v, 1, 1)
-                    v = substr(v, 2)
-                    if (index(v, quote) > 0) { v = substr(v, 1, index(v, quote) - 1) }
-                } else {
-                    sub(/[[:space:]]+#.*/, "", v)
-                    gsub(/[[:space:]]+$/, "", v)
-                }
-                print v
-                exit
-            }
-        }
-    ' "$file"
-}
-
-WIKI_ENV="$WIKI_DIR/.env"
-WIKI_CONFIG="$WIKI_DIR/config.yml"
-
-if [ -f "$WIKI_ENV" ]; then
-    CRED_SOURCE="$WIKI_ENV"
-    DB_TYPE=$(env_value "$WIKI_ENV" DB_TYPE || echo postgres)
-    DB_HOST=$(env_value "$WIKI_ENV" DB_HOST || echo postgresql)
-    DB_PORT=$(env_value "$WIKI_ENV" DB_PORT || echo 5432)
-    DB_USER=$(env_value "$WIKI_ENV" DB_USER || echo "")
-    DB_PASS=$(env_value "$WIKI_ENV" DB_PASS || echo "")
-    DB_NAME=$(env_value "$WIKI_ENV" DB_NAME || echo "")
-elif [ -f "$WIKI_CONFIG" ]; then
-    CRED_SOURCE="$WIKI_CONFIG"
-    DB_TYPE=$(yaml_db_value "$WIKI_CONFIG" type)
-    DB_HOST=$(yaml_db_value "$WIKI_CONFIG" host)
-    DB_PORT=$(yaml_db_value "$WIKI_CONFIG" port)
-    DB_USER=$(yaml_db_value "$WIKI_CONFIG" user)
-    DB_PASS=$(yaml_db_value "$WIKI_CONFIG" pass)
-    DB_NAME=$(yaml_db_value "$WIKI_CONFIG" db)
-else
-    die "no Wiki.js credentials: neither $WIKI_ENV nor $WIKI_CONFIG exists"
+if [ "$ATTRIBUTE" -eq 1 ] && [ ! -s "$USERS_FILE" ]; then
+    die "--attribute needs the account mapping at $USERS_FILE; run migrate-wikijs-users.sh first"
 fi
 
-: "${DB_TYPE:=postgres}"
-: "${DB_HOST:=postgresql}"
-: "${DB_PORT:=5432}"
-
-[ "$DB_TYPE" = "postgres" ] || die "Wiki.js database type is '$DB_TYPE'; this script only handles postgres"
-[ -n "$DB_USER" ] || die "no Wiki.js database user found in $CRED_SOURCE"
-[ -n "$DB_NAME" ] || die "no Wiki.js database name found in $CRED_SOURCE"
-
-# ── Container plumbing ───────────────────────────────────────────────────────
-
-# Queries are passed with -c, so stdin is closed: "docker compose exec -T"
-# would otherwise swallow whatever the caller is reading from.
-psql_q() {
-    docker compose -f "$PG_COMPOSE" exec -T -e PGPASSWORD="$DB_PASS" postgresql \
-        psql -X -q -A -t -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" "$@" < /dev/null
-}
-
-mw_exec() {
-    docker compose -f "$MW_COMPOSE" exec -T mediawiki "$@"
-}
-
-MW_RUNNER=""
-mw_maint() {
-    local script="$1"; shift
-    if [ "$MW_RUNNER" = "run" ]; then
-        mw_exec php maintenance/run.php "$script" "$@"
-    else
-        mw_exec php "maintenance/$script.php" "$@"
-    fi
-}
+load_wikijs_credentials
 
 if command -v pandoc > /dev/null 2>&1; then
     pandoc_run() { pandoc "$@"; }
@@ -206,26 +133,7 @@ else
     pandoc_run() { docker run --rm -i "$PANDOC_IMAGE" "$@"; }
 fi
 
-require_postgresql() {
-    docker compose -f "$PG_COMPOSE" ps postgresql 2>/dev/null | grep -q 'Up' \
-        || die "postgresql container is not running"
-    psql_q -c 'SELECT 1;' > /dev/null \
-        || die "cannot connect to Wiki.js database '$DB_NAME' as '$DB_USER' (credentials from $CRED_SOURCE)"
-}
-
-require_mediawiki() {
-    docker compose -f "$MW_COMPOSE" ps mediawiki 2>/dev/null | grep -q 'Up' \
-        || die "mediawiki container is not running"
-    mw_exec test -f LocalSettings.php \
-        || die "MediaWiki is not installed yet: no LocalSettings.php in the container (see README)"
-    if mw_exec test -f maintenance/run.php; then
-        MW_RUNNER=run
-    else
-        MW_RUNNER=direct
-    fi
-}
-
-# ── Titles ───────────────────────────────────────────────────────────────────
+# ── Titles and authors ───────────────────────────────────────────────────────
 
 # guides/laser-cutter -> Guides/Laser cutter
 title_from_path() {
@@ -243,19 +151,12 @@ title_from_path() {
     printf '%s' "$out"
 }
 
-regex_escape() { printf '%s' "$1" | sed 's/[][\.*^$]/\\&/g'; }
-repl_escape() { printf '%s' "$1" | sed 's/[\&]/\\&/g'; }
-
-# sed -i, without depending on the GNU spelling of it.
-edit_file() {
-    local file="$1"; shift
-    local tmp="$file.tmp"
-    if sed "$@" "$file" > "$tmp"; then
-        mv "$tmp" "$file"
-    else
-        rm -f "$tmp"
-        return 1
-    fi
+# MediaWiki account for a Wiki.js user id, from the mapping that
+# migrate-wikijs-users.sh writes. Empty when the user was not migrated.
+mw_user_for_wikijs_id() {
+    local uid="${1:-}"
+    [ -n "$uid" ] && [ "$uid" != 0 ] || return 0
+    awk -F'\t' -v uid="$uid" '$1 == uid { print $4; exit }' "$USERS_FILE"
 }
 
 # ── Export ───────────────────────────────────────────────────────────────────
@@ -266,21 +167,37 @@ build_manifest() {
 
     local rows
     rows=$(psql_q -F $'\t' -c \
-        "SELECT id, \"contentType\", path, title FROM pages WHERE $where ORDER BY id;") \
+        "SELECT id, \"contentType\", path, title,
+                COALESCE(\"authorId\", 0), COALESCE(\"creatorId\", 0)
+         FROM pages WHERE $where ORDER BY id;") \
         || die "failed to list Wiki.js pages"
 
     : > "$MANIFEST"
-    local id contenttype path title mw_title
-    while IFS=$'\t' read -r id contenttype path title; do
-        [ -n "${id:-}" ] || continue
+    local line id contenttype path title author_id creator_id mw_title mw_author
+    while IFS= read -r line <&3; do
+        split_tsv "$line"
+        id="${TSV[0]}" contenttype="${TSV[1]:-}" path="${TSV[2]:-}"
+        title="${TSV[3]:-}" author_id="${TSV[4]:-0}" creator_id="${TSV[5]:-0}"
+        [ -n "$id" ] || continue
         if [ "$USE_TITLES" -eq 1 ] && [ -n "$title" ]; then
             mw_title="$title"
         else
             mw_title=$(title_from_path "$path")
         fi
         [ -n "$mw_title" ] || mw_title="$title"
-        printf '%s\t%s\t%s\t%s%s\n' "$id" "$contenttype" "$path" "$PREFIX" "$mw_title" >> "$MANIFEST"
-    done <<< "$rows"
+
+        mw_author=""
+        if [ "$ATTRIBUTE" -eq 1 ]; then
+            if [ "$ATTRIBUTE_BY" = creator ]; then
+                mw_author=$(mw_user_for_wikijs_id "$creator_id")
+            else
+                mw_author=$(mw_user_for_wikijs_id "$author_id")
+            fi
+        fi
+
+        printf '%s\t%s\t%s\t%s%s\t%s\n' \
+            "$id" "$contenttype" "$path" "$PREFIX" "$mw_title" "$mw_author" >> "$MANIFEST"
+    done 3<<< "$rows"
 
     [ -s "$MANIFEST" ] || die "no pages found for locale '$LOCALE'"
 }
@@ -289,9 +206,11 @@ build_manifest() {
 # [[guides/laser-cutter|text]], which points at a MediaWiki page that does not
 # exist. Retarget those links at the migrated titles.
 build_link_rules() {
-    local id contenttype path mw_title epath etitle
+    local line path mw_title epath etitle
     : > "$LINK_RULES"
-    while IFS=$'\t' read -r id contenttype path mw_title; do
+    while IFS= read -r line; do
+        split_tsv "$line"
+        path="${TSV[2]:-}" mw_title="${TSV[3]:-}"
         # "%" delimits the rules below, and a path with regex metacharacters
         # would need escaping BRE makes ambiguous; leave those links alone.
         [[ "$path" =~ ^[A-Za-z0-9/_.-]+$ ]] || continue
@@ -310,8 +229,12 @@ export_pages() {
 
     # The manifest is read on fd 3 so that the docker commands below cannot
     # consume it.
-    local id contenttype path mw_title from converted=0 skipped=0
-    while IFS=$'\t' read -r id contenttype path mw_title <&3; do
+    local line id contenttype path mw_title from converted=0 skipped=0
+    while IFS= read -r line <&3; do
+        split_tsv "$line"
+        id="${TSV[0]}" contenttype="${TSV[1]:-}" path="${TSV[2]:-}" mw_title="${TSV[3]:-}"
+        [ -n "$id" ] || continue
+
         case "$contenttype" in
             markdown) from="$MARKDOWN_FORMAT" ;;
             html) from=html ;;
@@ -358,12 +281,14 @@ export_assets() {
     rm -rf "$ASSET_DIR"
     mkdir -p "$ASSET_DIR"
 
-    local rows id filename exported=0
+    local rows line id filename exported=0
     rows=$(psql_q -F $'\t' -c 'SELECT id, filename FROM assets ORDER BY id;') \
         || die "failed to list Wiki.js assets"
 
-    while IFS=$'\t' read -r id filename <&3; do
-        [ -n "${id:-}" ] || continue
+    while IFS= read -r line <&3; do
+        split_tsv "$line"
+        id="${TSV[0]}" filename="${TSV[1]:-}"
+        [ -n "$id" ] && [ -n "$filename" ] || continue
         filename=$(basename "$filename")
         if [ -e "$ASSET_DIR/$filename" ]; then
             echo "  name collision, skipping asset $id ($filename)"
@@ -384,14 +309,26 @@ export_assets() {
 # ── Import ───────────────────────────────────────────────────────────────────
 
 import_pages() {
-    local id contenttype path mw_title imported=0 failed=0
-    while IFS=$'\t' read -r id contenttype path mw_title <&3; do
-        [ -f "$WIKITEXT_DIR/$id.wiki" ] || continue
-        local -a args=(-s "$SUMMARY" --bot)
-        [ -n "$MW_USER" ] && args+=(-u "$MW_USER")
+    local line id path mw_title mw_author author imported=0 failed=0 unattributed=0
+    while IFS= read -r line <&3; do
+        split_tsv "$line"
+        id="${TSV[0]}" path="${TSV[2]:-}" mw_title="${TSV[3]:-}" mw_author="${TSV[4]:-}"
+        [ -n "$id" ] && [ -f "$WIKITEXT_DIR/$id.wiki" ] || continue
+
+        local -a args=(-s "$SUMMARY")
+        [ "$BOT_EDITS" -eq 1 ] && args+=(--bot)
+
+        # edit.php creates the account named by -u if it does not exist, so
+        # only names from the migrated account mapping are used here.
+        author="${mw_author:-$MW_USER}"
+        [ -z "$author" ] || args+=(-u "$author")
+        if [ "$ATTRIBUTE" -eq 1 ] && [ -z "$mw_author" ]; then
+            unattributed=$((unattributed + 1))
+        fi
+
         if mw_maint edit "${args[@]}" "$mw_title" < "$WIKITEXT_DIR/$id.wiki" > /dev/null; then
             imported=$((imported + 1))
-            echo "  $mw_title"
+            echo "  $mw_title${author:+ (as $author)}"
         else
             failed=$((failed + 1))
             echo "  FAILED: $mw_title (from $path)"
@@ -400,17 +337,43 @@ import_pages() {
 
     echo ""
     echo "Imported $imported page(s), $failed failure(s)."
+    [ "$unattributed" -eq 0 ] || echo "$unattributed page(s) had no migrated author and fell back to the default user."
 }
 
 import_assets() {
-    [ -d "$ASSET_DIR" ] || return 0
+    local exported found ignored out status
+    exported=$(find "$ASSET_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')
+    if [ "${exported:-0}" -eq 0 ]; then
+        echo "  no exported files in $ASSET_DIR; nothing to import"
+        return 0
+    fi
+
     mw_exec mkdir -p /tmp/wikijs-assets || die "could not create import directory in the container"
     docker cp "$ASSET_DIR/." mediawiki:/tmp/wikijs-assets/ || die "could not copy assets into the container"
 
     local -a args=(--comment="$SUMMARY" --skip-dupes)
     [ -n "$MW_USER" ] && args+=(--user="$MW_USER")
-    mw_maint importImages "${args[@]}" /tmp/wikijs-assets
+
+    out=$(mw_maint importImages "${args[@]}" /tmp/wikijs-assets 2>&1 < /dev/null)
+    status=$?
+    printf '%s\n' "$out"
     mw_exec rm -rf /tmp/wikijs-assets
+
+    # importImages only looks at extensions in $wgFileExtensions, and says
+    # nothing about the files it therefore never considered.
+    found=$(printf '%s' "$out" | awk -F': ' '/^Found: /{print $2; exit}')
+    ignored=$(( exported - ${found:-0} ))
+    if [ "$ignored" -gt 0 ]; then
+        echo ""
+        echo "$ignored of $exported exported file(s) were left out because their extension"
+        echo "is not in \$wgFileExtensions. PDFs and CAD files are not allowed by default;"
+        echo "add what you need to LocalSettings.php and re-run with --import-only --assets."
+    fi
+    if [ "$status" -ne 0 ]; then
+        echo ""
+        echo "importImages reported failures. If nothing was added at all, check that"
+        echo "\$wgEnableUploads is true in LocalSettings.php."
+    fi
 }
 
 # ── Run ──────────────────────────────────────────────────────────────────────
@@ -420,14 +383,20 @@ mkdir -p "$WORK_DIR"
 echo "Wiki.js credentials: $CRED_SOURCE"
 echo "Database:            $DB_USER@$DB_HOST:$DB_PORT/$DB_NAME"
 echo "Work directory:      $WORK_DIR"
+[ "$ATTRIBUTE" -eq 0 ] || echo "Attribution:         by $ATTRIBUTE_BY, from $USERS_FILE"
 echo ""
 
 if [ "$DRY_RUN" -eq 1 ]; then
     require_postgresql
     build_manifest
     echo "Title mapping (locale $LOCALE):"
-    while IFS=$'\t' read -r id contenttype path mw_title; do
-        printf '  %-50s %s\n' "$path" "$mw_title"
+    while IFS= read -r line; do
+        split_tsv "$line"
+        if [ "$ATTRIBUTE" -eq 1 ]; then
+            printf '  %-44s %-30s %s\n' "${TSV[2]}" "${TSV[3]}" "${TSV[4]:-(default user)}"
+        else
+            printf '  %-50s %s\n' "${TSV[2]}" "${TSV[3]}"
+        fi
     done < "$MANIFEST"
     echo ""
     echo "Dry run: nothing was written to MediaWiki."
@@ -466,6 +435,10 @@ if [ "$DO_ASSETS" -eq 1 ]; then
     echo ""
     echo "==> Importing assets into MediaWiki..."
     import_assets
+else
+    echo ""
+    echo "Wiki.js uploads were not migrated: --assets was not given. Images in the"
+    echo "imported pages will be red links until the files are in MediaWiki."
 fi
 
 echo ""
