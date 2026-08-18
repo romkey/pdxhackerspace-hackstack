@@ -12,6 +12,7 @@ on:
     paths:
       - '**/docker-compose.yml'
       - '**/docker-compose.*.yml'
+      - '.github/workflows/yaml-lint.yml'
   workflow_dispatch:
 
 permissions:

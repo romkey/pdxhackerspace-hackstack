@@ -13,6 +13,8 @@ on:
     paths:
       - '**/docker-compose.yml'
       - '**/docker-compose.*.yml'
+      - '.github/scripts/validate_compose.py'
+      - '.github/workflows/docker-compose-lint.yml'
   workflow_dispatch:
 
 permissions:
