@@ -107,6 +107,7 @@ experiments/grafana/config/grafana.ini
 # [experiments] experiments/headscale/.gitignore
 experiments/headscale/.env
 experiments/headscale/config/config.yaml
+experiments/headscale/config/headplane.yaml
 experiments/headscale/config/acl.hujson
 
 # [experiments] experiments/homebox/.gitignore
