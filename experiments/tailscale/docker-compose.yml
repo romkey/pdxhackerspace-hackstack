@@ -1,0 +1,36 @@
+services:
+  tailscale:
+    image: tailscale/tailscale:${IMAGE_VERSION:-v1.102.2}
+    container_name: tailscale
+    hostname: tailscale
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    devices:
+      - /dev/net/tun
+    sysctls:
+      - net.ipv4.ip_forward=1
+      # Only if the host has IPv6 enabled, otherwise the container will not start
+      # - net.ipv6.conf.all.forwarding=1
+    volumes:
+      - ../../lib/tailscale:/var/lib/tailscale
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:9002/healthz || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - proxy
+    # Subnet routing for the physical LAN works from this bridge network, but an
+    # exit node, or anything that needs the host's own interfaces, needs
+    # network_mode: host instead — which cannot be combined with networks: above.
+    # network_mode: host
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net

@@ -1,0 +1,155 @@
+---
+# Headscale 0.29.x configuration. Copy to config.yaml and edit; config.yaml is
+# gitignored because it can hold the OIDC client secret.
+#
+# Full annotated example:
+# https://github.com/juanfont/headscale/blob/v0.29.3/config-example.yaml
+
+# The URL Tailscale clients connect to. This is the name nginx-proxy-manager
+# serves headscale under, and it must be https.
+server_url: https://headscale.example.org
+
+listen_addr: 0.0.0.0:8080
+
+# /metrics and /debug. Left on loopback so they are not reachable from other
+# containers; use 0.0.0.0:9090 to scrape them from Prometheus.
+metrics_listen_addr: 127.0.0.1:9090
+
+# gRPC is how the `headscale` CLI talks to a remote server. Local CLI use goes
+# through the unix socket instead, so this stays on loopback.
+grpc_listen_addr: 127.0.0.1:50443
+grpc_allow_insecure: false
+
+# Honour X-Forwarded-For only from the reverse proxy. Without an entry here
+# headscale logs the proxy's address as every client's source IP; with too wide
+# a range any container on nginx-proxy-net can spoof one.
+trusted_proxies: []
+#  - 172.16.0.0/12
+
+# nginx-proxy-manager terminates TLS, so headscale serves plain HTTP and logs
+# "listening without TLS but ServerURL does not start with http://" at startup.
+tls_cert_path: ""
+tls_key_path: ""
+
+noise:
+  private_key_path: /var/lib/headscale/noise_private.key
+
+# Must stay within Tailscale's CGNAT/ULA ranges; a subset is fine.
+prefixes:
+  v4: 100.64.0.0/10
+  v6: fd7a:115c:a1e0::/48
+  allocation: sequential
+
+derp:
+  # The embedded DERP relay needs UDP 3478 published and the STUN port
+  # reachable from the internet. Disabled here, so clients that cannot connect
+  # directly fall back to Tailscale's public DERP servers.
+  server:
+    enabled: false
+    region_id: 999
+    region_code: "headscale"
+    region_name: "Headscale Embedded DERP"
+    verify_clients: true
+    stun_listen_addr: "0.0.0.0:3478"
+    private_key_path: /var/lib/headscale/derp_server_private.key
+    automatically_add_embedded_derp_region: true
+  urls:
+    - https://controlplane.tailscale.com/derpmap/default
+  paths: []
+  auto_update_enabled: true
+  update_frequency: 24h
+
+disable_check_updates: false
+
+node:
+  # 0 means nodes never expire unless expired by hand. Tailscale's own default
+  # is 180d.
+  expiry: 0
+  ephemeral:
+    inactivity_timeout: 30m
+
+database:
+  type: sqlite
+  sqlite:
+    path: /var/lib/headscale/db.sqlite
+    write_ahead_log: true
+
+  # Headscale upstream discourages Postgres and develops against SQLite only.
+  # If you use the shared instance anyway, create the database with
+  # apps/postgresql/bin/mkdb.sh and uncomment the db network in
+  # docker-compose.yml.
+  # postgres:
+  #   host: postgresql
+  #   port: 5432
+  #   name: headscale_db
+  #   user: headscale_user
+  #   pass:
+  #   ssl: false
+
+log:
+  level: info
+  format: text
+
+# Tailscale ACLs/grants. With mode "file" and an empty path every node can
+# reach every other node.
+policy:
+  mode: file
+  path: ""
+  # path: /etc/headscale/acl.hujson
+
+dns:
+  magic_dns: true
+
+  # Must be a different domain from server_url, or headscale and DERP become
+  # unreachable for the clients.
+  base_domain: ts.example.org
+
+  override_local_dns: true
+  nameservers:
+    global:
+      - 1.1.1.1
+      - 1.0.0.1
+    split: {}
+  search_domains: []
+  extra_records: []
+
+# Used by the `headscale` CLI inside the container; bind mounted to
+# ../../run/headscale.
+unix_socket: /var/run/headscale/headscale.sock
+unix_socket_permission: "0770"
+
+# OpenID Connect — see README for the matching Authentik provider setup.
+# Leaving issuer unset (as below) keeps OIDC off and pre-auth keys in charge.
+# oidc:
+#   # Refuse to start until the identity provider answers. Defaults to true.
+#   only_start_if_oidc_is_available: true
+#
+#   # Authentik issuer, including the trailing slash:
+#   # https://authentik.example.org/application/o/<application-slug>/
+#   issuer: ""
+#
+#   client_id: ""
+#
+#   # Mutually exclusive with client_secret_path. Can also be supplied as
+#   # HEADSCALE_OIDC_CLIENT_SECRET in .env, keeping the secret out of this file.
+#   client_secret: ""
+#   # client_secret_path: ""
+#
+#   scope: ["openid", "profile", "email"]
+#
+#   # Authentik sends email_verified, so this can stay on.
+#   email_verified_required: true
+#
+#   # Node expiry follows node.expiry above unless this is enabled, in which
+#   # case nodes expire with the identity provider's token.
+#   use_expiry_from_token: false
+#
+#   # Restrict who may log in. Groups are matched against the "groups" claim,
+#   # which Authentik only sends if the provider's scope mapping includes it.
+#   allowed_domains: []
+#   allowed_users: []
+#   allowed_groups: []
+#
+#   pkce:
+#     enabled: true
+#     method: S256

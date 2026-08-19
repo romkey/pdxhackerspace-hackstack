@@ -1,0 +1,37 @@
+services:
+  headscale:
+    image: headscale/headscale:${IMAGE_VERSION:-v0.29.3}
+    container_name: headscale
+    hostname: headscale
+    restart: unless-stopped
+    command: serve
+    volumes:
+      - ./config:/etc/headscale
+      - ../../lib/headscale:/var/lib/headscale
+      - ../../run/headscale:/var/run/headscale
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "/ko-app/headscale", "health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+#   ports:
+#     - 8080:8080
+      # Metrics also need metrics_listen_addr off loopback in config.yaml
+#     - 9090:9090
+      # STUN, only needed when the embedded DERP server is enabled in config.yaml
+#     - 3478:3478/udp
+    networks:
+      - proxy
+      # Only needed if database.type is switched to postgres in config.yaml
+      # - db
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+# db:
+#   external: true
+#   name: postgres-net
