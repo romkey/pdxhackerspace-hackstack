@@ -104,6 +104,11 @@ apps/zigbee2mqtt/config/log/
 # [experiments] experiments/grafana/.gitignore
 experiments/grafana/config/grafana.ini
 
+# [experiments] experiments/headscale/.gitignore
+experiments/headscale/.env
+experiments/headscale/config/config.yaml
+experiments/headscale/config/acl.hujson
+
 # [experiments] experiments/homebox/.gitignore
 experiments/homebox/.env
 experiments/homebox/config/config.yml
@@ -123,6 +128,9 @@ experiments/nextcloud/.env
 # [experiments] experiments/rtlamr2mqtt/.gitignore
 experiments/rtlamr2mqtt/.env
 experiments/rtlamr2mqtt/config/rtlamr2mqtt.yaml
+
+# [experiments] experiments/tailscale/.gitignore
+experiments/tailscale/.env
 
 # [experiments] experiments/telegraf/.gitignore
 experiments/telegraf/config/telegraf.conf
