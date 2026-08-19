@@ -6,6 +6,8 @@ It is here as an experiment because it changes how people reach the space's netw
 
 Headscale is only the control server. Members' laptops and phones run the ordinary Tailscale client pointed at it, and **`experiments/tailscale`** is the `tailscaled` node for the server itself — the piece that puts Hackstack on the tailnet and can advertise the space's LAN to remote members.
 
+**[Headplane](https://headplane.net/)** is the optional web UI in the same compose stack: manage users, nodes, pre-auth keys, ACLs, and DNS settings without living on the CLI.
+
 ## Prerequisites
 
 **`nginx-proxy-net`** (from `apps/nginx-proxy-manager`) must exist.
@@ -13,7 +15,7 @@ Headscale is only the control server. Members' laptops and phones run the ordina
 Create the data and socket directories on the host:
 
 ```bash
-mkdir -p ../../lib/headscale ../../run/headscale
+mkdir -p ../../lib/headscale ../../lib/headplane ../../run/headscale
 ```
 
 You also need two DNS names, and they must be different from each other:
@@ -26,11 +28,18 @@ You also need two DNS names, and they must be different from each other:
 ```bash
 cp .env.example .env
 cp config/config.yaml.default config/config.yaml
+cp config/headplane.yaml.default config/headplane.yaml
 ```
 
-Nearly everything lives in **`config/config.yaml`**; `.env` only holds the image tag, the timezone, and optionally the OIDC client secret. At a minimum, set **`server_url`** and **`dns.base_domain`** in `config.yaml`.
+Nearly everything lives in **`config/config.yaml`** and **`config/headplane.yaml`**; `.env` holds image tags, Headplane secrets, and optionally OIDC client secrets. At a minimum, set **`server_url`** and **`dns.base_domain`** in `config.yaml`, and **`server.base_url`** in `headplane.yaml` to the same public hostname (without `/admin`).
 
-`config.yaml` is gitignored, since it can hold the OIDC client secret. Check your edits before starting:
+Generate a 32-character cookie secret for Headplane and put it in `.env`:
+
+```bash
+pwgen 32 1   # copy into HEADPLANE_SERVER__COOKIE_SECRET
+```
+
+`config.yaml` and `headplane.yaml` are gitignored, since they can hold secrets. Check your edits before starting:
 
 ```bash
 docker compose run --rm headscale configtest
@@ -40,9 +49,33 @@ docker compose run --rm headscale configtest
 
 Point nginx-proxy-manager at **`headscale:8080`**, with TLS on the public side and **Websockets Support turned on** in the proxy host's Details tab. Websockets are not optional: the Tailscale Control Protocol upgrades to one, using `POST` for the upgrade request and `tailscale-control-protocol` as the `Upgrade` header value, and a proxy that does not pass those through leaves clients unable to register. The control connection is also long-lived, so raise the proxy read timeout if clients reconnect on a fixed interval.
 
+Serve Headplane under the **same hostname** at **`/admin`**. In nginx-proxy-manager, add a **Custom Location** on that proxy host:
+
+| Setting | Value |
+| --- | --- |
+| Location | `/admin` |
+| Forward Hostname / IP | `headplane` |
+| Forward Port | `3000` |
+| Websockets Support | on |
+
+The UI lives at **`https://headscale.example.org/admin`**. `server.base_url` in `headplane.yaml` must be `https://headscale.example.org` — the hostname only, no path.
+
 Headscale serves plain HTTP here and logs `listening without TLS but ServerURL does not start with http://` at startup, which is expected when the proxy terminates TLS. Its own Let's Encrypt support goes unused for the same reason.
 
 Two things cannot go through the proxy: STUN for the embedded DERP server (UDP 3478, direct), and gRPC for remote CLI access.
+
+### Headplane
+
+Headplane talks to headscale over **`http://headscale:8080`** on `nginx-proxy-net`. Docker integration is on so DNS and settings edits in the UI can restart headscale; that needs the **`me.tale.headplane.target`** label on the headscale service (already in `docker-compose.yml`) and read-only access to **`/var/run/docker.sock`**.
+
+After the stack is up, create an API key and put it in **`HEADPLANE_HEADSCALE__API_KEY`** in `.env`:
+
+```bash
+docker compose exec headscale headscale apikeys create --expiration 90d
+docker compose up -d headplane   # reload env if headplane was already running
+```
+
+Log in at **`/admin`** with that key until OIDC is configured. Headplane stores its own data under **`../../lib/headplane`**.
 
 ## OIDC / Authentik
 
@@ -75,6 +108,17 @@ Restricting who gets in is done with `allowed_domains`, `allowed_users` and `all
 Note that `only_start_if_oidc_is_available` defaults to **true**: if Authentik is down when headscale starts, headscale refuses to start.
 
 Nodes already registered with pre-auth keys keep working after OIDC is turned on; the two registration methods coexist.
+
+### Headplane SSO (optional)
+
+Headplane has its own **`oidc`** block in `config/headplane.yaml` (commented out in the default). It is independent of headscale's `oidc` block — two different redirect URIs — but Authentik can use **one OAuth2 provider** with both:
+
+| Consumer | Redirect URI |
+| --- | --- |
+| Headscale (node login) | `https://headscale.example.org/oidc/callback` |
+| Headplane (admin UI) | `https://headscale.example.org/admin/oidc/callback` |
+
+Use the same **`client_id`** in both configs when possible. Uncomment the `oidc` section in `headplane.yaml`, set `issuer` and `client_id`, and put the client secret in **`HEADPLANE_OIDC__CLIENT_SECRET`** in `.env`. Headplane still needs **`HEADPLANE_HEADSCALE__API_KEY`** for server-side API calls even when SSO is on.
 
 ## First run
 
@@ -128,7 +172,9 @@ docker compose logs -f
 
 ## Healthcheck
 
-The image is distroless, so there is no shell or `wget` to probe with. `docker-compose.yml` runs **`headscale health`**, which talks to the server over the unix socket and exits non-zero if it does not answer.
+The headscale image is distroless, so there is no shell or `wget` to probe with. `docker-compose.yml` runs **`headscale health`**, which talks to the server over the unix socket and exits non-zero if it does not answer.
+
+Headplane ships **`/bin/hp_healthcheck`**, which the compose file runs every 30s.
 
 ## Backup
 
@@ -140,7 +186,9 @@ Copying a live SQLite file can capture an inconsistent database, so add a dump t
 BACKUP_DATABASE_URLS=sqlite:////opt/lib/headscale/db.sqlite
 ```
 
-Also keep a copy of **`config/config.yaml`** somewhere outside the repo, since it is gitignored.
+Also keep copies of **`config/config.yaml`** and **`config/headplane.yaml`** somewhere outside the repo, since both are gitignored.
+
+Back up **`../../lib/headplane`** as well if you use Headplane — it holds Headplane's database and caches.
 
 ## Upgrading
 

@@ -1,3 +1,4 @@
 .env
 config/config.yaml
+config/headplane.yaml
 config/acl.hujson

@@ -5,6 +5,8 @@ services:
     hostname: headscale
     restart: unless-stopped
     command: serve
+    labels:
+      me.tale.headplane.target: headscale
     volumes:
       - ./config:/etc/headscale
       - ../../lib/headscale:/var/lib/headscale
@@ -27,6 +29,33 @@ services:
       - proxy
       # Only needed if database.type is switched to postgres in config.yaml
       # - db
+
+  headplane:
+    image: ghcr.io/tale/headplane:${HEADPLANE_IMAGE_VERSION:-v0.7.0}
+    container_name: headplane
+    hostname: headplane
+    restart: unless-stopped
+    depends_on:
+      - headscale
+    volumes:
+      - ./config/headplane.yaml:/etc/headplane/config.yaml
+      - ./config/config.yaml:/etc/headscale/config.yaml
+      - ../../lib/headplane:/var/lib/headplane
+      # Read-only is enough to find and restart headscale; Headplane writes
+      # config.yaml through the bind mount above, not through the socket.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "/bin/hp_healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+#   ports:
+#     - 3000:3000
+    networks:
+      - proxy
 
 networks:
   proxy:
