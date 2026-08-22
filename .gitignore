@@ -51,6 +51,9 @@ apps/dnsmasq/config/hosts.d/
 apps/glances/glances.conf
 apps/glances/glances.pwd
 
+# [apps] apps/glitchtip/.gitignore
+apps/glitchtip/config/social-providers.yaml
+
 # [apps] apps/invidious/.gitignore
 apps/invidious/config/config.yml
 apps/invidious/config/sql/
@@ -135,6 +138,10 @@ experiments/tailscale/.env
 
 # [experiments] experiments/telegraf/.gitignore
 experiments/telegraf/config/telegraf.conf
+
+# [experiments] experiments/tranquil/.gitignore
+experiments/tranquil/.env
+experiments/tranquil/config/config.toml
 
 # [experiments] experiments/uptime-kuma/.gitignore
 experiments/uptime-kuma/.env
