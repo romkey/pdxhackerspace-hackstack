@@ -1,0 +1,31 @@
+services:
+  tranquil:
+    image: atcr.io/tranquil.farm/tranquil-pds:${IMAGE_VERSION:-latest}
+    container_name: tranquil
+    hostname: tranquil
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./config/config.toml:/etc/tranquil-pds/config.toml:ro
+      - ../../lib/tranquil/blobs:/data/blobs
+      - ../../lib/tranquil/store:/data/store
+#    ports:
+#      - "127.0.0.1:3000:3000"   # proxy to this
+    networks:
+      - proxy
+      - db
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/tranquil-pds", "healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  db:
+    external: true
+    name: postgres-net
