@@ -30,6 +30,7 @@ services:
     restart: unless-stopped
     volumes:
       - ../../lib/glitchtip/uploads:/code/uploads
+      - ./config:/code/config:ro
 #   ports:
 #     - 8000:8000
     env_file:
@@ -57,6 +58,7 @@ services:
     command: ./bin/run-celery-with-beat.sh
     volumes:
       - ../../lib/glitchtip/uploads:/code/uploads
+      - ./config:/code/config:ro
     env_file:
       - .env
     networks:
@@ -80,6 +82,8 @@ services:
     hostname: glitchtip-migrate
     restart: "no"
     command: ./manage.py migrate
+    volumes:
+      - ./config:/code/config:ro
     env_file:
       - .env
     networks:
