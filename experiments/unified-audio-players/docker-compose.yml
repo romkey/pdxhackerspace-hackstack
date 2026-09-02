@@ -1,0 +1,57 @@
+# Runs the published image from GitHub Container Registry.
+#
+#   cp .env.example .env && $EDITOR .env
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# Use docker-compose.yml instead if you want to build the image from this
+# checkout. To update:
+#
+#   docker compose -f docker-compose.prod.yml pull
+#   docker compose -f docker-compose.prod.yml up -d
+services:
+  sendspin-shareplay:
+    image: ghcr.io/romkey/hackstack-sendspin-shairport-sync:${IMAGE_TAG:-latest}
+    container_name: sendspin-shareplay
+    restart: unless-stopped
+
+    # AirPlay 2 needs mDNS on the LAN and nqptp's fixed UDP ports 319/320,
+    # so host networking is required -- bridge networking will not work.
+    network_mode: host
+
+    # Lets Shairport Sync raise its own scheduling priority for stable timing.
+    cap_add:
+      - SYS_NICE
+      # Required only for ENABLE_BLUETOOTH=1, which also needs the host's own
+      # bluetooth service stopped. See the Bluetooth section of the README.
+      - NET_ADMIN
+
+    devices:
+      - "/dev/snd:/dev/snd"
+      # Required only for ENABLE_BLUETOOTH=1, so the container can clear an
+      # rfkill soft block. Without it the adapter cannot be powered on.
+      - "/dev/rfkill:/dev/rfkill"
+
+    # Every variable in .env is passed through to the container.
+    env_file:
+      - .env
+
+    volumes:
+      # Use the host's Avahi rather than running a second one. Raspberry Pi OS
+      # runs avahi-daemon by default, and with host networking two daemons fight
+      # over the same .local name, renaming each other in a loop. With these
+      # mounted the container detects and uses the host's daemon.
+      # Remove them only if the host has no avahi-daemon of its own.
+      - /var/run/dbus:/var/run/dbus
+      - /var/run/avahi-daemon:/var/run/avahi-daemon
+      # Optional shairport-sync.conf / asound.conf overrides, plus Sendspin's
+      # persistent settings. See config/README.md.
+      - ./config:/config
+
+    logging:
+      # Pinned explicitly: max-size and max-file are json-file/local options, and
+      # passing them to a daemon whose default driver is journald fails with
+      # "unknown log opt 'max-file'".
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
