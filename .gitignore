@@ -67,9 +67,6 @@ apps/litellm/config/config.yaml
 # [apps] apps/member-zone/.gitignore
 apps/member-zone/scripts/*_rsa
 
-# [apps] apps/mopidy/.gitignore
-apps/mopidy/config/mopidy.conf
-
 # [apps] apps/mosquitto/.gitignore
 apps/mosquitto/config/mosquitto.conf
 apps/mosquitto/config/mos_passwd
