@@ -9,9 +9,9 @@
 #   docker compose -f docker-compose.prod.yml pull
 #   docker compose -f docker-compose.prod.yml up -d
 services:
-  sendspin-shareplay:
+  unified-audio:
     image: ghcr.io/romkey/hackstack-sendspin-shairport-sync:${IMAGE_TAG:-latest}
-    container_name: sendspin-shareplay
+    container_name: unified-audio
     restart: unless-stopped
 
     # AirPlay 2 needs mDNS on the LAN and nqptp's fixed UDP ports 319/320,
