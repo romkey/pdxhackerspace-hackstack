@@ -1,0 +1,22 @@
+# copyparty configuration
+# Full reference: https://github.com/9001/copyparty#the-config-file
+# Example configs: https://github.com/9001/copyparty/tree/hovudstraum/docs/examples
+
+[global]
+  e2dsa             # index all files so search and dedup work
+  e2ts              # also index audio/video tags
+  hist: /cfg/hist   # keep the index and thumbnails out of the shared files
+  no-robots         # ask search engines not to index
+  xff-src: lan      # trust X-Forwarded-For from private networks (nginx-proxy-manager)
+  rproxy: 1         # client IP is the first X-Forwarded-For hop
+  ansi              # colors in docker compose logs
+
+[accounts]
+  # username: password — CHANGE THIS before starting
+  admin: changeme
+
+[/]                 # URL path
+  /w                # container path (../../lib/copyparty/files on the host)
+  accs:
+    rwmda: admin    # read, write, move, delete, admin
+    # r: *          # uncomment to allow anonymous read-only access

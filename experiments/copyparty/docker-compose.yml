@@ -1,0 +1,38 @@
+services:
+  copyparty:
+    image: copyparty/ac:${IMAGE_VERSION:-latest}
+    container_name: copyparty
+    hostname: copyparty
+    restart: unless-stopped
+    user: "${PUID:-1000}:${PGID:-1000}"
+    volumes:
+      # /cfg holds copyparty's own state (sessions, file index, thumbnails);
+      # copyparty.conf is copied from config/copyparty.conf.default (see README)
+      - ../../lib/copyparty/cfg:/cfg
+      - ./config/copyparty.conf:/cfg/copyparty.conf:ro
+      # The files being shared
+      - ../../lib/copyparty/files:/w
+    env_file:
+      - .env
+    healthcheck:
+      # Any HTTP response (including 401/403 when anonymous access is off) means the server is up
+      test:
+        [
+          "CMD",
+          "python3",
+          "-c",
+          "import urllib.request as r, urllib.error as e\ntry: r.urlopen('http://127.0.0.1:3923/', timeout=5)\nexcept e.HTTPError: pass",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+#   ports:
+#     - 3923:3923
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net

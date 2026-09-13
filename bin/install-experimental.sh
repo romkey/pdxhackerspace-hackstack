@@ -32,11 +32,13 @@ esac
 #
 # Tier 1 - needs proxy only
 #   uptime-kuma           needs: proxy
+#   copyparty             needs: proxy
 # ============================================================
 
 EXPERIMENTAL_APPS="
 mediawiki
 uptime-kuma
+copyparty
 "
 
 if [ "$MODE" = "configure" ]; then
@@ -49,7 +51,10 @@ if [ "$MODE" = "configure" ]; then
     echo "==> Configuring experiments..."
     for exp in $EXPERIMENTAL_APPS; do
         echo "  Configuring $exp..."
-        configure_app_experiment "$exp"
+        case "$exp" in
+            copyparty) configure_app_experiment "$exp" copyparty.conf ;;
+            *) configure_app_experiment "$exp" ;;
+        esac
     done
 
     echo ""
@@ -68,6 +73,13 @@ if [ "$MODE" = "configure" ]; then
     echo "       mkdir -p ../../lib/uptime-kuma"
     echo "  2. Monitors, notifications and the admin account are set up in the web UI"
     echo "     on first run; point the proxy at uptime-kuma:3001"
+    echo ""
+
+    echo "==> Before starting copyparty:"
+    echo "  1. Create the data directories, owned by PUID:PGID from .env (default 1000):"
+    echo "       mkdir -p ../../lib/copyparty/cfg ../../lib/copyparty/files"
+    echo "  2. Change the admin password in experiments/copyparty/config/copyparty.conf"
+    echo "  3. Point the proxy at copyparty:3923"
     echo ""
 
     echo "==> Configure these before running: $(basename "$0") start"
