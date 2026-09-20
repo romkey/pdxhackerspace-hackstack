@@ -1,0 +1,38 @@
+services:
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:${IMAGE_VERSION:-latest}
+    container_name: forgejo
+    hostname: forgejo
+    restart: unless-stopped
+    volumes:
+      # Forgejo mingles configuration (gitea/conf/app.ini), repositories, LFS
+      # objects and avatars under /data, so it all lives in lib/forgejo
+      - ../../lib/forgejo:/data
+      - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - .env
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -O - http://127.0.0.1:3000/api/healthz >/dev/null || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+#   ports:
+#     - 3000:3000
+#     # git over SSH - only needed if you want to clone/push with ssh://
+#     - 2222:22
+    networks:
+      - proxy
+      - db
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  db:
+    external: true
+    name: postgres-net

@@ -1,22 +1,69 @@
 # copyparty configuration
 # Full reference: https://github.com/9001/copyparty#the-config-file
 # Example configs: https://github.com/9001/copyparty/tree/hovudstraum/docs/examples
+# NOTE: comments need two spaces before the #
+#
+# Access model (see README "Access model"):
+#   uploads and file management   members only (login)
+#   /           (files/)          LAN: browse anonymously; Internet: login, filekey link or share link
+#   /public     (files/public)    everyone, anywhere, no login
+#   /internal   (files/internal)  LAN or login only; no Internet links or shares
 
 [global]
   e2dsa             # index all files so search and dedup work
   e2ts              # also index audio/video tags
   hist: /cfg/hist   # keep the index and thumbnails out of the shared files
   no-robots         # ask search engines not to index
-  xff-src: lan      # trust X-Forwarded-For from private networks (nginx-proxy-manager)
-  rproxy: 1         # client IP is the first X-Forwarded-For hop
   ansi              # colors in docker compose logs
 
+  # Real client IP from nginx-proxy-manager. xff-src trusts X-Forwarded-For only from
+  # private addresses (nginx-proxy-net); rproxy -1 uses the address the proxy itself
+  # appended. Never use rproxy 1: that is the client-supplied first hop and can be forged.
+  # If another proxy (Cloudflare, a tunnel) sits in front of NPM, this needs -2 — see README.
+  xff-src: lan
+  rproxy: -1
+
+  # Share links: members can share a file/folder at /share/<id>, with optional
+  # password and expiry. Creating one needs the "a" permission on the volume.
+  shr: /share
+  shr-who: a
+  # site: https://files.example.org/  # public URL used in share links
+
+  # LAN auto-login. Clients from the hackerspace LAN are logged in as the "lan" user,
+  # which only has read access. 192.168.0.0/16 is the hackerspace network, all VLANs.
+  # Docker networks are allocated outside this range (daemon.json default-address-pools).
+  ipu: 192.168.0.0/16=lan
+  # ...and the "lan" account is refused from anywhere else, even with its password
+  ipr: 192.168.0.0/16=lan
+
 [accounts]
-  # username: password — CHANGE THIS before starting
+  # username: password — CHANGE THESE before starting
   admin: changeme
+  # Not used interactively (see ipu/ipr above); set to anything long and random
+  lan: CHANGEME-random-string
+
+[groups]
+  members: admin    # comma-separated usernames who can upload and manage files
 
 [/]                 # URL path
   /w                # container path (../../lib/copyparty/files on the host)
   accs:
-    rwmda: admin    # read, write, move, delete, admin
-    # r: *          # uncomment to allow anonymous read-only access
+    rwmda: @members  # read, write, move, delete, admin (can create share links)
+    r: lan          # LAN: browse and download without logging in
+    g: *            # Internet: download only with a file URL that includes its filekey
+  flags:
+    fk: 8           # 8-character filekeys; members copy links with ?k=... from the UI
+
+[/public]
+  /w/public
+  accs:
+    rwmda: @members
+    r: *            # everyone, anywhere, no login
+
+[/internal]
+  /w/internal
+  accs:
+    rwmda: @members
+    r: lan          # LAN or login only
+  flags:
+    shr_who: no     # no share links out of this folder
