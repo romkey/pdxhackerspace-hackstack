@@ -105,6 +105,9 @@ apps/zigbee2mqtt/config/log/
 experiments/copyparty/.env
 experiments/copyparty/config/copyparty.conf
 
+# [experiments] experiments/forgejo/.gitignore
+experiments/forgejo/.env
+
 # [experiments] experiments/grafana/.gitignore
 experiments/grafana/config/grafana.ini
 
