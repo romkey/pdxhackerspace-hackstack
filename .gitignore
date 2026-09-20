@@ -101,6 +101,10 @@ apps/zigbee2mqtt/config/state.json
 apps/zigbee2mqtt/config/database.db
 apps/zigbee2mqtt/config/log/
 
+# [experiments] experiments/copyparty/.gitignore
+experiments/copyparty/.env
+experiments/copyparty/config/copyparty.conf
+
 # [experiments] experiments/grafana/.gitignore
 experiments/grafana/config/grafana.ini
 
