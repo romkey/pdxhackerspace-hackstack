@@ -1,0 +1,45 @@
+services:
+  olah:
+    image: ghcr.io/romkey/olah-docker:${IMAGE_VERSION:-latest}
+    container_name: olah
+    hostname: olah
+    restart: unless-stopped
+    # Command-line flags override the matching keys in configs.toml, so the
+    # host-specific settings come from .env and configs.toml only carries policy.
+    command:
+      - olah-cli
+      - --config=/app/configs.toml
+      - --host=0.0.0.0
+      - --port=8090
+      - --repos-path=/data/repos
+      - --log-path=/logs
+      - --mirror-scheme=${OLAH_MIRROR_SCHEME:-https}
+      - --mirror-netloc=${OLAH_MIRROR_NETLOC:?set OLAH_MIRROR_NETLOC in .env}
+      - --cache-size-limit=${OLAH_CACHE_SIZE_LIMIT:-}
+    volumes:
+      - ./config/configs.toml:/app/configs.toml:ro
+      # Cached models/datasets live on NFS - see docker volume below
+      - olah_repos:/data/repos
+      - ../../log/olah:/logs
+      - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - .env
+#   ports:
+#     - 8090:8090
+    networks:
+      - proxy
+
+# The model cache is the only thing worth keeping, and it gets big, so it
+# lives on an NFS share configured entirely from .env.
+volumes:
+  olah_repos:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${OLAH_NFS_HOST:?set OLAH_NFS_HOST in .env},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${OLAH_NFS_PATH:?set OLAH_NFS_PATH in .env}"
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net

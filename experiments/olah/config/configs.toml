@@ -1,0 +1,36 @@
+# Olah policy configuration. Host/port, mirror URLs, cache path and cache size
+# limit are set by command-line flags in docker-compose.yml (from .env), which
+# override anything in [basic] - only the cache-cleaning strategy and the
+# accessibility rules are meant to be edited here.
+# Full reference: https://github.com/vtuber-plan/olah/blob/main/assets/full_configs.toml
+
+[basic]
+cache-clean-strategy = "LRU"
+cache-compression = "none"
+
+[accessibility]
+# true = serve only what is already cached and never contact huggingface.co
+offline = false
+
+# Everything is proxied and cached by default. Entries are wildcards unless
+# use_re = true. Allow lists are "allow others, or it becomes a whitelist".
+[[accessibility.proxy]]
+repo = "*"
+allow = true
+
+[[accessibility.proxy]]
+repo = "*/*"
+allow = true
+
+[[accessibility.cache]]
+repo = "*"
+allow = true
+
+[[accessibility.cache]]
+repo = "*/*"
+allow = true
+
+# Example: refuse to proxy or cache one repository
+# [[accessibility.proxy]]
+# repo = "someorg/some-model"
+# allow = false
