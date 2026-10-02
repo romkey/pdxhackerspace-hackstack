@@ -12,7 +12,10 @@ Copy `.env.example` to **`.env`** and set:
 
 ```bash
 cp .env.example .env
+cp config/configs.toml.default config/configs.toml
 ```
+
+Both copies are gitignored, so local edits to `config/configs.toml` stay local. `compose` will not start without it.
 
 | Variable | Notes |
 |----------|-------|
@@ -46,7 +49,7 @@ sudo chown 1000:1000 ../../log/olah
 
 ### 4. Policy (`config/configs.toml`)
 
-Host, port, mirror URL, cache path and size limit come from the command line (from `.env`) and override `configs.toml`. Edit **`config/configs.toml`** for the cache-clean strategy (`LRU`, `FIFO`, `LARGE_FIRST`), `offline` mode, and per-repo allow/deny rules for proxying and caching.
+Host, port, mirror URL, cache path and size limit come from the command line (from `.env`) and override `configs.toml`. Edit your local **`config/configs.toml`** (copied from `configs.toml.default`) for the cache-clean strategy (`LRU`, `FIFO`, `LARGE_FIRST`), `offline` mode, and per-repo allow/deny rules for proxying and caching. Restart after editing: `docker compose restart`.
 
 ### 5. Reverse proxy
 
