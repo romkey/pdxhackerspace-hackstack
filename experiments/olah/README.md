@@ -23,6 +23,7 @@ Both copies are gitignored, so local edits to `config/configs.toml` stay local. 
 | `OLAH_MIRROR_SCHEME` | `https` behind the proxy with TLS (default), `http` otherwise |
 | `OLAH_NFS_HOST` / `OLAH_NFS_PATH` | NFS server and export holding the cache. Required |
 | `NFS_MOUNT_OPTS` | Options after `addr=<host>,rw`; default `nfsvers=4,hard` |
+| `OLAH_WORKERS` | Worker processes; default `1`. Raise for many concurrent downloads. Never set `WEB_CONCURRENCY` |
 | `OLAH_CACHE_SIZE_LIMIT` | Optional ceiling such as `500GB`; empty is unlimited |
 | `IMAGE_VERSION` | Image tag: `latest` (default) or an exact Olah release such as `0.5.1` |
 
@@ -49,7 +50,7 @@ sudo chown 1000:1000 ../../log/olah
 
 ### 4. Policy (`config/configs.toml`)
 
-Host, port, mirror URL, cache path and size limit come from the command line (from `.env`) and override `configs.toml`. Edit your local **`config/configs.toml`** (copied from `configs.toml.default`) for the cache-clean strategy (`LRU`, `FIFO`, `LARGE_FIRST`), `offline` mode, and per-repo allow/deny rules for proxying and caching. Restart after editing: `docker compose restart`.
+Host, port, mirror URL, cache path and size limit come from `.env`: `bin/render-config.py` (the container entrypoint) overlays them onto `configs.toml`, writes the result to `/tmp/configs.toml` and starts `olah-cli --workers $OLAH_WORKERS`. They override anything in `[basic]`. Workers read only the config file, which is why the settings are rendered into it rather than passed as flags. Edit your local **`config/configs.toml`** (copied from `configs.toml.default`) for the cache-clean strategy (`LRU`, `FIFO`, `LARGE_FIRST`), `offline` mode, and per-repo allow/deny rules for proxying and caching. Restart after editing: `docker compose restart`.
 
 ### 5. Reverse proxy
 

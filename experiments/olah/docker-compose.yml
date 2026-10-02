@@ -4,19 +4,11 @@ services:
     container_name: olah
     hostname: olah
     restart: unless-stopped
-    # Command-line flags override the matching keys in configs.toml, so the
-    # host-specific settings come from .env and configs.toml only carries policy.
-    command:
-      - olah-cli
-      - --config=/app/configs.toml
-      - --host=0.0.0.0
-      - --port=8090
-      - --repos-path=/data/repos
-      - --log-path=/logs
-      - --mirror-scheme=${OLAH_MIRROR_SCHEME:-https}
-      - --mirror-netloc=${OLAH_MIRROR_NETLOC:?set OLAH_MIRROR_NETLOC in .env}
-      - --cache-size-limit=${OLAH_CACHE_SIZE_LIMIT:-}
+    # bin/render-config.py overlays the host-specific settings from .env onto
+    # config/configs.toml and starts olah-cli (see the README)
+    entrypoint: ["python", "/app/render-config.py"]
     volumes:
+      - ./bin/render-config.py:/app/render-config.py:ro
       - ./config/configs.toml:/app/configs.toml:ro
       # Cached models/datasets live on NFS - see docker volume below
       - olah_repos:/data/repos

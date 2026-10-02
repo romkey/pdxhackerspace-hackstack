@@ -1,7 +1,8 @@
-# Olah policy configuration. Copy to configs.toml (gitignored) and edit that copy. Host/port, mirror URLs, cache path and cache size
-# limit are set by command-line flags in docker-compose.yml (from .env), which
-# override anything in [basic] - only the cache-cleaning strategy and the
-# accessibility rules are meant to be edited here.
+# Olah policy configuration. Copy to configs.toml (gitignored) and edit that copy.
+#
+# Host, port, mirror URL, cache path and cache size limit are set from .env by
+# bin/render-config.py and override anything in [basic] - only the
+# cache-cleaning strategy and the accessibility rules are meant to be edited here.
 # Full reference: https://github.com/vtuber-plan/olah/blob/main/assets/full_configs.toml
 
 [basic]
