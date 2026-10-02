@@ -135,6 +135,7 @@ experiments/nextcloud/.env
 
 # [experiments] experiments/olah/.gitignore
 experiments/olah/.env
+experiments/olah/config/configs.toml
 
 # [experiments] experiments/rtlamr2mqtt/.gitignore
 experiments/rtlamr2mqtt/.env
