@@ -133,6 +133,9 @@ experiments/mediawiki/.env
 # [experiments] experiments/nextcloud/.gitignore
 experiments/nextcloud/.env
 
+# [experiments] experiments/olah/.gitignore
+experiments/olah/.env
+
 # [experiments] experiments/rtlamr2mqtt/.gitignore
 experiments/rtlamr2mqtt/.env
 experiments/rtlamr2mqtt/config/rtlamr2mqtt.yaml
