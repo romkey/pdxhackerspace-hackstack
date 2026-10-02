@@ -29,7 +29,7 @@ cp .env.example .env
 | `FORGEJO__database__PASSWD` | Password from `mkdb.sh` |
 | `FORGEJO__server__DOMAIN` / `ROOT_URL` | Public hostname served by `nginx-proxy-manager` |
 | `USER_UID` / `USER_GID` | Host user that owns `../../lib/forgejo` |
-| `IMAGE_VERSION` | Pin to a major version in production |
+| `IMAGE_VERSION` | Major-version tag, e.g. `16`. There is no `latest` tag |
 
 `FORGEJO__security__INSTALL_LOCK=true` skips the web installer — the first account you create becomes the site administrator, and `FORGEJO__service__DISABLE_REGISTRATION=true` keeps everyone else out until you invite them. Set `DISABLE_REGISTRATION=false` briefly to create that first account, or create it from the CLI (see below).
 
@@ -117,7 +117,9 @@ docker compose exec -u git forgejo forgejo admin user create \
 
 ### Upgrades
 
-Watchtower will pull new images. Migrations run automatically on start, but **major** version jumps should be done one at a time with a fresh backup — pin `IMAGE_VERSION` to a major version to keep Watchtower inside a release line.
+Forgejo publishes no `latest` tag — only version tags (`16`, `16.0`, `16.0.5`, and `-rootless` variants). Leaving `IMAGE_VERSION` at a major-version tag such as **`16`** keeps Watchtower inside that release line, picking up patch and minor releases automatically.
+
+Migrations run automatically on start, but **major** version jumps are one-way: bump `IMAGE_VERSION` to the next major deliberately, one major at a time, with a fresh database dump and `lib/forgejo` backup in hand.
 
 ## Backup
 

@@ -1,6 +1,6 @@
 services:
   forgejo:
-    image: codeberg.org/forgejo/forgejo:${IMAGE_VERSION:-latest}
+    image: codeberg.org/forgejo/forgejo:${IMAGE_VERSION:-16}
     container_name: forgejo
     hostname: forgejo
     restart: unless-stopped
