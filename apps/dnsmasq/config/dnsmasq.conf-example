@@ -1,28 +1,33 @@
 # this should be the IP address of the interface we want to accept queries
 # finding that 0.0.0.0 does not work
-listen-address=192.168.13.2
+interface=*
+bind-interfaces
 
-log-queries
+log-queries=extra
 domain-needed
 bogus-priv
 no-resolv
+stop-dns-rebind
 filterwin2k
 
 domain=ctrlh
 expand-hosts
 no-hosts
+local=/ctrlh/
 
-local-ttl=5
-max-cache-ttl=5
+local-ttl=0
+neg-ttl=0
+min-cache-ttl=60
 
 # add individual hostnames to /opt/lib/dnsmasq/hosts.d, which is mapped to /etc/hosts.d
 hostsdir=/etc/hosts.d
 # hostname directory for automatically generated host files
 hostsdir=/etc/autohosts.d
 
+no-hosts
+no-resolv
+
 server=/ctrlh/192.168.13.1
-server=/corginium.ctrlh/192.168.13.11
-server=/frigate.ctrlh/192.168.13.100
 server=/zigbee2mqtt.ctrlh/192.168.13.13
 
 # fall back to the router (UDM Pro)
