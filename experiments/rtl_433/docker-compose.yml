@@ -6,8 +6,9 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    entrypoint: "/usr/local/bin/rtl_433"
+    entrypoint: "/usr/local/bin/rtl_433 -F json"
     command: "-F ${MQTT_BROKER} ${RTL433_EXTRA_OPTIONS}"
+    privileged: true
     devices:
       - "${SDR_DEVICE}"
     volumes:
