@@ -1,0 +1,23 @@
+# Overlay: gives home-assistant a macvlan interface on the LAN.
+# Use together with compose.yaml:
+#   docker compose -f compose.yaml -f compose.macvlan.yaml up -d
+# or set COMPOSE_FILE=compose.yaml:compose.macvlan.yaml in .env
+
+services:
+  home-assistant:
+    networks:
+      lan:
+        ipv4_address: ${IPV4_ADDRESS:?set IPV4_ADDRESS in .env}
+
+networks:
+  lan:
+    name: ${LAN_NET_NAME:-lan_macvlan}
+    external: true
+    driver: macvlan
+    driver_opts:
+      parent: ${MACVLAN_PARENT:?set MACVLAN_PARENT in .env}   # host NIC
+    ipam:
+      config:
+        - subnet: ${MACVLAN_SUBNET:?set MACVLAN_SUBNET in .env}
+          gateway: ${MACVLAN_GATEWAY:?set MACVLAN_GATEWAY in .env}
+          ip_range: ${MACVLAN_IP_RANGE:?set MACVLAN_IP_RANGE in .env}   # restricts the address pool
