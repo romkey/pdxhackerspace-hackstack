@@ -1,4 +1,4 @@
-# comfy-ui
+# comfy-ui (experiment)
 
 Stable Diffusion web interface
 

@@ -15,6 +15,7 @@ services:
       - ./config:/config
       - /media/nas/music:/media
     user: 84044:audio
+    # hackstack: ports required
     ports:
       - 6600:6600
       - 6680:6680

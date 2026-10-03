@@ -1,0 +1,19 @@
+# OpenID Connect provider configuration for GlitchTip (django-allauth format).
+# Copy to social-providers.yaml, fill in client_id/secret/server_url, then set
+# SOCIALACCOUNT_PROVIDERS_CONFIG_PATH in .env and restart glitchtip.
+#
+# Authentik redirect URI (Strict, Authorization):
+#   https://glitchtip.example.com/accounts/oidc/authentik/login/callback/
+#
+# See README.md and https://integrations.goauthentik.io/monitoring/glitchtip/
+
+openid_connect:
+  APPS:
+    - provider_id: authentik
+      name: authentik
+      client_id: YOUR_AUTHENTIK_CLIENT_ID
+      secret: YOUR_AUTHENTIK_CLIENT_SECRET
+      settings:
+        fetch_userinfo: true
+        server_url: https://auth.example.com/application/o/glitchtip/
+        token_auth_method: client_secret_basic

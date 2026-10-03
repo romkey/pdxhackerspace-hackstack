@@ -32,6 +32,8 @@ Hackstack applications all follow a set of conventions that dictate how they sto
 
 All services are managed by Docker Compose. The service should include a `docker-compose.yml` file in a directory at the root of the repository.
 
+See [Application README template](app-readme-template.md) for standard README and `.env.example` layout.
+
 As a rule we try to allow users to customize the installation as much as possible without modifying the compose file. Obviously this isn't always possible but we strongly prefer doing so when possible. This allows the user a change to potentially be able to simply pull new versions of the hackstack to gain new applications.
 
 ## Volumes and Directory Layout

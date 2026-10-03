@@ -51,6 +51,9 @@ apps/dnsmasq/config/hosts.d/
 apps/glances/glances.conf
 apps/glances/glances.pwd
 
+# [apps] apps/glitchtip/.gitignore
+apps/glitchtip/config/social-providers.yaml
+
 # [apps] apps/invidious/.gitignore
 apps/invidious/config/config.yml
 apps/invidious/config/sql/
@@ -63,9 +66,6 @@ apps/litellm/config/config.yaml
 
 # [apps] apps/member-zone/.gitignore
 apps/member-zone/scripts/*_rsa
-
-# [apps] apps/mopidy/.gitignore
-apps/mopidy/config/mopidy.conf
 
 # [apps] apps/mosquitto/.gitignore
 apps/mosquitto/config/mosquitto.conf
@@ -101,8 +101,21 @@ apps/zigbee2mqtt/config/state.json
 apps/zigbee2mqtt/config/database.db
 apps/zigbee2mqtt/config/log/
 
+# [experiments] experiments/copyparty/.gitignore
+experiments/copyparty/.env
+experiments/copyparty/config/copyparty.conf
+
+# [experiments] experiments/forgejo/.gitignore
+experiments/forgejo/.env
+
 # [experiments] experiments/grafana/.gitignore
 experiments/grafana/config/grafana.ini
+
+# [experiments] experiments/headscale/.gitignore
+experiments/headscale/.env
+experiments/headscale/config/config.yaml
+experiments/headscale/config/headplane.yaml
+experiments/headscale/config/acl.hujson
 
 # [experiments] experiments/homebox/.gitignore
 experiments/homebox/.env
@@ -120,12 +133,23 @@ experiments/mediawiki/.env
 # [experiments] experiments/nextcloud/.gitignore
 experiments/nextcloud/.env
 
+# [experiments] experiments/olah/.gitignore
+experiments/olah/.env
+experiments/olah/config/configs.toml
+
 # [experiments] experiments/rtlamr2mqtt/.gitignore
 experiments/rtlamr2mqtt/.env
 experiments/rtlamr2mqtt/config/rtlamr2mqtt.yaml
 
+# [experiments] experiments/tailscale/.gitignore
+experiments/tailscale/.env
+
 # [experiments] experiments/telegraf/.gitignore
 experiments/telegraf/config/telegraf.conf
+
+# [experiments] experiments/tranquil/.gitignore
+experiments/tranquil/.env
+experiments/tranquil/config/config.toml
 
 # [experiments] experiments/uptime-kuma/.gitignore
 experiments/uptime-kuma/.env

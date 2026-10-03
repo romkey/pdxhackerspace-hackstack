@@ -1,13 +1,18 @@
 services:
   redis:
-    image: redis:7
+    image: redis:${REDIS_IMAGE_VERSION:-7}
     restart: unless-stopped
     hostname: redis
     networks:
       - redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   web:
-    image: ghcr.io/romkey/pdxhackerspace-gunky:${IMAGE_TAG:-latest}
+    image: ghcr.io/romkey/pdxhackerspace-gunky:${IMAGE_VERSION:-latest}
     restart: unless-stopped
     command: ["./bin/rails", "server", "-b", "0.0.0.0"]
     hostname: gunky
@@ -26,9 +31,15 @@ services:
       - proxy
       - db
 #      - cups
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:3000/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   sidekiq:
-    image: ghcr.io/romkey/pdxhackerspace-gunky:${IMAGE_TAG:-latest}
+    image: ghcr.io/romkey/pdxhackerspace-gunky:${IMAGE_VERSION:-latest}
     command: bundle exec sidekiq
     restart: unless-stopped
     depends_on:
@@ -42,6 +53,12 @@ services:
       - proxy
       - db
 #      - cups
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f sidekiq >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
 networks:
   redis:

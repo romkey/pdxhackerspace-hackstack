@@ -1,4 +1,4 @@
-# rtlamr2mqtt
+# rtlamr2mqtt (experiment)
 
 Smart meter reading via RTL-SDR to MQTT
 

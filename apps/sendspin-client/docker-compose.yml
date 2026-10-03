@@ -1,6 +1,6 @@
 services:
   sendspin:
-    image: ghcr.io/longlivethehud/sendspin-docker:latest
+    image: ghcr.io/longlivethehud/sendspin-docker:${IMAGE_VERSION:-latest}
     container_name: sendspin
     restart: unless-stopped
     network_mode: host
@@ -15,3 +15,9 @@ services:
       --url ${SENDSPIN_SERVER}
       --name "${SENDSPIN_NAME}"
       --id ${SENDSPIN_ID}
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f sendspin >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

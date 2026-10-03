@@ -1,0 +1,76 @@
+---
+# Headplane 0.7.x configuration. Copy to headplane.yaml and edit; headplane.yaml is
+# gitignored because it can hold secrets if you put them here instead of .env.
+#
+# Full annotated example:
+# https://github.com/tale/headplane/blob/v0.7.0/config.example.yaml
+
+server:
+  host: 0.0.0.0
+  port: 3000
+
+  # Public URL for Headplane, without the /admin path. Match server_url in
+  # config.yaml when both are served from the same hostname.
+  base_url: https://headscale.example.org
+
+  # Set via HEADPLANE_SERVER__COOKIE_SECRET in .env (must be exactly 32
+  # characters). cookie_secret_path also works; see headplane docs.
+  cookie_secret: ""
+
+  # Terminate TLS at nginx-proxy-manager, not in this container.
+  cookie_secure: true
+  cookie_max_age: 86400
+  data_path: /var/lib/headplane
+
+headscale:
+  # Internal HTTP endpoint; not the public server_url and not gRPC.
+  url: http://headscale:8080
+
+  # Shown in the UI when it differs from headscale.url (usually leave unset).
+  # public_url: https://headscale.example.org
+
+  config_path: /etc/headscale/config.yaml
+
+  # Set via HEADPLANE_HEADSCALE__API_KEY in .env after:
+  #   docker compose exec headscale headscale apikeys create --expiration 90d
+  # api_key: ""
+
+integration:
+  agent:
+    enabled: false
+    # host_name: headplane-agent
+
+  # Restart headscale through Docker when DNS or settings change in the UI.
+  # Requires the label on the headscale service in docker-compose.yml and the
+  # docker socket mount on headplane.
+  docker:
+    enabled: true
+    container_label: me.tale.headplane.target=headscale
+    socket: unix:///var/run/docker.sock
+
+  kubernetes:
+    enabled: false
+
+  proc:
+    enabled: false
+
+# OpenID Connect for the Headplane login page — separate from headscale's own
+# oidc block in config.yaml, though Authentik can use one provider with two
+# redirect URIs. See README.
+# oidc:
+#   enabled: true
+#
+#   issuer: "https://authentik.example.org/application/o/<application-slug>/"
+#
+#   # Best practice: same client_id as headscale's oidc.client_id.
+#   client_id: ""
+#
+#   # Or HEADPLANE_OIDC__CLIENT_SECRET in .env
+#   client_secret: ""
+#
+#   use_pkce: true
+#   disable_api_key_login: false
+#   default_role: member
+#
+#   # Authentik redirect URI (must match server.base_url):
+#   # https://headscale.example.org/admin/oidc/callback

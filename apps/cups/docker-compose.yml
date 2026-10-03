@@ -15,6 +15,7 @@ services:
 #      - ./config/cupsd.conf:/etc/cups/cupsd.conf:ro
       - ./config/entrypoint.sh:/entrypoint.sh:ro
       - ./ppds:/usr/share/cups/model/custom:ro
+    # hackstack: ports required
     ports:
       - 631:631
     networks:

@@ -1,4 +1,4 @@
-# influxdb
+# influxdb (experiment)
 
 Time series database
 

@@ -30,6 +30,7 @@ services:
     restart: unless-stopped
     volumes:
       - ../../lib/glitchtip/uploads:/code/uploads
+      - ./config:/code/config:ro
 #   ports:
 #     - 8000:8000
     env_file:
@@ -57,6 +58,7 @@ services:
     command: ./bin/run-celery-with-beat.sh
     volumes:
       - ../../lib/glitchtip/uploads:/code/uploads
+      - ./config:/code/config:ro
     env_file:
       - .env
     networks:
@@ -67,6 +69,12 @@ services:
     depends_on:
       glitchtip-redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f celery >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   glitchtip-migrate:
     image: glitchtip/glitchtip:${IMAGE_VERSION:-latest}
@@ -74,6 +82,8 @@ services:
     hostname: glitchtip-migrate
     restart: "no"
     command: ./manage.py migrate
+    volumes:
+      - ./config:/code/config:ro
     env_file:
       - .env
     networks:

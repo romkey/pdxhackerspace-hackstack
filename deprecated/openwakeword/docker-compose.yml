@@ -13,6 +13,12 @@ services:
 #      - 10400:10400
     networks:
       - hass
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:10400/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
 
 networks:
   hass:

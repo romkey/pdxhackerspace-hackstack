@@ -1,0 +1,13 @@
+# Copy to config/config.toml and edit as needed.
+# Environment variables in .env override these values.
+
+[storage]
+backend = "filesystem"
+path = "/data/blobs"
+
+[moderation]
+report_service_url = "https://mod.bsky.app"
+# report_service_did =
+
+[firehose]
+# Default crawler list is fine for Bluesky network participation; override with CRAWLERS env if needed.

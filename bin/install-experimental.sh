@@ -6,6 +6,7 @@
 # Prerequisites (must be running before the start phase):
 #   nginx-proxy-manager   nginx-proxy-net
 #   mariadb               mariadb-net
+#   postgresql            postgres-net
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -32,11 +33,19 @@ esac
 #
 # Tier 1 - needs proxy only
 #   uptime-kuma           needs: proxy
+#   copyparty             needs: proxy
+#   filebrowser-quantum   needs: proxy
+#
+# Tier 1 - needs proxy + postgresql
+#   forgejo               needs: proxy, postgresql
 # ============================================================
 
 EXPERIMENTAL_APPS="
 mediawiki
 uptime-kuma
+copyparty
+filebrowser-quantum
+forgejo
 "
 
 if [ "$MODE" = "configure" ]; then
@@ -49,7 +58,11 @@ if [ "$MODE" = "configure" ]; then
     echo "==> Configuring experiments..."
     for exp in $EXPERIMENTAL_APPS; do
         echo "  Configuring $exp..."
-        configure_app_experiment "$exp"
+        case "$exp" in
+            copyparty) configure_app_experiment "$exp" copyparty.conf ;;
+            filebrowser-quantum) configure_app_experiment "$exp" config.yaml ;;
+            *) configure_app_experiment "$exp" ;;
+        esac
     done
 
     echo ""
@@ -68,6 +81,31 @@ if [ "$MODE" = "configure" ]; then
     echo "       mkdir -p ../../lib/uptime-kuma"
     echo "  2. Monitors, notifications and the admin account are set up in the web UI"
     echo "     on first run; point the proxy at uptime-kuma:3001"
+    echo ""
+
+    echo "==> Before starting copyparty:"
+    echo "  1. Create the data directories, owned by PUID:PGID from .env (default 1000):"
+    echo "       mkdir -p ../../lib/copyparty/cfg ../../lib/copyparty/files/public ../../lib/copyparty/files/internal"
+    echo "  2. In experiments/copyparty/config/copyparty.conf, change the admin and lan passwords"
+    echo "  3. Point the proxy at copyparty:3923"
+    echo ""
+
+    echo "==> Before starting filebrowser-quantum:"
+    echo "  1. Create the data directories, owned by PUID:PGID from .env (default 1000):"
+    echo "       mkdir -p ../../lib/filebrowser-quantum/data ../../lib/filebrowser-quantum/files"
+    echo "  2. Set FILEBROWSER_ADMIN_PASSWORD in experiments/filebrowser-quantum/.env"
+    echo "  3. Point the proxy at filebrowser-quantum:80"
+    echo ""
+
+    echo "==> Before starting forgejo:"
+    echo "  1. From experiments/forgejo, create the database:"
+    echo "       cd experiments/forgejo"
+    echo "       ../../apps/postgresql/bin/mkdb.sh forgejo"
+    echo "     and put the password in .env as FORGEJO__database__PASSWD"
+    echo "  2. Create the data directory, owned by USER_UID:USER_GID from .env (default 1000):"
+    echo "       mkdir -p ../../lib/forgejo"
+    echo "  3. Set FORGEJO__server__DOMAIN and ROOT_URL in .env, then point the"
+    echo "     proxy at forgejo:3000"
     echo ""
 
     echo "==> Configure these before running: $(basename "$0") start"

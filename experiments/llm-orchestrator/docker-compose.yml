@@ -1,17 +1,17 @@
 services:
   orchestrator:
-    image: ghcr.io/romkey/pdxhackerspace-llm-orchestrator/orchestrator:latest
+    image: ghcr.io/romkey/pdxhackerspace-llm-orchestrator/orchestrator:${IMAGE_VERSION:-latest}
     container_name: llm-orchestrator
     hostname: llm-orchestrator
     restart: unless-stopped
-    ports:
-      - "${ORCHESTRATOR_PORT:-8000}:${ORCHESTRATOR_PORT:-8000}"
+#    ports:
+#      - "${ORCHESTRATOR_PORT:-8000}:${ORCHESTRATOR_PORT:-8000}"
     networks:
       - llm-net
     env_file:
       - .env
     volumes:
-      - ../../lib/llm-orchestrator:-/root/.cache/huggingface
+      - ../../lib/llm-orchestrator:/root/.cache/huggingface
       - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${ORCHESTRATOR_PORT:-8000}/health"]

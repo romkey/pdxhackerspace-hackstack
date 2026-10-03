@@ -1,4 +1,4 @@
-# telegraf
+# telegraf (experiment)
 
 Metrics collection agent for InfluxDB
 

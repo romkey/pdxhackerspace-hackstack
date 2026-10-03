@@ -1,4 +1,4 @@
-# grafana
+# grafana (experiment)
 
 Metrics visualization and dashboards
 

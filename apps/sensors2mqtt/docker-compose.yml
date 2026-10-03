@@ -9,6 +9,12 @@ services:
       - mqtt
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f sensors2mqtt >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     deploy:
       resources:
         reservations:

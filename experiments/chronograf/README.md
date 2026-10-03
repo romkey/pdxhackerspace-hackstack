@@ -1,4 +1,4 @@
-# chronograf
+# chronograf (experiment)
 
 Time series data visualization for InfluxDB
 

@@ -7,3 +7,9 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f cloudflare >/dev/null || exit 1"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

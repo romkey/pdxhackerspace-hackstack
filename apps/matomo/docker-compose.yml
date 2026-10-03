@@ -11,6 +11,12 @@ services:
       - ../../lib/matomo:/var/www/html
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f php-fpm >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
   matomo-nginx:
     image: nginx:${NGINX_IMAGE_VERSION:-alpine}
     container_name: matomo-nginx

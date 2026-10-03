@@ -1,0 +1,25 @@
+# Optional override: keep Forgejo's /data (config, repositories, LFS, avatars)
+# on an NFS share instead of the ../../lib/forgejo bind mount.
+#
+# Enable it by setting this in .env:
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+# or by passing both files explicitly:
+#   docker compose -f docker-compose.yml -f docker-compose.nfs.yml up -d
+#
+# Requires FORGEJO_NFS_HOST and FORGEJO_NFS_PATH in .env (see .env.example).
+
+services:
+  forgejo:
+    # !override replaces the bind mount from docker-compose.yml rather than
+    # adding to it (two mounts on /data would conflict).
+    volumes: !override
+      - forgejo_data:/data
+      - /etc/localtime:/etc/localtime:ro
+
+volumes:
+  forgejo_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${FORGEJO_NFS_HOST},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${FORGEJO_NFS_PATH}"

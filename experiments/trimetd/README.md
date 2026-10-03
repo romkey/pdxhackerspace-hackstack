@@ -1,4 +1,4 @@
-# trimetd
+# trimetd (experiment)
 
 Daemon that polls the [TriMet](https://trimet.org/) API for real-time transit
 data and publishes it to the MQTT broker.

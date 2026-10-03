@@ -8,13 +8,11 @@ services:
       nofile:
         soft: 65535
         hard: 65535
-# ports must be exposed
-# 81 must be exposed to allow initial configuration
-# 80 and 443 must be exposed for proxy operation
+    # hackstack: ports required (edge HTTP/HTTPS for the stack)
     ports:
       - 80:80
-      - 81:81
       - 443:443
+#      - 81:81  # admin UI; proxy a hostname to nginx-proxy-manager:81 if needed
     volumes:
       - ../../lib/nginx-proxy-manager/data:/data
       - ../../lib/nginx-proxy-manager/letsencrypt:/etc/letsencrypt

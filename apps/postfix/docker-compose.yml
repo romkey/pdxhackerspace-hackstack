@@ -7,9 +7,10 @@ services:
     hostname: mail-relay
     container_name: postfix
     restart: unless-stopped
-    ports:
-      - 25:25
-      - 587:587
+# Reach other containers on postfix-net as hostname `mail-relay` (service name `postfix`).
+#    ports:
+#      - 25:25
+#      - 587:587
     networks:
       - mail
     volumes:
