@@ -4,6 +4,7 @@ services:
     container_name: rtlamr2mqtt
     hostname: rtlamr2mqtt
     restart: unless-stopped
+    privileged: true
     env_file:
       - .env
     devices:
