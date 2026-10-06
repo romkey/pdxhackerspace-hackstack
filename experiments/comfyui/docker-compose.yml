@@ -1,0 +1,35 @@
+services:
+  comfy-ui:
+    image: ${IMAGE}
+    container_name: comfy-ui
+    hostname: comfy-ui
+    restart: unless-stopped
+    shm_size: 8gb
+    volumes:
+      - ../../lib/comfyui:/data
+    ports:
+      - 8188:8188
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:8188/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      HF_TOKEN: ${HF_TOKEN:-}
+      HF_ENDPOINT: ${HF_ENDPOINT:-https://huggingface.co}
+      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
+      NVIDIA_DRIVER_CAPABILITIES: all
+    ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]

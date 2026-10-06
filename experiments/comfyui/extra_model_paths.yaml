@@ -1,0 +1,24 @@
+# Points ComfyUI at the shared /models mount rather than the container's
+# own tree, so the Qwen/vLLM side can share storage and rebuilds don't
+# cost you a 42.5 GB re-download.
+
+spark:
+    base_path: /models
+    diffusion_models: diffusion_models
+    text_encoders: text_encoders
+    vae: vae
+    loras: loras
+    checkpoints: checkpoints
+    clip_vision: clip_vision
+    upscale_models: upscale_models
+
+# For MiniMax H3, ${MODELS_DIR} on the host should end up holding:
+#
+#   diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors   ~21 GB
+#   diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors  (R2V only)
+#   text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors          ~15.7 GB
+#   vae/minimax_h3_video_vae_fp16.safetensors                           ~5.21 GB
+#   vae/minimax_h3_audio_vae_fp32.safetensors                           ~605 MB
+#
+# From the Comfy-Org/MiniMax-H3 repo on Hugging Face — the repackaged one,
+# not MiniMaxAI's raw weights, which are laid out differently.
