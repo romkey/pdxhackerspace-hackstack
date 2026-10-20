@@ -1,0 +1,32 @@
+services:
+  silabs-flasher:
+    image: python:3.13-slim
+    restart: "no"
+    devices:
+      - "${ZBT2_PORT}:/dev/zbt2"
+    volumes:
+      - ./firmware:/firmware:ro
+    env_file:
+      - .env
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -eu
+        pip install --no-cache-dir --root-user-action=ignore universal-silabs-flasher
+
+        if [ "$$USF_USE_PROFILE" = "true" ]; then
+          PROBE_ARGS=""
+          FLASH_ARGS="--profile zbt2"
+        else
+          PROBE_ARGS="--probe-methods ezsp:$$ZBT2_BAUDRATE,bootloader:$$ZBT2_BOOTLOADER_BAUDRATE"
+          FLASH_ARGS=""
+        fi
+
+        echo "=== probe ==="
+        universal-silabs-flasher --device /dev/zbt2 $$PROBE_ARGS probe
+
+        echo "=== flash: $$ZBT2_FIRMWARE ==="
+        universal-silabs-flasher --device /dev/zbt2 $$PROBE_ARGS \
+          flash $$FLASH_ARGS --firmware "/firmware/$$ZBT2_FIRMWARE"
+
