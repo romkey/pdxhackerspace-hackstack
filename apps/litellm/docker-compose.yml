@@ -10,8 +10,6 @@ services:
       - ./config/config.yaml:/app/config.yaml
     env_file:
       - .env
-    environment:
-      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
     command: ["--config", "/app/config.yaml", "--port", "4000"]
     depends_on:
       redis:
@@ -31,6 +29,7 @@ services:
   redis:
     image: redis:${REDIS_IMAGE_VERSION:-7-alpine}
     container_name: litellm-redis
+    hostname: litellm-redis
     command: redis-server --save 3600 1 --appendonly no
     volumes:
       - ../../lib/litellm/redis:/data
