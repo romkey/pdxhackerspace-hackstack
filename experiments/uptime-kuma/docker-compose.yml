@@ -22,28 +22,28 @@ services:
     networks:
       - proxy
       # Join the networks holding the services you want to reach by container name.
-      # - mariadb
-      # - postgres
-      # - mosquitto
-      # - hass
+      - mariadb
+      - postgres
+      - mosquitto
+      - hass
       # - influxdb
 
 networks:
   proxy:
     external: true
     name: nginx-proxy-net
-# mariadb:
-#   external: true
-#   name: mariadb-net
-# postgres:
-#   external: true
-#   name: postgres-net
-# mosquitto:
-#   external: true
-#   name: mosquitto-net
-# hass:
-#   external: true
-#   name: hass-net
+  mariadb:
+    external: true
+    name: mariadb-net
+  postgres:
+    external: true
+    name: postgres-net
+  mosquitto:
+    external: true
+    name: mosquitto-net
+  hass:
+    external: true
+    name: hass-net
 # influxdb:
 #   external: true
 #   name: influxdb-net
