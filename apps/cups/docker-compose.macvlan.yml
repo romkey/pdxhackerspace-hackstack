@@ -4,7 +4,9 @@
 
 services:
   cups:
-    networks:
+    networks: !override
+      cups: {}
+      proxy: {}
       lan:
         ipv4_address: ${IPV4_ADDRESS:?set IPV4_ADDRESS in .env}
         mac_address: ${LAN_MAC_ADDRESS:?set LAN_MAC_ADDRESS in .env}

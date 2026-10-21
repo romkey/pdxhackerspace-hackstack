@@ -44,25 +44,20 @@ jobs:
         id: changed-files
         if: github.event_name == 'pull_request'
         run: |
-          # Get list of changed docker-compose files
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep -E 'docker-compose.*\.yml$' || true)
-          {
-            echo 'files<<EOF'
-            echo "$CHANGED_FILES"
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
-          if [ -n "$CHANGED_FILES" ]; then
-            echo "has_changes=true" >> $GITHUB_OUTPUT
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} \
+            | grep -E 'docker-compose.*\.yml$' > /tmp/changed-compose-files.txt || true
+          if [ -s /tmp/changed-compose-files.txt ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
           else
-            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Validate changed compose files (PR)
         if: github.event_name == 'pull_request' && steps.changed-files.outputs.has_changes == 'true'
         run: |
           echo "Validating changed files:"
-          echo "${{ steps.changed-files.outputs.files }}"
-          python .github/scripts/validate_compose.py --github-actions ${{ steps.changed-files.outputs.files }}
+          cat /tmp/changed-compose-files.txt
+          xargs -a /tmp/changed-compose-files.txt python .github/scripts/validate_compose.py --github-actions
 
       - name: Validate all compose files (push/manual)
         if: github.event_name != 'pull_request'
