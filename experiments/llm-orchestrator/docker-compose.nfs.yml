@@ -1,0 +1,16 @@
+# Optional override: Hugging Face cache on NFS.
+# Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+
+services:
+  orchestrator:
+    volumes: !override
+      - llm_orchestrator_cache:/root/.cache/huggingface
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  llm_orchestrator_cache:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${LLM_ORCHESTRATOR_NFS_HOST},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${LLM_ORCHESTRATOR_NFS_PATH}"

@@ -8,7 +8,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ../../lib/music-assistant:/data
-      - /media/nas/music:/media
+      - ../../lib/music-assistant/media:/media
     network_mode: host
     cap_add:
       - SYS_ADMIN

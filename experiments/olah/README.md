@@ -2,7 +2,7 @@
 
 [Olah](https://github.com/vtuber-plan/olah) is a self-hosted [Hugging Face](https://huggingface.co/) mirror. It is not a plain reverse proxy: it caches models, datasets and spaces **block by block** as clients download them, so the second machine to pull a model gets it from the LAN instead of the internet. Clients just set `HF_ENDPOINT` to point at it.
 
-This stack runs the **[`ghcr.io/romkey/olah-docker`](https://github.com/romkey/olah-docker)** image, which installs Olah from PyPI and is rebuilt when a new release appears (pin a version with `IMAGE_VERSION`). The cache lives on an **NFS share** mounted by Docker from settings in `.env`; logs go to `../../log/olah`.
+This stack runs the **[`ghcr.io/romkey/olah-docker`](https://github.com/romkey/olah-docker)** image, which installs Olah from PyPI and is rebuilt when a new release appears (pin a version with `IMAGE_VERSION`). The model cache defaults to **`../../lib/olah/repos`**; for production-sized caches use **`docker-compose.nfs.yml`** (see below). Logs go to **`../../log/olah`**.
 
 ## Configuration
 
@@ -21,17 +21,17 @@ Both copies are gitignored, so local edits to `config/configs.toml` stay local. 
 |----------|-------|
 | `OLAH_MIRROR_NETLOC` | Hostname clients use (no scheme), matching the `nginx-proxy-manager` proxy host. Required |
 | `OLAH_MIRROR_SCHEME` | `https` behind the proxy with TLS (default), `http` otherwise |
-| `OLAH_NFS_HOST` / `OLAH_NFS_PATH` | NFS server and export holding the cache. Required |
-| `NFS_MOUNT_OPTS` | Options after `addr=<host>,rw`; default `nfsvers=4,hard` |
 | `OLAH_WORKERS` | Worker processes; default `1`. Raise for many concurrent downloads. Never set `WEB_CONCURRENCY` |
 | `OLAH_CACHE_SIZE_LIMIT` | Optional ceiling such as `500GB`; empty is unlimited |
 | `IMAGE_VERSION` | Image tag: `latest` (default) or an exact Olah release such as `0.5.1` |
 
-Olah rewrites Hugging Face URLs in its responses to `OLAH_MIRROR_NETLOC`, so if it is wrong, clients will be redirected to an address they can't reach. `compose` refuses to start while `OLAH_MIRROR_NETLOC`, `OLAH_NFS_HOST` or `OLAH_NFS_PATH` is unset.
+Olah rewrites Hugging Face URLs in its responses to `OLAH_MIRROR_NETLOC`, so if it is wrong, clients will be redirected to an address they can't reach.
 
-### 2. Cache over NFS
+### 2. Cache storage
 
-The `olah_repos` volume in `docker-compose.yml` is a Docker `local` volume with the `nfs` driver, built from `OLAH_NFS_HOST`, `OLAH_NFS_PATH` and `NFS_MOUNT_OPTS`. Nothing is stored under `../../lib/olah`.
+**Local (default):** `mkdir -p ../../lib/olah/repos` and ensure uid **1000** can write (Olah runs as 1000).
+
+**NFS (recommended for large caches):** in **`.env`**, set `COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml` plus `OLAH_NFS_HOST`, `OLAH_NFS_PATH`, and `NFS_MOUNT_OPTS` (see `.env.example`). The `olah_repos` volume in `docker-compose.nfs.yml` is a Docker NFS mount.
 
 Notes:
 
@@ -65,7 +65,7 @@ export HF_ENDPOINT=https://olah.pdxhackerspace.org
 hf download openai-community/gpt2
 ```
 
-The first download fills the cache from huggingface.co; later ones are served from NFS. Gated repositories still need the client's own `HF_TOKEN`.
+The first download fills the cache from huggingface.co; later ones are served from the cache. Gated repositories still need the client's own `HF_TOKEN`.
 
 ## Networks
 

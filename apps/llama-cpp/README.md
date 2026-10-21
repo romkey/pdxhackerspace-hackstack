@@ -53,6 +53,18 @@ cp .env.example .env
 | `LLAMA_ARG_PORT` | Port inside the container | `8080` |
 | `IMAGE_VERSION` | Image tag / hardware backend (see table above) | `server` |
 
+## Storage on NFS (optional)
+
+Large data defaults to bind mounts under `../../lib/` in `docker-compose.yml`. To use a NAS export instead, set in **`.env`** (see **`.env.example`**):
+
+```bash
+COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+```
+
+plus the `*_NFS_HOST`, `*_NFS_PATH`, and `NFS_MOUNT_OPTS` variables documented in `.env.example`. Compose reads `COMPOSE_FILE` from `.env`, so plain `docker compose up -d` picks up the override.
+
+Prefer **`hard`** NFS mounts, not `soft`. Docker creates named NFS volumes on first start; if the server or export path is wrong, fix `.env` and remove the project volume before retrying (`docker volume ls`, then `docker volume rm …`).
+
 ## Usage
 
 ### Starting the service

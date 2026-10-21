@@ -38,11 +38,21 @@ Backrest's own configuration (backup jobs, schedules, credentials) is stored in
 `config/config.json` and managed through the web UI. No manual editing is
 normally needed.
 
-### NFS / External Storage
+### Restic cache and repositories
 
-The `backups` volume is an NFS volume mounted from `nas.cats`. Restic
-repositories on that NFS share are exposed inside the container via
-`BACKREST_REPOS_PATH`.
+By default, **`BACKREST_CACHE_PATH`** and **`BACKREST_REPOS_PATH`** in `.env` are bind-mounted as `/cache` and `/repos`. For NAS storage instead, use **`docker-compose.nfs.yml`** (see below).
+
+## Storage on NFS (optional)
+
+Large data defaults to bind mounts under `../../lib/` in `docker-compose.yml`. To use a NAS export instead, set in **`.env`** (see **`.env.example`**):
+
+```bash
+COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+```
+
+plus the `*_NFS_HOST`, `*_NFS_PATH`, and `NFS_MOUNT_OPTS` variables documented in `.env.example`. Compose reads `COMPOSE_FILE` from `.env`, so plain `docker compose up -d` picks up the override.
+
+Prefer **`hard`** NFS mounts, not `soft`. Docker creates named NFS volumes on first start; if the server or export path is wrong, fix `.env` and remove the project volume before retrying (`docker volume ls`, then `docker volume rm …`).
 
 ## Usage
 

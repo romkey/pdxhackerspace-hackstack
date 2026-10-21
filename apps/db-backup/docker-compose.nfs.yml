@@ -1,0 +1,20 @@
+# Optional override: write database dumps to an NFS export instead of a host bind mount.
+#
+# Enable in .env:
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+#
+# Requires NFS_SERVER and NFS_PATH in .env (see .env.example).
+
+services:
+  db-backup:
+    volumes: !override
+      - ${DBBACKUP_PARENT_HOST_PATH}:/opt:ro
+      - backup_nfs:/dest
+
+volumes:
+  backup_nfs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_SERVER},${NFS_OPTIONS:-nfsvers=4,hard,rw}"
+      device: ":${NFS_PATH}"

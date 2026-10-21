@@ -58,6 +58,28 @@ By separating the kinds of data the application uses we can intelligently automa
 
 We install the hackstack under `/opt/docker`. By using relative pathnames we may allow users to install in other locations without modifying the compose files, though there may be dependencies that will break this.
 
+### Large data on NFS (optional)
+
+Applications that can grow very large (media libraries, model caches, git/LFS data, and similar) use **`../../lib` bind mounts by default** in `docker-compose.yml`. When that data should live on a NAS export instead, add a sibling **`docker-compose.nfs.yml`** that replaces those mounts with Docker **NFS named volumes** (`driver: local`, `driver_opts.type: nfs`).
+
+Enable the override from **`.env`** (Compose reads this variable automatically):
+
+```bash
+COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+```
+
+Document the NFS host, export path, and `NFS_MOUNT_OPTS` (prefer **`hard`**) in **`.env.example`**, commented out alongside `COMPOSE_FILE`. See `experiments/forgejo/` for the reference pattern.
+
+### LAN macvlan (optional)
+
+Services that need **mDNS, broadcasts, or a stable LAN identity** keep normal bridge (or host) networking in `docker-compose.yml`. Optional **`docker-compose.macvlan.yml`** attaches the container to a shared **`lan_macvlan`** network with static **`IPV4_ADDRESS`** and **`LAN_MAC_ADDRESS`** from **`.env`**.
+
+```bash
+COMPOSE_FILE=docker-compose.yml:docker-compose.macvlan.yml
+```
+
+Shared **`MACVLAN_*`** settings and one-time network creation: run **`bin/create-macvlan.sh`** (see [macvlan.md](macvlan.md)). All macvlan overlays treat **`lan_macvlan`** as **external**.
+
 ## Ports
 
 Any application with a web interface should present the interface through `nginx-reverse-proxy` and not publish its ports directly. In general we will comment out any `port` definitions in compose files but leave them there as documentation. As long as the application uses the `nginx-proxy-network`, `nginx-reverse-proxy` will be able to access it by its Docker hostname. This also allows select applications to be made public on the Internet.

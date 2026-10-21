@@ -17,8 +17,6 @@ services:
 #      mdns:
 #      llama:
 #      caddy:
-      lan:
-        ipv4_address: ${IPV4_ADDRESS}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:

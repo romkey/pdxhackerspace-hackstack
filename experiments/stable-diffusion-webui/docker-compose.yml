@@ -7,9 +7,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ../../lib/stable-diffusion-web-ui/outputs:/sd/outputs
-      - ../../lib/stable-diffusion-web-ui/models:/sd/models
-      - ../../log/stable-diffusion-web-ui:/sd/logs
+      - ../../lib/stable-diffusion-web-ui:/sd
 #    ports:
 #      - 8501:8501
     networks:

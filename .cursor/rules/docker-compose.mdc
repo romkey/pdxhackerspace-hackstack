@@ -4,6 +4,8 @@ alwaysApply: true
 
 Don't use version in docker-compose files
 Always use bind mounts instead of Docker volumes unless the volume is for NFS
+Put NFS mounts in docker-compose.nfs.yml; enable with COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml in .env (document in .env.example)
+Put LAN macvlan in docker-compose.macvlan.yml; enable with COMPOSE_FILE=docker-compose.yml:docker-compose.macvlan.yml; IP/MAC/parent NIC only via .env (see docs/macvlan.md)
 Use the initial service name as the hostname and container name
 restart: unless-stopped
 If the compose project uses environment variables, load them from .env

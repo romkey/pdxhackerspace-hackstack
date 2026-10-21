@@ -1,0 +1,16 @@
+# Optional override: netboot.xyz assets (ISOs, etc.) on NFS; config stays local.
+# Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+
+services:
+  netbootxyz:
+    volumes: !override
+      - ../../lib/netboot/config:/config
+      - netboot_assets:/assets
+
+volumes:
+  netboot_assets:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NETBOOT_NFS_HOST},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${NETBOOT_NFS_PATH}"

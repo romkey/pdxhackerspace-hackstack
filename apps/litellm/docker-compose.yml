@@ -12,7 +12,7 @@ services:
       - .env
     command: ["--config", "/app/config.yaml", "--port", "4000"]
     depends_on:
-      redis:
+      litellm-redis:
         condition: service_healthy
     networks:
       - proxy
@@ -26,7 +26,7 @@ services:
       retries: 3
       start_period: 40s
 
-  redis:
+  litellm-redis:
     image: redis:${REDIS_IMAGE_VERSION:-7-alpine}
     container_name: litellm-redis
     hostname: litellm-redis
