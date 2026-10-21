@@ -1,21 +1,15 @@
 # Runs the published image from GitHub Container Registry.
 #
 #   cp .env.example .env && $EDITOR .env
-#   docker compose -f docker-compose.prod.yml up -d
-#
-# Use docker-compose.yml instead if you want to build the image from this
-# checkout. To update:
-#
-#   docker compose -f docker-compose.prod.yml pull
-#   docker compose -f docker-compose.prod.yml up -d
 services:
   unified-audio:
-    image: ghcr.io/romkey/hackstack-sendspin-shairport-sync:${IMAGE_TAG:-latest}
+    image: ghcr.io/romkey/hackstack-sendspin-shairport-sync:${IMAGE_VERSION:-latest}
     container_name: unified-audio
+    hostname: unified-audio
     restart: unless-stopped
 
-    # AirPlay 2 needs mDNS on the LAN and nqptp's fixed UDP ports 319/320,
-    # so host networking is required -- bridge networking will not work.
+    # Default: host networking for AirPlay 2 mDNS and nqptp UDP 319/320.
+    # Optional macvlan: COMPOSE_FILE=docker-compose.yml:docker-compose.macvlan.yml
     network_mode: host
 
     # Lets Shairport Sync raise its own scheduling priority for stable timing.

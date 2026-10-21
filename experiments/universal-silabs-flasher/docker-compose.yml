@@ -1,6 +1,8 @@
 services:
-  silabs-flasher:
+  universal-silabs-flasher:
     image: python:3.13-slim
+    container_name: universal-silabs-flasher
+    hostname: universal-silabs-flasher
     restart: "no"
     devices:
       - "${ZBT2_PORT}:/dev/zbt2"
@@ -29,4 +31,3 @@ services:
         echo "=== flash: $$ZBT2_FIRMWARE ==="
         universal-silabs-flasher --device /dev/zbt2 $$PROBE_ARGS \
           flash $$FLASH_ARGS --firmware "/firmware/$$ZBT2_FIRMWARE"
-

@@ -9,7 +9,7 @@ services:
       - .env
     volumes:
       - ${DBBACKUP_PARENT_HOST_PATH}:/opt:ro
-      - backup_nfs:/dest
+      - ${DBBACKUP_DEST_PATH}:/dest
     networks:
       - postgresql
       - mariadb
@@ -19,14 +19,6 @@ services:
       timeout: 5s
       retries: 3
       start_period: 120s
-
-volumes:
-  backup_nfs:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: addr=${NFS_SERVER},${NFS_OPTIONS:-nfsvers=4,soft,rw}
-      device: ":${NFS_PATH}"
 
 networks:
   postgresql:

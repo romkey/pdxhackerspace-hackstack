@@ -1,0 +1,15 @@
+# Optional override: models, outputs, and logs on NFS (single export with sd/, logs/ subdirs).
+# Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+
+services:
+  stable-diffusion-web-ui:
+    volumes: !override
+      - stable_diffusion_webui_data:/sd
+
+volumes:
+  stable_diffusion_webui_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${STABLE_DIFFUSION_WEBUI_NFS_HOST},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${STABLE_DIFFUSION_WEBUI_NFS_PATH}"

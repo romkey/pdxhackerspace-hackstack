@@ -1,0 +1,15 @@
+# Optional: IPP/printer discovery on the LAN.
+# Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.macvlan.yml
+# Clients use http://${IPV4_ADDRESS}:631 — comment out host port 631 in docker-compose.yml if redundant.
+
+services:
+  cups:
+    networks:
+      lan:
+        ipv4_address: ${IPV4_ADDRESS:?set IPV4_ADDRESS in .env}
+        mac_address: ${LAN_MAC_ADDRESS:?set LAN_MAC_ADDRESS in .env}
+
+networks:
+  lan:
+    name: ${LAN_NET_NAME:-lan_macvlan}
+    external: true

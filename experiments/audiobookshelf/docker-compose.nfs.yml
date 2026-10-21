@@ -1,0 +1,28 @@
+# Optional override: audiobook and podcast libraries on NFS.
+#
+# Enable in .env:
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+#
+# Requires AUDIOBOOKS_NFS_* and PODCASTS_NFS_* in .env (see .env.example).
+
+services:
+  audiobookshelf:
+    volumes: !override
+      - ../../lib/audiobookshelf/config:/config
+      - ../../lib/audiobookshelf/metadata:/metadata
+      - audiobooks:/audiobooks
+      - podcasts:/podcasts
+
+volumes:
+  audiobooks:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${AUDIOBOOKS_NFS_HOST},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${AUDIOBOOKS_NFS_PATH}"
+  podcasts:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${PODCASTS_NFS_HOST},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${PODCASTS_NFS_PATH}"

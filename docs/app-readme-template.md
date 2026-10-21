@@ -26,6 +26,14 @@ cp .env.example .env
 
 Document any required variables in a table or bullet list. Point to files under `config/` when configuration lives there instead of `.env`.
 
+### Storage on NFS (optional)
+
+If the app ships `docker-compose.nfs.yml`, document how to set `COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml` and the `*_NFS_*` variables in `.env.example`.
+
+### LAN macvlan (optional)
+
+If the app ships `docker-compose.macvlan.yml`, document `COMPOSE_FILE=docker-compose.yml:docker-compose.macvlan.yml`, `IPV4_ADDRESS`, `LAN_MAC_ADDRESS`, and shared `MACVLAN_*` variables (see [macvlan.md](macvlan.md)).
+
 ## Usage
 
 ### Starting the service
@@ -61,6 +69,12 @@ SECRET_KEY=
 # BACKUP_DATABASE_URLS — apps/postgresql/bin/mkdb.sh or apps/mariadb/bin/mkdb.sh appends this to .env when you
 # create the app database (unless .env already defines it). For SQLite or other URLs, set it only in your
 # real .env. Do not define BACKUP_DATABASE_URLS in .env.example.
+
+# --- Optional: large data on NFS (when docker-compose.nfs.yml exists) ---
+# COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+# MYAPP_NFS_HOST=
+# MYAPP_NFS_PATH=
+# NFS_MOUNT_OPTS=nfsvers=4,hard
 ```
 
 Include `REDIS_IMAGE_VERSION` when the compose file uses a separate Redis image tag.

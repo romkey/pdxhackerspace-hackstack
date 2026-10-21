@@ -1,0 +1,19 @@
+# Optional override: media libraries on NFS.
+# Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+
+services:
+  jellyfin:
+    volumes: !override
+      - ./config:/config
+      - ../../log/jellyfin:/config/log
+      - ../../run/jellyfin/cache:/cache
+      - ../../lib/xmltv:/xmltv
+      - jellyfin_media:/media
+
+volumes:
+  jellyfin_media:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${JELLYFIN_NFS_HOST},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${JELLYFIN_NFS_PATH}"

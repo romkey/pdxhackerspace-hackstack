@@ -104,7 +104,10 @@ cp .env.example .env
 | `PARENT_DIR` | Yes | `/opt/docker` | Path **inside** the container to scan for app subdirectories |
 | `DEST_DIR` | Yes | `/dest` | Path **inside** the container where backups are written |
 | `DBBACKUP_PARENT_HOST_PATH` | Yes | `/opt` | Host path mounted as `/opt` in the container (must contain `PARENT_DIR`) |
-| `DBBACKUP_DEST_PATH` | Yes | — | Host path mounted as `/dest` in the container |
+| `DBBACKUP_DEST_PATH` | Yes* | — | Host path mounted as `/dest` (default bind mount) |
+| `COMPOSE_FILE` + `NFS_SERVER` / `NFS_PATH` | Yes* | — | Use `docker-compose.nfs.yml` instead of `DBBACKUP_DEST_PATH` |
+
+\* Use either the bind mount **or** the NFS override, not both.
 | `BACKUP_INTERVAL_MINUTES` | No | `60` | Minutes between backup cycles |
 | `SLACK_WEBHOOK_URL` | No | — | Slack webhook URL for notifications |
 | `BACKUP_RETAIN_HOURLY` | No | `6` | Hourly backups to keep |
@@ -114,6 +117,18 @@ cp .env.example .env
 | `BACKUP_RETAIN_YEARLY` | No | `6` | Yearly backups to keep |
 | `IMAGE_VERSION` | No | `latest` | Docker image tag |
 | `PG_GLOBALS_URL` | No | — | `postgresql://` URL with a **superuser** used for `pg_dumpall --globals-only` (roles / cluster metadata). See [PostgreSQL globals](#postgresql-per-database-vs-cluster-globals). |
+
+## Storage on NFS (optional)
+
+Large data defaults to bind mounts under `../../lib/` in `docker-compose.yml`. To use a NAS export instead, set in **`.env`** (see **`.env.example`**):
+
+```bash
+COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+```
+
+plus the `*_NFS_HOST`, `*_NFS_PATH`, and `NFS_MOUNT_OPTS` variables documented in `.env.example`. Compose reads `COMPOSE_FILE` from `.env`, so plain `docker compose up -d` picks up the override.
+
+Prefer **`hard`** NFS mounts, not `soft`. Docker creates named NFS volumes on first start; if the server or export path is wrong, fix `.env` and remove the project volume before retrying (`docker volume ls`, then `docker volume rm …`).
 
 ## Usage
 

@@ -1,0 +1,16 @@
+# Optional override: ComfyUI runtime and models on NFS.
+# Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+
+services:
+  comfy-ui:
+    volumes: !override
+      - comfyui_data:/data
+      - ./config/extra_model_paths.yaml:/data/extra_model_paths.yaml:ro
+
+volumes:
+  comfyui_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${COMFYUI_NFS_HOST},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${COMFYUI_NFS_PATH}"

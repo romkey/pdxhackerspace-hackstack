@@ -10,12 +10,7 @@ services:
     privileged: true
     networks:
       proxy:
-      lan:
-        ipv4_address: ${IPV4_ADDRESS}
-      
-#      - mdns
-#    ports:
-#      - 6052:6052
+#      mdns:
     env_file:
       - .env
     healthcheck:
@@ -24,6 +19,9 @@ services:
       timeout: 10s
       retries: 3
       start_period: 45s
+#    ports:
+#      - 6052:6052
+
 networks:
   proxy:
     external: true
@@ -31,13 +29,3 @@ networks:
 #  mdns:
 #    external: true
 #    name: mdns-net
-  lan:
-    name: lan_macvlan
-    driver: macvlan
-    driver_opts: 
-      parent: enp45s0                          # your host's NIC
-    ipam:
-      config:
-        - subnet: 192.168.12.0/24
-          gateway: 192.168.12.1
-          ip_range: 192.168.12.0/24        # optional: restricts the pool to .208-.215

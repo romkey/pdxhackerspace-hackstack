@@ -8,11 +8,8 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ../../lib/music-assistant:/data
-      - /media/nas/music:/media
-#    network_mode: host
-    networks:
-      lan:
-        ipv4_address: ${IPV4_ADDRESS}
+      - ../../lib/music-assistant/media:/media
+    network_mode: host
     cap_add:
       - SYS_ADMIN
       - DAC_READ_SEARCH
@@ -44,14 +41,3 @@ networks:
   mdns:
     external: true
     name: mdns-net
-  lan:
-    name: lan_macvlan
-    external: true
-    driver: macvlan
-    driver_opts: 
-      parent: enp45s0                          # your host's NIC
-    ipam:
-      config:
-        - subnet: 10.0.0.0/20
-          gateway: 10.0.1.1
-          ip_range: 10.0.0.0:/20        # optional: restricts the pool to .208-.215

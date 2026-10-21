@@ -1,0 +1,17 @@
+# Optional override: music library on NFS (server config stays in ../../lib/music-assistant).
+# Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+
+services:
+  music-assistant:
+    volumes: !override
+      - /etc/localtime:/etc/localtime:ro
+      - ../../lib/music-assistant:/data
+      - music_assistant_media:/media
+
+volumes:
+  music_assistant_media:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${MUSIC_ASSISTANT_NFS_HOST},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${MUSIC_ASSISTANT_NFS_PATH}"

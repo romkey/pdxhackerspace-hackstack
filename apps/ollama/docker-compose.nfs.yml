@@ -1,0 +1,15 @@
+# Optional override: Ollama models on NFS.
+# Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+
+services:
+  ollama:
+    volumes: !override
+      - ollama_data:/root/.ollama
+
+volumes:
+  ollama_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${OLLAMA_NFS_HOST},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${OLLAMA_NFS_PATH}"

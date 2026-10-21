@@ -1,0 +1,16 @@
+# Optional override: ATProto blob and store data on NFS.
+# Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+
+services:
+  tranquil:
+    volumes: !override
+      - ./config/config.toml:/etc/tranquil-pds/config.toml:ro
+      - tranquil_data:/data
+
+volumes:
+  tranquil_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${TRANQUIL_NFS_HOST},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${TRANQUIL_NFS_PATH}"

@@ -1,0 +1,27 @@
+# Optional override: Restic cache and repositories on NFS.
+# Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+
+services:
+  backrest:
+    volumes: !override
+      - ./config:/config
+      - ../../lib/backrest:/data
+      - backrest_cache:/cache
+      - backrest_repos:/repos
+      - ${BACKREST_USERDATA_PATH:-/opt/hackstack}:/userdata
+      - ${BACKREST_USERETC_PATH:-/etc}:/useretc
+      - ${BACKREST_USERHOME_PATH:-/home}:/userhome
+
+volumes:
+  backrest_cache:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${BACKREST_CACHE_NFS_HOST},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${BACKREST_CACHE_NFS_PATH}"
+  backrest_repos:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${BACKREST_REPOS_NFS_HOST},rw,${NFS_MOUNT_OPTS:-nfsvers=4,hard}"
+      device: ":${BACKREST_REPOS_NFS_PATH}"

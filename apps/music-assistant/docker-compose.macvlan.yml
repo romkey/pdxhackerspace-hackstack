@@ -1,0 +1,23 @@
+# Optional: Music Assistant on the LAN (mDNS) instead of network_mode: host.
+# Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.macvlan.yml
+
+services:
+  music-assistant:
+    network_mode: !reset null
+    networks: !override
+      hass:
+      mdns:
+      lan:
+        ipv4_address: ${IPV4_ADDRESS:?set IPV4_ADDRESS in .env}
+        mac_address: ${LAN_MAC_ADDRESS:?set LAN_MAC_ADDRESS in .env}
+
+networks:
+  hass:
+    name: hass-net
+    external: true
+  mdns:
+    name: mdns-net
+    external: true
+  lan:
+    name: ${LAN_NET_NAME:-lan_macvlan}
+    external: true

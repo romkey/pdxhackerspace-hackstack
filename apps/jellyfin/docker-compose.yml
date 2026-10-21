@@ -9,7 +9,7 @@ services:
       - ../../log/jellyfin:/config/log
       - ../../run/jellyfin/cache:/cache
       - ../../lib/xmltv:/xmltv
-      - /media/nas:/media
+      - ../../lib/jellyfin/media:/media
     # hackstack: ports required
     ports:
 #      - 8096:8096
