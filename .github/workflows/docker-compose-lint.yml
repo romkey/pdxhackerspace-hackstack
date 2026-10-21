@@ -46,7 +46,11 @@ jobs:
         run: |
           # Get list of changed docker-compose files
           CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep -E 'docker-compose.*\.yml$' || true)
-          echo "files=${CHANGED_FILES}" >> $GITHUB_OUTPUT
+          {
+            echo 'files<<EOF'
+            echo "$CHANGED_FILES"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
           if [ -n "$CHANGED_FILES" ]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
           else

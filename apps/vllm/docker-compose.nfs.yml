@@ -1,9 +1,10 @@
-# Optional override: Hugging Face model cache on NFS.
+# Optional override: Hugging Face model cache on NFS; vLLM cache stays local.
 # Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
 
 services:
   vllm:
     volumes: !override
+      - ../../lib/vllm/cache:/root/.cache/vllm
       - vllm_huggingface:/root/.cache/huggingface
       - ./config/entrypoint.sh:/vllm-entrypoint.sh:ro
 

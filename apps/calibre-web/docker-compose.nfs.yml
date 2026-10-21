@@ -1,4 +1,4 @@
-# Optional override: book library on NFS; config stays local.
+# Optional override: book library on NFS; config stays local. ebooks volume from base compose.
 # Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
 
 services:
@@ -6,6 +6,7 @@ services:
     volumes: !override
       - ../../lib/calibre-web/config:/config
       - calibre_books:/books
+      - ebooks:/ebooks-new
 
 volumes:
   calibre_books:

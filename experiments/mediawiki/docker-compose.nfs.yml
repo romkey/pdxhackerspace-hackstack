@@ -1,10 +1,12 @@
-# Optional override: uploaded images on NFS.
+# Optional override: uploaded images on NFS; LocalSettings bind matches base when enabled.
 # Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
 
 services:
   mediawiki:
     volumes: !override
       - mediawiki_images:/var/www/html/images
+      # After the web installer: save LocalSettings.php to ../../lib/mediawiki/ then uncomment:
+      # - ../../lib/mediawiki/LocalSettings.php:/var/www/html/LocalSettings.php
 
 volumes:
   mediawiki_images:

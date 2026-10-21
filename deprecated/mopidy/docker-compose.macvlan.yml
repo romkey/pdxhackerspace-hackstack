@@ -1,9 +1,10 @@
-# Optional: Mopidy on the LAN (e.g. for client discovery).
+# Optional: mDNS/AirPlay discovery on the LAN.
 # Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.macvlan.yml
 
 services:
   mopidy:
-    networks:
+    networks: !override
+      proxy: {}
       lan:
         ipv4_address: ${IPV4_ADDRESS:?set IPV4_ADDRESS in .env}
         mac_address: ${LAN_MAC_ADDRESS:?set LAN_MAC_ADDRESS in .env}

@@ -1,13 +1,18 @@
-# Optional override: ComfyUI storage on NFS.
+# Optional override: model storage on NFS (shared with vLLM); other paths stay local.
 # Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
 
 services:
-  comfy-ui:
+  comfyui-nvidia:
     volumes: !override
-      - comfy_ui_storage:/storage
+      - ../../lib/comfy-ui/userscripts_dir:/userscripts_dir
+      - ../../lib/comfy-ui/run:/comfy/mnt
+      - ../../lib/comfy-ui/basedir:/basedir
+      - ./extra_model_paths.yaml:/extra_model_paths.yaml:ro
+      - comfy_ui_models:/models
+      - /etc/localtime:/etc/localtime:ro
 
 volumes:
-  comfy_ui_storage:
+  comfy_ui_models:
     driver: local
     driver_opts:
       type: nfs
