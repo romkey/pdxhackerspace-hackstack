@@ -101,6 +101,9 @@ apps/zigbee2mqtt/config/state.json
 apps/zigbee2mqtt/config/database.db
 apps/zigbee2mqtt/config/log/
 
+# [experiments] experiments/comfyui/.gitignore
+experiments/comfyui/.env
+
 # [experiments] experiments/copyparty/.gitignore
 experiments/copyparty/.env
 experiments/copyparty/config/copyparty.conf
@@ -150,6 +153,12 @@ experiments/telegraf/config/telegraf.conf
 # [experiments] experiments/tranquil/.gitignore
 experiments/tranquil/.env
 experiments/tranquil/config/config.toml
+
+# [experiments] experiments/unified-audio-players/.gitignore
+experiments/unified-audio-players/.env
+
+# [experiments] experiments/universal-silabs-flasher/.gitignore
+experiments/universal-silabs-flasher/.env
 
 # [experiments] experiments/uptime-kuma/.gitignore
 experiments/uptime-kuma/.env
