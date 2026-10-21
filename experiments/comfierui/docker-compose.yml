@@ -1,0 +1,70 @@
+name: comfier-ui
+
+# Production stack. Configure it with a .env file next to this one (see .env.example).
+# Set DATABASE_URL / REDIS_URL to point at external services, or use the bundled ones.
+
+x-app: &app
+  image: ${COMFIER_IMAGE:-comfier-ui:latest}
+  restart: unless-stopped
+  env_file:
+    - path: .env
+      required: true
+  environment:
+    RAILS_ENV: production
+    DATABASE_URL: ${DATABASE_URL:-postgres://${POSTGRES_USER:-comfier_user}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT:-5432}/${POSTGRES_DATABASE:-comfierui_db}}
+    REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+  volumes:
+    - ../../lib/comfierui/rails:/rails/storage
+  depends_on:
+    redis:
+      condition: service_healthy
+
+services:
+  redis:
+    image: redis:8.10-alpine
+    restart: unless-stopped
+    hostname: redis
+    volumes:
+      - ../../lib/comfierui/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 10
+    networks:
+      - redis
+  web:
+    <<: *app
+    hostname: comfierui
+#    ports:
+#      - "${WEB_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3000/up"]
+      interval: 15s
+      retries: 5
+    networks:
+      - proxy
+      - db
+      - redis
+      - mail
+
+  sidekiq:
+    <<: *app
+    hostname: comfierui-sidekiq
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    networks:
+      - db
+      - redis
+      - mail
+
+networks:
+  redis:
+    name: comfierui-redis-net
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  db:
+    name: postgres-net
+    external: true
+  mail:
+    name: postfix-net
+    external: true

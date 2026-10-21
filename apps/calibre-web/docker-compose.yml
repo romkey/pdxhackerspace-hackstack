@@ -7,6 +7,7 @@ services:
     volumes:
       - ../../lib/calibre-web/config:/config
       - ../../lib/calibre-web/books:/books
+      - ebooks:/ebooks-new
 #    ports:
 #      - 8083:8083
     env_file:
@@ -19,7 +20,16 @@ services:
       start_period: 45s
     networks:
       - proxy
+
 networks:
   proxy:
     external: true
     name: nginx-proxy-net
+
+volumes:
+  ebooks:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.13.3,ro,nfsvers=4
+      device: ":/mnt/spinning-rust/media/ebooks"

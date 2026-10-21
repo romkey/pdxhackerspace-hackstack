@@ -21,10 +21,10 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
-#   ports:
+    ports:
 #     - 3000:3000
-#     # git over SSH - only needed if you want to clone/push with ssh://
-#     - 2222:22
+     # git over SSH - only needed if you want to clone/push with ssh://
+     - 2222:2222
     networks:
       - proxy
       - db
