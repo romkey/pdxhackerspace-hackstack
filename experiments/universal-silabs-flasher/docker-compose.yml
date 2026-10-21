@@ -1,6 +1,6 @@
 services:
   universal-silabs-flasher:
-    image: python:3.13-slim
+    image: python:3.15-slim
     container_name: universal-silabs-flasher
     hostname: universal-silabs-flasher
     restart: "no"
