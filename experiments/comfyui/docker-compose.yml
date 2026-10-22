@@ -3,6 +3,7 @@
 #   docker-compose.nvidia.yml        NVIDIA, CUDA 13 (driver >= 580)
 #   docker-compose.nvidia-cu128.yml  NVIDIA, CUDA 12.8 (driver >= 570), on top of nvidia.yml
 #   docker-compose.nvidia-sage.yml   NVIDIA Blackwell + SageAttention, on top of nvidia.yml
+#   docker-compose.jetson.yml        NVIDIA Jetson Thor (nvidia runtime, instead of nvidia.yml)
 #   docker-compose.rocm.yml          AMD Strix Halo (gfx1151), x86_64 only
 #   docker-compose.xpu.yml           Intel Arc, x86_64 only
 services:
