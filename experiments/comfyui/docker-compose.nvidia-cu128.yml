@@ -1,0 +1,5 @@
+# NVIDIA with an older driver (>= 570): CUDA 12.8 build. Layer on nvidia.yml:
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml:docker-compose.nvidia-cu128.yml
+services:
+  comfyui:
+    image: ghcr.io/romkey/comfyui-docker:${IMAGE_VERSION:-latest}-cu128

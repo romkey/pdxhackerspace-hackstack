@@ -1,0 +1,13 @@
+# NVIDIA GPUs on Linux (x86_64 or arm64: discrete cards, DGX Spark, Jetson Thor).
+# Needs the NVIDIA Container Toolkit on the host and driver >= 580 for CUDA 13.
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml
+services:
+  comfyui:
+    image: ghcr.io/romkey/comfyui-docker:${IMAGE_VERSION:-latest}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: ${GPU_COUNT:-all}
+              capabilities: [gpu]

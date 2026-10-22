@@ -1,9 +1,11 @@
-# Points ComfyUI at the shared /models mount rather than the container's
-# own tree, so the Qwen/vLLM side can share storage and rebuilds don't
-# cost you a 42.5 GB re-download.
+# Extra model roots, on top of ComfyUI's own /data/models. Only loaded when .env
+# sets COMFYUI_EXTRA_MODEL_PATHS_CONFIG=/config/extra_model_paths.yaml.
+#
+# Use it to share one copy of large weights with another container (e.g. vLLM):
+# bind-mount that storage under /data/shared-models (or change base_path below).
 
-spark:
-    base_path: /data/models
+shared:
+    base_path: /data/shared-models
     diffusion_models: diffusion_models
     text_encoders: text_encoders
     vae: vae
@@ -12,7 +14,7 @@ spark:
     clip_vision: clip_vision
     upscale_models: upscale_models
 
-# For MiniMax H3, ${MODELS_DIR} on the host should end up holding:
+# For MiniMax H3, the models directory should end up holding:
 #
 #   diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors   ~21 GB
 #   diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors  (R2V only)

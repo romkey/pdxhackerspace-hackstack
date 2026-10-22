@@ -1,11 +1,11 @@
-# Optional override: ComfyUI runtime and models on NFS.
-# Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+# Optional override: ComfyUI runtime and models on NFS. Add it last in COMPOSE_FILE, e.g.
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml:docker-compose.nfs.yml
 
 services:
-  comfy-ui:
+  comfyui:
     volumes: !override
       - comfyui_data:/data
-      - ./config/extra_model_paths.yaml:/data/extra_model_paths.yaml:ro
+      - ./config/extra_model_paths.yaml:/config/extra_model_paths.yaml:ro
 
 volumes:
   comfyui_data:

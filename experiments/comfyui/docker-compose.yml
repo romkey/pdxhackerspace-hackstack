@@ -1,31 +1,30 @@
+# Hardware-neutral base. On its own this runs the CPU-only image; layer one of
+# the hardware overrides on top via COMPOSE_FILE in .env (see README):
+#   docker-compose.nvidia.yml        NVIDIA, CUDA 13 (driver >= 580)
+#   docker-compose.nvidia-cu128.yml  NVIDIA, CUDA 12.8 (driver >= 570), on top of nvidia.yml
+#   docker-compose.nvidia-sage.yml   NVIDIA Blackwell + SageAttention, on top of nvidia.yml
+#   docker-compose.rocm.yml          AMD Strix Halo (gfx1151), x86_64 only
+#   docker-compose.xpu.yml           Intel Arc, x86_64 only
 services:
-  comfy-ui:
-    image: ghcr.io/romkey/comfyui-docker:${IMAGE_VERSION:-latest}
-    container_name: comfy-ui
-    hostname: comfy-ui
+  comfyui:
+    image: ghcr.io/romkey/comfyui-docker:${IMAGE_VERSION:-latest}-cpu
+    container_name: comfyui
+    hostname: comfyui
     restart: unless-stopped
-    shm_size: 8gb
     volumes:
       - ../../lib/comfyui:/data
-      - ./config/extra_model_paths.yaml:/data/extra_model_paths.yaml:ro
+      - ./config/extra_model_paths.yaml:/config/extra_model_paths.yaml:ro
     env_file:
       - .env
 #   ports:
 #     - 8188:8188
     healthcheck:
-      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:8188/ >/dev/null || exit 1"]
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8188/system_stats >/dev/null || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 60s
+      start_period: 120s
     ipc: host
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: ${GPU_COUNT:-1}
-              capabilities: [gpu]
     networks:
       - proxy
       - llama
