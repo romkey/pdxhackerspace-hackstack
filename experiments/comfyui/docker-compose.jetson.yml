@@ -6,3 +6,4 @@ services:
   comfyui:
     image: ghcr.io/romkey/comfyui-docker:${IMAGE_VERSION:-latest}
     runtime: nvidia
+    restart: unless-stopped

@@ -5,6 +5,7 @@
 services:
   comfyui:
     image: ghcr.io/romkey/comfyui-docker:${IMAGE_VERSION:-latest}
+    restart: unless-stopped
     deploy:
       resources:
         reservations:
