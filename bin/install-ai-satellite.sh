@@ -9,7 +9,7 @@
 #     locally or ensure the network is available via an overlay before
 #     the start phase.
 #
-# comfy-ui is only installed on x86_64/AMD64 hosts; it is skipped on ARM.
+# comfyui is only installed on x86_64/AMD64 hosts; it is skipped on ARM.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -34,7 +34,7 @@ esac
 #
 # Tier 1 - needs proxy
 #   dozzle-agent          agent service
-#   comfy-ui              needs: proxy  [x86_64/AMD64 only]
+#   comfyui               needs: proxy  [x86_64/AMD64 only]
 #
 # Tier 2 - needs mqtt-net (external - must exist before start)
 #   sensors2mqtt          needs: mqtt
@@ -61,11 +61,11 @@ if [ "$MODE" = "configure" ]; then
 
     case "$(uname -m)" in
         x86_64|i?86)
-            echo "  Configuring comfy-ui experiment ($(uname -m) detected)..."
-            configure_app_experiment comfy-ui
+            echo "  Configuring comfyui experiment ($(uname -m) detected)..."
+            configure_app_experiment comfyui
             ;;
         *)
-            echo "  Skipping comfy-ui (not supported on $(uname -m))"
+            echo "  Skipping comfyui (not supported on $(uname -m))"
             ;;
     esac
 
@@ -76,7 +76,7 @@ if [ "$MODE" = "configure" ]; then
     print_config_paths_for_apps $AI_SATELLITE_APPS
     case "$(uname -m)" in
         x86_64|i?86)
-            print_config_paths_for_experiments comfy-ui
+            print_config_paths_for_experiments comfyui
             ;;
     esac
     print_two_phase_next_step
@@ -96,7 +96,7 @@ start_app sensors2mqtt
 
 case "$(uname -m)" in
     x86_64|i?86)
-        start_experiment comfy-ui
+        start_experiment comfyui
         ;;
 esac
 

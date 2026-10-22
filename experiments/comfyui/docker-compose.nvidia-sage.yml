@@ -1,0 +1,6 @@
+# NVIDIA Blackwell (DGX Spark GB10, RTX 50, B200): CUDA 13 + SageAttention.
+# Not for Jetson Thor (sm_110 is unsupported by SageAttention). Layer on nvidia.yml:
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml:docker-compose.nvidia-sage.yml
+services:
+  comfyui:
+    image: ghcr.io/romkey/comfyui-docker:${IMAGE_VERSION:-latest}-sage

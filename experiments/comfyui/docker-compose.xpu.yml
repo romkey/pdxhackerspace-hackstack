@@ -1,0 +1,9 @@
+# Intel Arc (Battlemage B580 / Arc Pro B70, Alchemist A-series) on Linux, x86_64 only.
+# Needs the xe (or i915) kernel driver; the image bundles Intel's compute runtime.
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.xpu.yml
+services:
+  comfyui:
+    image: ghcr.io/romkey/comfyui-docker:${IMAGE_VERSION:-latest}-xpu
+    # The entrypoint adds the container user to the group that owns the render nodes.
+    devices:
+      - /dev/dri:/dev/dri

@@ -110,9 +110,11 @@ start_experiment() {
         echo "experiment $1: directory missing, skipping"
         return 0
     fi
-    if ! docker compose -f "$exp_dir/docker-compose.yml" ps 2>/dev/null | grep -q 'Up'; then
+    # Run from the experiment directory without -f so COMPOSE_FILE in its .env
+    # (hardware or NFS overrides) is honored.
+    if ! (cd "$exp_dir" && docker compose ps 2>/dev/null) | grep -q 'Up'; then
         echo "Starting experiment $1..."
-        docker compose -f "$exp_dir/docker-compose.yml" up -d
+        (cd "$exp_dir" && docker compose up -d)
         echo "$1 started."
     else
         echo "experiment $1 is already running."
