@@ -32,7 +32,8 @@ The entrypoint turns `COMFYUI_*` variables into ComfyUI command-line flags. `.en
 
 | Hardware | Image tag | `COMPOSE_FILE` |
 |----------|-----------|----------------|
-| NVIDIA, driver ≥ 580 (x86_64 or arm64, Jetson Thor) | `latest` | `docker-compose.yml:docker-compose.nvidia.yml` |
+| NVIDIA, driver ≥ 580 (x86_64 or arm64) | `latest` | `docker-compose.yml:docker-compose.nvidia.yml` |
+| NVIDIA Jetson Thor | `latest` | `docker-compose.yml:docker-compose.jetson.yml` |
 | NVIDIA, driver 570–579 | `latest-cu128` | `docker-compose.yml:docker-compose.nvidia.yml:docker-compose.nvidia-cu128.yml` |
 | NVIDIA Blackwell: DGX Spark (GB10), RTX 50, B200 | `latest-sage` | `docker-compose.yml:docker-compose.nvidia.yml:docker-compose.nvidia-sage.yml` |
 | AMD Strix Halo / Ryzen AI Max (gfx1151), x86_64 | `latest-rocm-gfx1151` | `docker-compose.yml:docker-compose.rocm.yml` |
@@ -41,7 +42,8 @@ The entrypoint turns `COMFYUI_*` variables into ComfyUI command-line flags. `.en
 
 To pick a row:
 
-- **NVIDIA:** run `nvidia-smi` on the host. If the driver version is 580 or newer, use the plain NVIDIA line. If it's 570–579, use `-cu128`. On a Blackwell GPU, prefer `-sage`: it turns SageAttention on automatically for compute capability 10.0, 12.0 and 12.1, and falls back to normal attention otherwise. Jetson Thor is Blackwell, but SageAttention doesn't support its sm_110, so use the plain line there. The `-cu128` and `-sage` files only change the image, so they must come after `docker-compose.nvidia.yml`.
+- **NVIDIA:** run `nvidia-smi` on the host. If the driver version is 580 or newer, use the plain NVIDIA line. If it's 570–579, use `-cu128`. On a Blackwell GPU, prefer `-sage`: it turns SageAttention on automatically for compute capability 10.0, 12.0 and 12.1, and falls back to normal attention otherwise. The `-cu128` and `-sage` files only change the image, so they must come after `docker-compose.nvidia.yml`.
+- **Jetson Thor:** use `docker-compose.jetson.yml` in place of `docker-compose.nvidia.yml`, not on top of it. Jetson's container toolkit runs in CSV mode, which rejects GPU device reservations (the `--gpus` equivalent that `nvidia.yml` uses) with `invoking the NVIDIA Container Runtime Hook directly ... is not supported`. The Jetson file selects the `nvidia` runtime instead. Thor is Blackwell, but SageAttention doesn't support its sm_110, so there is no `-sage` option.
 - **AMD:** the ROCm image targets gfx1151 only. Other Radeon GPUs need a local build of the image against their own AMD wheel index (see the image's README).
 - **Intel:** check `lspci -nnk -d 8086: | grep -A3 -E 'VGA|Display'` shows `Kernel driver in use: xe` (or `i915` for Alchemist).
 - **macOS:** Docker can't pass the Apple GPU through, so this runs on CPU only. For real speed, run ComfyUI natively instead (`brew install --cask comfy`).
@@ -59,6 +61,8 @@ docker compose config --images   # should print the tag you expect
 **NVIDIA** needs the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/). `GPU_COUNT` limits how many GPUs are reserved (`all` by default), and `COMFYUI_CUDA_DEVICE` pins ComfyUI to one of them.
 
 **DGX Spark and Jetson Thor** share 128 GB between CPU and GPU, so use `COMFYUI_VRAM_MODE=highvram` and set `COMFYUI_RESERVE_VRAM` to leave room for the OS and anything co-resident, such as `apps/vllm` (the example in `.env.example` reserves 30 GB for that). There's no MIG on GB10, so this fence is cooperative only. On Thor, run `sudo nvpmodel -m 0 && sudo jetson_clocks` on the host; it ships in a reduced power mode.
+
+**Jetson Thor** needs the `nvidia` runtime registered with Docker. JetPack normally does this; check with `docker info | grep -i runtimes`. If `nvidia` is missing, run `sudo nvidia-ctk runtime configure --runtime=docker && sudo systemctl restart docker`.
 
 **AMD Strix Halo** needs only the amdgpu kernel driver; the image bundles ROCm. In the BIOS, give the iGPU a small dedicated allocation and raise the kernel's GTT limit (`amdgpu.gttsize`, `ttm.pages_limit`) so it can use most of system RAM. The image already sets `HSA_ENABLE_SDMA=0`, `HSA_USE_SVM=0`, `--disable-mmap` and `--bf16-vae`.
 

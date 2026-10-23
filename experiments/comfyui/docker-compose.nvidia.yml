@@ -1,9 +1,11 @@
-# NVIDIA GPUs on Linux (x86_64 or arm64: discrete cards, DGX Spark, Jetson Thor).
+# NVIDIA GPUs on Linux (x86_64 or arm64: discrete cards, DGX Spark).
+# Not for Jetson Thor; use docker-compose.jetson.yml there.
 # Needs the NVIDIA Container Toolkit on the host and driver >= 580 for CUDA 13.
 #   COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml
 services:
   comfyui:
     image: ghcr.io/romkey/comfyui-docker:${IMAGE_VERSION:-latest}
+    restart: unless-stopped
     deploy:
       resources:
         reservations:

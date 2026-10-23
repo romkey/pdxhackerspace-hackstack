@@ -1,0 +1,9 @@
+# NVIDIA Jetson Thor. Use instead of docker-compose.nvidia.yml, not on top of it:
+# Jetson's container toolkit runs in CSV mode, which rejects device reservations
+# (the --gpus equivalent) and only works through the nvidia runtime.
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.jetson.yml
+services:
+  comfyui:
+    image: ghcr.io/romkey/comfyui-docker:${IMAGE_VERSION:-latest}
+    runtime: nvidia
+    restart: unless-stopped
