@@ -1,0 +1,32 @@
+# https://github.com/hailo-ai/hailo_model_zoo_genai
+# Hailo does not publish this image to a registry. Download the "HailoRT docker" zip from the
+# Hailo Developer Zone, then: unzip hailort_<ver>_docker.zip && docker load -i hailo_docker_hailort_ub2204_<ver>.tar
+services:
+  hailo-ollama:
+    image: ${IMAGE_NAME:-hailo_docker_hailort_ub2204}:${IMAGE_VERSION:?set IMAGE_VERSION to the loaded image tag}
+    pull_policy: never
+    container_name: hailo-ollama
+    hostname: hailo-ollama
+    restart: unless-stopped
+    devices:
+      - ${HAILO_DEVICE:-/dev/h1x-0}:${HAILO_DEVICE:-/dev/h1x-0}
+    volumes:
+      - ../../lib/hailo-ollama/models/blob:/usr/share/hailo-ollama/models/blob
+    env_file:
+      - .env
+    # No curl guaranteed in the image; probe the TCP port with bash.
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/8000'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+#    ports:
+#      - 8000:8000
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net
