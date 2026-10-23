@@ -114,6 +114,9 @@ experiments/forgejo/.env
 # [experiments] experiments/grafana/.gitignore
 experiments/grafana/config/grafana.ini
 
+# [experiments] experiments/hailo-ollama/.gitignore
+experiments/hailo-ollama/.env
+
 # [experiments] experiments/headscale/.gitignore
 experiments/headscale/.env
 experiments/headscale/config/config.yaml
