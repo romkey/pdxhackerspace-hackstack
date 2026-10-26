@@ -1,0 +1,14 @@
+# NVIDIA GPUs on Linux (x86_64 or arm64: discrete cards, DGX Spark GB10).
+# Not for Jetson Thor; use docker-compose.jetson.yml there.
+# Needs the NVIDIA Container Toolkit on the host and driver >= 550.
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml
+services:
+  ollama:
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: ${GPU_COUNT:-all}
+              capabilities: [gpu]

@@ -1,0 +1,8 @@
+# NVIDIA DGX Spark (GB10): optional community build tuned for GB10 (NVFP4, MoE
+# kernels). The stock vllm/vllm-openai image from nvidia.yml also runs on Spark;
+# use this when you want the Spark-specific kernels. Layer on nvidia.yml:
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml:docker-compose.spark.yml
+services:
+  vllm:
+    restart: unless-stopped
+    image: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:${SPARK_IMAGE_VERSION:-latest}
