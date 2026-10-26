@@ -22,7 +22,8 @@ the hardware override with `COMPOSE_FILE` in `.env` (the `.env.example` lists ev
 
 Notes:
 
-- The GPU files default `LLAMA_ARG_N_GPU_LAYERS` to `999` (offload everything); set it in `.env` to override.
+- GPU layers and context size are fitted to free device memory automatically (`--fit`, on by default). Setting `LLAMA_ARG_N_GPU_LAYERS` or `LLAMA_ARG_CTX_SIZE` pins that value and turns fitting off for it.
+- `.env.example` has tuned, commented-out settings for each platform; uncomment the block for your hardware.
 - `IMAGE_VERSION` is the full image tag and overrides the file's default. Leave it unset unless you want to pin a build (`server-cuda-b6500`) or switch backend within a file: `server-cuda13` on `nvidia.yml` (driver >= 580), `server-rocm` on `strix.yml`, `server-vulkan` on `arc.yml`.
 - **Jetson Thor**: the toolkit runs in CSV mode there and rejects GPU reservations, so `jetson.yml` uses `runtime: nvidia` and replaces `nvidia.yml` rather than layering on it.
 - **Strix**: Vulkan (RADV) is the most reliable and usually fastest llama.cpp backend on these APUs. For large models on Strix Halo, raise the GPU's share of system memory on the host (BIOS UMA setting and/or the `amdttm.pages_limit` kernel parameter).
@@ -55,9 +56,9 @@ cp .env.example .env
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `LLAMA_ARG_MODEL` | Path to the GGUF model file inside the container | `/models/model.gguf` |
-| `LLAMA_ARG_N_GPU_LAYERS` | Layers to offload to GPU (`0` = CPU only, `999` = all) | `999` in the GPU files |
+| `LLAMA_ARG_N_GPU_LAYERS` | Layers to offload to GPU (`0` = CPU only, `999` = all) | auto (fit to free memory) |
 | `LLAMA_ARG_CTX_SIZE` | Context window size in tokens | `4096` |
-| `LLAMA_ARG_THREADS` | CPU threads to use | `4` |
+| `LLAMA_ARG_THREADS` | CPU threads to use | all cores |
 | `LLAMA_ARG_HOST` | Bind address inside the container | `0.0.0.0` |
 | `LLAMA_ARG_PORT` | Port inside the container | `8080` |
 | `IMAGE_VERSION` | Full image tag, overrides the compose file's default (see above) | per file |

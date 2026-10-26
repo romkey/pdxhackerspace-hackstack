@@ -9,4 +9,5 @@ services:
     devices:
       - /dev/dri:/dev/dri
     environment:
-      LLAMA_ARG_N_GPU_LAYERS: ${LLAMA_ARG_N_GPU_LAYERS:-999}
+      # Lets SYCL report free device memory, which the automatic --fit needs.
+      ZES_ENABLE_SYSMAN: ${ZES_ENABLE_SYSMAN:-1}

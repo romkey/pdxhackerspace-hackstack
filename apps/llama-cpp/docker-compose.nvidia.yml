@@ -6,8 +6,6 @@ services:
   llama-cpp:
     restart: unless-stopped
     image: ghcr.io/ggml-org/llama.cpp:${IMAGE_VERSION:-server-cuda}
-    environment:
-      LLAMA_ARG_N_GPU_LAYERS: ${LLAMA_ARG_N_GPU_LAYERS:-999}
     deploy:
       resources:
         reservations:
