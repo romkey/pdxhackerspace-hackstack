@@ -1,0 +1,14 @@
+# AMD Strix Halo (Ryzen AI Max, gfx1151) and Strix Point (Ryzen AI 300, gfx1150)
+# on Linux, x86_64 only. Uses the ROCm image; the host only needs the amdgpu
+# kernel driver. IMAGE_VERSION, if set, is the bare Ollama version (e.g. 0.40.11);
+# the -rocm suffix is added here.
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.strix.yml
+services:
+  ollama:
+    restart: unless-stopped
+    image: ollama/ollama:${IMAGE_VERSION:+${IMAGE_VERSION}-}rocm
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    group_add:
+      - video

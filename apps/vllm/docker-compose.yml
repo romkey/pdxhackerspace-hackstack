@@ -1,7 +1,13 @@
+# Hardware-neutral base. On its own this runs the CPU-only image; layer one of
+# the hardware overrides on top via COMPOSE_FILE in .env (see README):
+#   docker-compose.nvidia.yml  NVIDIA discrete GPUs and DGX Spark, CUDA 13 (driver >= 580)
+#   docker-compose.spark.yml   DGX Spark community build, on top of nvidia.yml (optional)
+#   docker-compose.jetson.yml  NVIDIA Jetson Thor (nvidia runtime, instead of nvidia.yml)
+#   docker-compose.strix.yml   AMD Strix Halo / Strix Point APUs (ROCm), x86_64 only
+#   docker-compose.arc.yml     Intel Arc (XPU), x86_64 only
 services:
   vllm:
-    image: vllm/vllm-openai:${IMAGE_VERSION:-latest}
-#    image: ghcr.io/spark-arena/dgx-vllm-eugr-nightly:${IMAGE_VERSION:-latest}
+    image: vllm/vllm-openai-cpu:${IMAGE_VERSION:-latest}
     container_name: vllm
     hostname: vllm
     restart: unless-stopped
@@ -13,13 +19,6 @@ services:
     entrypoint: ["/bin/sh", "/vllm-entrypoint.sh"]
     env_file:
       - .env
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: ${GPU_COUNT:-1}
-              capabilities: [gpu]
     ports:
       - 8000:8000
     healthcheck:

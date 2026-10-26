@@ -1,0 +1,17 @@
+# NVIDIA discrete GPUs on Linux (x86_64 or arm64), CUDA 12.8 (driver >= 570).
+# For driver >= 580 you can set IMAGE_VERSION=server-cuda13 instead.
+# DGX Spark: also add docker-compose.spark.yml. Jetson Thor: use docker-compose.jetson.yml.
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml
+services:
+  llama-cpp:
+    restart: unless-stopped
+    image: ghcr.io/ggml-org/llama.cpp:${IMAGE_VERSION:-server-cuda}
+    environment:
+      LLAMA_ARG_N_GPU_LAYERS: ${LLAMA_ARG_N_GPU_LAYERS:-999}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: ${GPU_COUNT:-all}
+              capabilities: [gpu]

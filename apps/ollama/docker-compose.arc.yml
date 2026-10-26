@@ -1,0 +1,11 @@
+# Intel Arc (Battlemage B580 / Arc Pro B-series, Alchemist A-series) on Linux,
+# x86_64 only. Ollama has no oneAPI/SYCL backend; the stock image drives Arc
+# through its bundled Vulkan backend. Needs the xe (or i915) kernel driver.
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.arc.yml
+services:
+  ollama:
+    restart: unless-stopped
+    devices:
+      - /dev/dri:/dev/dri
+    environment:
+      OLLAMA_VULKAN: ${OLLAMA_VULKAN:-1}

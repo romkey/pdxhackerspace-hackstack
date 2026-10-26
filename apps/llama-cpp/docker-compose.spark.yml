@@ -1,0 +1,6 @@
+# NVIDIA DGX Spark (GB10, arm64, sm_121): the CUDA 13 build. Layer on nvidia.yml:
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml:docker-compose.spark.yml
+services:
+  llama-cpp:
+    restart: unless-stopped
+    image: ghcr.io/ggml-org/llama.cpp:${IMAGE_VERSION:-server-cuda13}

@@ -1,0 +1,12 @@
+# NVIDIA Jetson Thor (JetPack 7, arm64, sm_110). The stock arm64 CUDA 13 image
+# includes Thor kernels. Use instead of docker-compose.nvidia.yml, not on top of it:
+# Jetson's container toolkit runs in CSV mode, which rejects device reservations
+# (the --gpus equivalent) and only works through the nvidia runtime.
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.jetson.yml
+services:
+  vllm:
+    restart: unless-stopped
+    image: vllm/vllm-openai:${IMAGE_VERSION:-latest}
+    runtime: nvidia
+    environment:
+      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}

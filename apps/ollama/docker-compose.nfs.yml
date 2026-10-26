@@ -1,5 +1,6 @@
 # Optional override: Ollama models on NFS.
-# Enable: COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml
+# Add it last in COMPOSE_FILE, e.g.
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml:docker-compose.nfs.yml
 
 services:
   ollama:

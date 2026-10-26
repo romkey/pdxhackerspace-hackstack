@@ -1,0 +1,12 @@
+# NVIDIA Jetson Thor (JetPack 7, arm64, CUDA 13). Use instead of docker-compose.nvidia.yml,
+# not on top of it: Jetson's container toolkit runs in CSV mode, which rejects device
+# reservations (the --gpus equivalent) and only works through the nvidia runtime.
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.jetson.yml
+services:
+  llama-cpp:
+    restart: unless-stopped
+    image: ghcr.io/ggml-org/llama.cpp:${IMAGE_VERSION:-server-cuda13}
+    runtime: nvidia
+    environment:
+      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
+      LLAMA_ARG_N_GPU_LAYERS: ${LLAMA_ARG_N_GPU_LAYERS:-999}

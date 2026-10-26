@@ -1,0 +1,16 @@
+# AMD Strix Halo (Ryzen AI Max, gfx1151) and Strix Point (Ryzen AI 300, gfx1150)
+# on Linux, x86_64 only. Uses the Vulkan (RADV) build, which is the fastest and
+# least fussy llama.cpp backend on these APUs; the host only needs the amdgpu
+# kernel driver. IMAGE_VERSION=server-rocm also works with this file.
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.strix.yml
+services:
+  llama-cpp:
+    restart: unless-stopped
+    image: ghcr.io/ggml-org/llama.cpp:${IMAGE_VERSION:-server-vulkan}
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    group_add:
+      - video
+    environment:
+      LLAMA_ARG_N_GPU_LAYERS: ${LLAMA_ARG_N_GPU_LAYERS:-999}
