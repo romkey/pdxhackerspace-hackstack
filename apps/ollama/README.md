@@ -26,6 +26,8 @@ hardware override with `COMPOSE_FILE` in `.env` (the `.env.example` lists every 
 | Intel Arc | `docker-compose.yml:docker-compose.arc.yml` | Vulkan |
 | CPU only | `docker-compose.yml` | CPU |
 
+`.env.example` has tuned, commented-out settings for each platform; uncomment the block for your hardware.
+
 Notes:
 
 - **NVIDIA**: needs the NVIDIA Container Toolkit. `GPU_COUNT` (`all` or a number) sets how many GPUs are reserved.

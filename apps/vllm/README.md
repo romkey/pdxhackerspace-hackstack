@@ -34,6 +34,8 @@ the hardware override with `COMPOSE_FILE` in `.env` (the `.env.example` lists ev
 | Intel Arc | `docker-compose.yml:docker-compose.arc.yml` | `vllm/vllm-openai-xpu` |
 | CPU only | `docker-compose.yml` | `vllm/vllm-openai-cpu` |
 
+`.env.example` has tuned, commented-out settings for each platform, including a `VLLM_ARGS` line per platform; uncomment the block for your hardware (only one `VLLM_ARGS` line).
+
 Notes:
 
 - **NVIDIA**: needs the NVIDIA Container Toolkit and driver >= 580 for the CUDA 13 images. With a 575-579 driver, pin a CUDA 12.9 build, e.g. `IMAGE_VERSION=v0.32.0-cu129`.

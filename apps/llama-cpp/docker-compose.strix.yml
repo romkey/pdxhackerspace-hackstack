@@ -12,5 +12,3 @@ services:
       - /dev/dri:/dev/dri
     group_add:
       - video
-    environment:
-      LLAMA_ARG_N_GPU_LAYERS: ${LLAMA_ARG_N_GPU_LAYERS:-999}
