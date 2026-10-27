@@ -43,6 +43,11 @@ curl -L -o ../../lib/llama-cpp/models/model.gguf \
 
 Then set `LLAMA_ARG_MODEL=/models/model.gguf` in `.env`.
 
+Alternatively, let llama.cpp download it: set `LLAMA_ARG_HF_REPO=<user>/<repo>[:quant]`
+instead of `LLAMA_ARG_MODEL`, and `HF_HUB_CACHE=/models/hf-cache` so the download
+lands on the models volume and survives container recreation. `HF_ENDPOINT` points
+it at a Hugging Face mirror; see `.env.example`.
+
 ## Configuration
 
 ### Environment Variables
