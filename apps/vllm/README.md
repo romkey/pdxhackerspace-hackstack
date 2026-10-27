@@ -19,6 +19,7 @@ cp .env.example .env
 | `IMAGE_VERSION` | vLLM release tag (e.g. `v0.32.0`, default `latest`). The CUDA, CPU, ROCm and XPU images share version tags, so it applies to whichever file you use. |
 | `GPU_COUNT` | Number of NVIDIA GPUs to reserve with `nvidia.yml` (default `1`). |
 | `HF_TOKEN` | Optional. For gated or private Hugging Face models, set the token in `.env` (vLLM reads the standard `HF_TOKEN` / `HUGGING_FACE_HUB_TOKEN` env vars). |
+| `HF_ENDPOINT` | Optional. Download from a Hugging Face-compatible mirror instead of huggingface.co. `.env.example` lists the other `HF_*` download settings (offline mode, timeouts, Xet). |
 
 ## Choosing compose files
 
