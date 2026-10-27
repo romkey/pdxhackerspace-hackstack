@@ -92,18 +92,17 @@ install_default_config() {
 
 start_app() {
     app_dir="$APPS_ROOT/$1"
-    if ! docker compose -f "$app_dir/docker-compose.yml" ps 2>/dev/null | grep -q 'Up'; then
+    # Run from the app directory without -f so COMPOSE_FILE in its .env
+    # (hardware, NFS or macvlan overrides) is honored.
+    if ! (cd "$app_dir" && docker compose ps 2>/dev/null) | grep -q 'Up'; then
         echo "Starting $1..."
-        docker compose -f "$app_dir/docker-compose.yml" up -d
+        (cd "$app_dir" && docker compose up -d)
         echo "$1 started."
     else
         echo "$1 is already running."
     fi
 }
 
-# Start a single named service within an app's compose file, leaving other
-# services in that file untouched.
-# Usage: start_app_service <app_dir> <service_name>
 start_experiment() {
     exp_dir="$EXPERIMENTS_ROOT/$1"
     if [ ! -d "$exp_dir" ]; then
@@ -121,12 +120,16 @@ start_experiment() {
     fi
 }
 
+# Start a single named service within an app's compose file, leaving other
+# services in that file untouched. Like start_app, runs without -f so
+# COMPOSE_FILE in the app's .env is honored.
+# Usage: start_app_service <app_dir> <service_name>
 start_app_service() {
     app_dir="$APPS_ROOT/$1"
     service="$2"
-    if ! docker compose -f "$app_dir/docker-compose.yml" ps "$service" 2>/dev/null | grep -q 'Up'; then
+    if ! (cd "$app_dir" && docker compose ps "$service" 2>/dev/null) | grep -q 'Up'; then
         echo "Starting $1/$service..."
-        docker compose -f "$app_dir/docker-compose.yml" up -d "$service"
+        (cd "$app_dir" && docker compose up -d "$service")
         echo "$1/$service started."
     else
         echo "$1/$service is already running."
