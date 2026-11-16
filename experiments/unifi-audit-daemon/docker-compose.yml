@@ -1,0 +1,39 @@
+services:
+  unifi-audit-daemon:
+    image: ghcr.io/romkey/unifi-audit-daemon:${IMAGE_VERSION:-latest}
+    container_name: unifi-audit-daemon
+    hostname: unifi-audit-daemon
+    restart: unless-stopped
+    env_file:
+      - .env
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      # The audit log and sync state: private, never serve it
+      - ../../lib/unifi-audit-daemon/data:/data
+      # Nightly contact sheets, kept apart so they can be shared on their own
+      - ../../lib/unifi-audit-daemon/contact-sheets:/contact-sheets
+#    ports:
+#      - 8000:8000
+    networks:
+      - proxy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3)
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  proxy:
+    external: true
+    name: nginx-proxy-net

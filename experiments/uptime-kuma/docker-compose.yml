@@ -26,7 +26,6 @@ services:
       - postgres
       - mosquitto
       - hass
-      # - influxdb
 
 networks:
   proxy:
@@ -44,6 +43,3 @@ networks:
   hass:
     external: true
     name: hass-net
-# influxdb:
-#   external: true
-#   name: influxdb-net

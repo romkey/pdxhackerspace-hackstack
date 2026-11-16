@@ -1,9 +1,7 @@
 # Intel Arc on Linux, x86_64 only, via vLLM's XPU backend. Battlemage (B580,
 # Arc Pro B-series) is what Intel tests; Alchemist (A-series) may work but is slow.
 # Needs the xe kernel driver and Intel compute runtime >= 26.18 on the host.
-# With NFS, put docker-compose.nfs.yml before this file so the by-path mount survives:
-#   COMPOSE_FILE=docker-compose.yml:docker-compose.arc.yml
-#   COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml:docker-compose.arc.yml
+#   COMPOSE_HARDWARE=:docker-compose.arc.yml
 services:
   vllm:
     restart: unless-stopped

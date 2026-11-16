@@ -1,11 +1,14 @@
 # Hardware-neutral base. On its own this runs the CPU-only image; layer one of
-# the hardware overrides on top via COMPOSE_FILE in .env (see README):
+# the hardware overrides on top via COMPOSE_HARDWARE in .env (see README):
 #   docker-compose.nvidia.yml        NVIDIA, CUDA 13 (driver >= 580)
 #   docker-compose.nvidia-cu128.yml  NVIDIA, CUDA 12.8 (driver >= 570), on top of nvidia.yml
 #   docker-compose.nvidia-sage.yml   NVIDIA Blackwell + SageAttention, on top of nvidia.yml
 #   docker-compose.jetson.yml        NVIDIA Jetson Thor (nvidia runtime, instead of nvidia.yml)
 #   docker-compose.rocm.yml          AMD Strix Halo (gfx1151), x86_64 only
 #   docker-compose.xpu.yml           Intel Arc, x86_64 only
+# and how clients reach it:
+#   docker-compose.networks.yml      join nginx-proxy-net and llama-net (Hackstack)
+#   docker-compose.ports.yml         publish the port on the host (no reverse proxy)
 services:
   comfyui:
     image: ghcr.io/romkey/comfyui-docker:${IMAGE_VERSION:-latest}-cpu
@@ -26,14 +29,3 @@ services:
       retries: 3
       start_period: 120s
     ipc: host
-    networks:
-      - proxy
-      - llama
-
-networks:
-  proxy:
-    external: true
-    name: nginx-proxy-net
-  llama:
-    external: true
-    name: llama-net

@@ -1,0 +1,68 @@
+services:
+  mongo:
+    image: mongo:${MONGO_IMAGE_VERSION:-latest}
+    container_name: komodo-mongo
+    hostname: komodo-mongo
+    restart: unless-stopped
+    command: --quiet --wiredTigerCacheSizeGB 0.25
+    labels:
+      komodo.skip: ""
+    volumes:
+      - ../../lib/komodo/mongo/db:/data/db
+      - ../../lib/komodo/mongo/configdb:/data/configdb
+    env_file:
+      - .env
+    networks:
+      - komodo
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  core:
+    image: ghcr.io/moghtech/komodo-core:${IMAGE_VERSION:-2}
+    container_name: komodo-core
+    hostname: komodo-core
+    init: true
+    restart: unless-stopped
+    volumes:
+      - ../../lib/komodo/keys:/config/keys
+      - ../../lib/komodo/backups:/backups
+    env_file:
+      - .env
+#    ports:
+#      - 9120:9120
+    networks:
+      - proxy
+      - komodo
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  periphery:
+    image: ghcr.io/moghtech/komodo-periphery:${IMAGE_VERSION:-2}
+    container_name: komodo-periphery
+    hostname: komodo-periphery
+    init: true
+    restart: unless-stopped
+    volumes:
+      - ../../lib/komodo/keys:/config/keys
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc:/proc
+      # must be the same path inside and outside the container
+      - ${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}:${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}
+    env_file:
+      - .env
+    networks:
+      - komodo
+    depends_on:
+      - core
+
+networks:
+  proxy:
+    name: nginx-proxy-net
+    external: true
+  komodo:
+    name: komodo-net

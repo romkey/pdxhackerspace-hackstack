@@ -1,0 +1,16 @@
+# Optional: attach to the Hackstack networks so the reverse proxy and other
+# containers (openwebui, home-assistant, ...) reach it as vllm:8000.
+# Enabled through COMPOSE_ACCESS in .env (see .env.example).
+services:
+  vllm:
+    networks:
+      - llama
+      - proxy
+
+networks:
+  llama:
+    external: true
+    name: llama-net
+  proxy:
+    external: true
+    name: nginx-proxy-net

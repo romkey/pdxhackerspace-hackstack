@@ -1,0 +1,191 @@
+# Prometheus configuration. Copy to prometheus.yml.
+#
+# Jobs for the stack's own exporters are enabled. Jobs for other Hackstack apps
+# are commented out: each one needs metrics turned on in that app first (see the
+# note above each job), then uncomment it and reload:
+#   docker compose exec prometheus kill -HUP 1
+#
+# Tokens and passwords go in config/secrets/<name> (one per file, readable by
+# uid 65534) and are mounted at /etc/prometheus/secrets/<name>.
+#
+# Prometheus reaches apps by container name over nginx-proxy-net.
+
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+scrape_configs:
+  # ---------------------------------------------------------------------------
+  # This stack
+  # ---------------------------------------------------------------------------
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Host CPU, memory, disk, network, filesystems
+  - job_name: node
+    static_configs:
+      - targets: ["node-exporter:9100"]
+
+  # Per-container CPU, memory, network, disk I/O
+  - job_name: cadvisor
+    static_configs:
+      - targets: ["cadvisor:8080"]
+
+  # UPS status from apps/upsd (via nut-exporter)
+  - job_name: nut
+    metrics_path: /ups_metrics
+    static_configs:
+      - targets: ["nut-exporter:9199"]
+    # Uncomment to pick a UPS by name when upsd serves more than one
+    # params:
+    #   ups: ["ups"]
+
+  # ---------------------------------------------------------------------------
+  # apps/
+  # ---------------------------------------------------------------------------
+
+  # apps/home-assistant - all HA entities (including MQTT/zigbee2mqtt/ESPHome sensors).
+  # Add to configuration.yaml and restart HA:
+  #   prometheus:
+  #     namespace: hass
+  # Create a long-lived access token (Profile → Security) and save it as
+  # config/secrets/home-assistant-token.
+  # - job_name: home-assistant
+  #   metrics_path: /api/prometheus
+  #   authorization:
+  #     credentials_file: /etc/prometheus/secrets/home-assistant-token
+  #   static_configs:
+  #     - targets: ["home-assistant:8123"]
+
+  # apps/authentik - served on port 9300 by default, no auth.
+  # The worker also exposes :9300 but is only on postgres-net/postfix-net.
+  # - job_name: authentik
+  #   static_configs:
+  #     - targets: ["authentik-server:9300"]
+
+  # apps/jellyfin - set <EnableMetrics>true</EnableMetrics> in its config/system.xml
+  # and restart. There is no UI toggle.
+  # - job_name: jellyfin
+  #   static_configs:
+  #     - targets: ["jellyfin:8096"]
+
+  # apps/llama-cpp - add LLAMA_ARG_ENDPOINT_METRICS=1 to apps/llama-cpp/.env
+  # - job_name: llama-cpp
+  #   static_configs:
+  #     - targets: ["llama-cpp:8080"]
+
+  # apps/vllm - /metrics is always on. Needs COMPOSE_ACCESS to include
+  # docker-compose.networks.yml; with only the published port, use
+  # host.docker.internal:8000 instead.
+  # - job_name: vllm
+  #   static_configs:
+  #     - targets: ["vllm:8000"]
+
+  # apps/litellm - add to its config.yaml:
+  #   litellm_settings:
+  #     callbacks: ["prometheus"]
+  # Save the master key (or a virtual key) as config/secrets/litellm-key.
+  # - job_name: litellm
+  #   authorization:
+  #     credentials_file: /etc/prometheus/secrets/litellm-key
+  #   static_configs:
+  #     - targets: ["litellm:4000"]
+
+  # apps/watchtower - add to apps/watchtower/.env:
+  #   WATCHTOWER_HTTP_API_METRICS=true
+  #   WATCHTOWER_HTTP_API_TOKEN=<random token>
+  # and join watchtower to prometheus-net (it has no shared network today).
+  # Save the token as config/secrets/watchtower-token.
+  # - job_name: watchtower
+  #   metrics_path: /v1/metrics
+  #   authorization:
+  #     credentials_file: /etc/prometheus/secrets/watchtower-token
+  #   static_configs:
+  #     - targets: ["watchtower:8080"]
+
+  # ---------------------------------------------------------------------------
+  # experiments/
+  # ---------------------------------------------------------------------------
+
+  # experiments/forgejo - add to its .env:
+  #   FORGEJO__metrics__ENABLED=true
+  #   FORGEJO__metrics__TOKEN=<random token>   (optional but recommended)
+  # Save the token as config/secrets/forgejo-token.
+  # - job_name: forgejo
+  #   authorization:
+  #     credentials_file: /etc/prometheus/secrets/forgejo-token
+  #   static_configs:
+  #     - targets: ["forgejo:3000"]
+
+  # experiments/headscale - in config/config.yaml change
+  #   metrics_listen_addr: 127.0.0.1:9090  →  0.0.0.0:9090
+  # Don't publish that port; it also serves /debug.
+  # - job_name: headscale
+  #   static_configs:
+  #     - targets: ["headscale:9090"]
+
+  # experiments/matrix (Synapse) - in homeserver.yaml add:
+  #   enable_metrics: true
+  # and a listener:
+  #   - port: 9000
+  #     type: metrics
+  #     bind_addresses: ["0.0.0.0"]
+  # - job_name: synapse
+  #   metrics_path: /_synapse/metrics
+  #   static_configs:
+  #     - targets: ["synapse:9000"]
+
+  # experiments/qdrant - /metrics is always on. If QDRANT__SERVICE__API_KEY is
+  # set, add an authorization block with that key.
+  # - job_name: qdrant
+  #   static_configs:
+  #     - targets: ["qdrant:6333"]
+
+  # experiments/uptime-kuma - monitor up/down, response times, cert expiry.
+  # Create an API key (Settings → API Keys) and save it as
+  # config/secrets/uptime-kuma-api-key. The username is ignored.
+  # - job_name: uptime-kuma
+  #   basic_auth:
+  #     username: prometheus
+  #     password_file: /etc/prometheus/secrets/uptime-kuma-api-key
+  #   static_configs:
+  #     - targets: ["uptime-kuma:3001"]
+
+  # experiments/tailscale - add TS_ENABLE_METRICS=true to its .env. Served on
+  # TS_LOCAL_ADDR_PORT (0.0.0.0:9002), alongside the health check.
+  # - job_name: tailscale
+  #   static_configs:
+  #     - targets: ["tailscale:9002"]
+
+  # experiments/copyparty - add `stats` to [global] in copyparty.conf.
+  # Needs an admin account; save its password as config/secrets/copyparty-password.
+  # - job_name: copyparty
+  #   metrics_path: /.cpr/metrics
+  #   basic_auth:
+  #     username: admin
+  #     password_file: /etc/prometheus/secrets/copyparty-password
+  #   static_configs:
+  #     - targets: ["copyparty:3923"]
+
+  # ---------------------------------------------------------------------------
+  # SNMP (uncomment snmp-exporter in docker-compose.yml first)
+  # ---------------------------------------------------------------------------
+  # One job per profile ("module"). List the devices to poll under targets;
+  # Prometheus passes each one to snmp-exporter.
+  # - job_name: snmp-if-mib
+  #   metrics_path: /snmp
+  #   params:
+  #     auth: [public_v2]
+  #     module: [if_mib]
+  #   static_configs:
+  #     - targets:
+  #         - 192.168.1.1     # router
+  #         - 192.168.1.2     # switch
+  #   relabel_configs:
+  #     - source_labels: [__address__]
+  #       target_label: __param_target
+  #     - source_labels: [__param_target]
+  #       target_label: instance
+  #     - target_label: __address__
+  #       replacement: snmp-exporter:9116

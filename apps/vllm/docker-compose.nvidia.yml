@@ -2,7 +2,7 @@
 # Not for Jetson Thor; use docker-compose.jetson.yml there.
 # Needs the NVIDIA Container Toolkit on the host and driver >= 580 for CUDA 13;
 # for an older driver (>= 575) pin a CUDA 12.9 build, e.g. IMAGE_VERSION=v0.32.0-cu129.
-#   COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml
+#   COMPOSE_HARDWARE=:docker-compose.nvidia.yml
 services:
   vllm:
     restart: unless-stopped

@@ -1,0 +1,34 @@
+services:
+  unifi-occupancy:
+    image: ghcr.io/romkey/unifi-occupancy:${IMAGE_VERSION:-latest}
+    container_name: unifi-occupancy
+    hostname: unifi-occupancy
+    restart: unless-stopped
+    env_file:
+      - .env
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      # Camera groups and periods. The daily occupancy sheets are only written
+      # when config/config.yaml exists.
+      - ./config:/config:ro
+      # The generated HTML sheets
+      - ../../lib/unifi-occupancy/www:/var/www/html
+      # The detection history the sheets are built from
+      - ../../lib/unifi-occupancy/data:/var/lib/unifi-occupancy
+    networks:
+      - mqtt
+#      - llama
+
+networks:
+  mqtt:
+    external: true
+    name: mosquitto-net
+#  llama:
+#    external: true
+#    name: llama-net

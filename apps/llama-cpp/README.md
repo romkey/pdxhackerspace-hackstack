@@ -2,23 +2,25 @@
 
 OpenAI-compatible local LLM inference server based on
 [llama.cpp](https://github.com/ggml-org/llama.cpp). Runs GGUF-format models
-on CPU or GPU and exposes them as an OpenAI API endpoint on `llama-net`,
+on CPU or GPU and exposes them as an OpenAI API endpoint on `llama-net` (or on
+a published host port; see [Reaching the service](#reaching-the-service)),
 making it usable by [openwebui](../openwebui/) and
 [home-assistant](../home-assistant/) alongside [ollama](../ollama/).
 
 ## Choosing compose files
 
-`docker-compose.yml` is hardware-neutral and runs the CPU image by itself. Pick
-the hardware override with `COMPOSE_FILE` in `.env` (the `.env.example` lists every line):
+`docker-compose.yml` is hardware-neutral and runs the CPU image by itself. Compose assembles `COMPOSE_FILE` in `.env` from three settings: `COMPOSE_HARDWARE` (below), `COMPOSE_ACCESS` (see [Reaching the service](#reaching-the-service)) and `COMPOSE_STORAGE` (NFS). Set those and leave the `COMPOSE_FILE` line alone; plain `docker compose up -d` then uses all three.
 
-| Hardware | `COMPOSE_FILE` | Image tag |
+Pick the hardware with `COMPOSE_HARDWARE` (the `.env.example` lists every line):
+
+| Hardware | `COMPOSE_HARDWARE` | Image tag |
 |----------|----------------|-----------|
-| NVIDIA discrete GPUs (driver >= 570) | `docker-compose.yml:docker-compose.nvidia.yml` | `server-cuda` (CUDA 12.8) |
-| NVIDIA DGX Spark (GB10) | `docker-compose.yml:docker-compose.nvidia.yml:docker-compose.spark.yml` | `server-cuda13` |
-| NVIDIA Jetson Thor | `docker-compose.yml:docker-compose.jetson.yml` | `server-cuda13`, `nvidia` runtime |
-| AMD Strix Halo / Strix Point | `docker-compose.yml:docker-compose.strix.yml` | `server-vulkan` |
-| Intel Arc | `docker-compose.yml:docker-compose.arc.yml` | `server-intel` (SYCL) |
-| CPU only | `docker-compose.yml` | `server` |
+| NVIDIA discrete GPUs (driver >= 570) | `:docker-compose.nvidia.yml` | `server-cuda` (CUDA 12.8) |
+| NVIDIA DGX Spark (GB10) | `:docker-compose.nvidia.yml:docker-compose.spark.yml` | `server-cuda13` |
+| NVIDIA Jetson Thor | `:docker-compose.jetson.yml` | `server-cuda13`, `nvidia` runtime |
+| AMD Strix Halo / Strix Point | `:docker-compose.strix.yml` | `server-vulkan` |
+| Intel Arc | `:docker-compose.arc.yml` | `server-intel` (SYCL) |
+| CPU only | *(empty)* | `server` |
 
 Notes:
 
@@ -68,17 +70,30 @@ cp .env.example .env
 | `LLAMA_ARG_PORT` | Port inside the container | `8080` |
 | `IMAGE_VERSION` | Full image tag, overrides the compose file's default (see above) | per file |
 
+## Reaching the service
+
+How clients reach llama-cpp is chosen with `COMPOSE_ACCESS` in `.env`, independently of the hardware:
+
+| `COMPOSE_ACCESS` | Effect |
+|------------------|--------|
+| `:docker-compose.networks.yml` | Joins `llama-net` and `nginx-proxy-net`. Other containers and the reverse proxy reach it as `llama-cpp:8080`. The default, for Hackstack servers. |
+| `:docker-compose.ports.yml` | Publishes port 8080 on the host, for servers with no reverse proxy. `PUBLISHED_PORT` changes the host port and `PUBLISHED_ADDRESS` the address it binds (a LAN IP, or `127.0.0.1` for this machine only). |
+| `:docker-compose.networks.yml:docker-compose.ports.yml` | Both. |
+| *(empty)* | Neither; reachable only from inside the container. |
+
+The published port maps to `LLAMA_ARG_PORT` inside the container.
+
+`docker-compose.yml` itself has no networks and its `ports` are commented out, so nothing needs editing in any compose file.
+
 ## Storage on NFS (optional)
 
 Large data defaults to bind mounts under `../../lib/` in `docker-compose.yml`. To use a NAS export instead, set in **`.env`** (see **`.env.example`**):
 
 ```bash
-COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml:docker-compose.nfs.yml
+COMPOSE_STORAGE=:docker-compose.nfs.yml
 ```
 
-(use your hardware line, with `docker-compose.nfs.yml` last)
-
-plus the `*_NFS_HOST`, `*_NFS_PATH`, and `NFS_MOUNT_OPTS` variables documented in `.env.example`. Compose reads `COMPOSE_FILE` from `.env`, so plain `docker compose up -d` picks up the override.
+plus the `*_NFS_HOST`, `*_NFS_PATH`, and `NFS_MOUNT_OPTS` variables documented in `.env.example`.
 
 Prefer **`hard`** NFS mounts, not `soft`. Docker creates named NFS volumes on first start; if the server or export path is wrong, fix `.env` and remove the project volume before retrying (`docker volume ls`, then `docker volume rm …`).
 
@@ -108,7 +123,7 @@ docker compose logs -f
 curl http://llama-cpp:8080/v1/models
 ```
 
-From outside the container network, use the host IP or reverse-proxy hostname.
+From outside the container network, use the reverse-proxy hostname, or `http://<host>:8080` with `docker-compose.ports.yml`.
 
 ## API compatibility
 

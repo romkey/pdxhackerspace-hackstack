@@ -1,0 +1,29 @@
+services:
+  laser-cutterd:
+    image: ghcr.io/romkey/laser-cutterd:${IMAGE_VERSION:-latest}
+    container_name: laser-cutterd
+    hostname: laser-cutterd
+    restart: unless-stopped
+    env_file:
+      - .env
+    # hackstack: host networking required - the Ruida controller replies to
+    # UDP 40200 on this host, which Docker's NAT can't be relied on to deliver.
+    # HTTP (/healthz, /status) is on PORT of the host itself.
+    network_mode: host
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:${PORT:-8000}/healthz', timeout=3)
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

@@ -121,7 +121,7 @@ networks:
 | `mariadb` | `mariadb-net` | `mariadb` | MariaDB database access |
 | `mqtt` | `mosquitto-net` | `mosquitto` | MQTT broker access |
 | `hass` | `hass-net` | `home-assistant` | Home Assistant integration |
-| `influxdb` | `influxdb-net` | `influxdb` | InfluxDB time series database |
+| `prometheus` | `prometheus-net` | `prometheus` | Prometheus metrics and exporters |
 | `llama` | `llama-net` | `ollama` | Local LLM inference |
 | `frigate` | `frigate-net` | `frigate` | Frigate NVR/camera access |
 | `mdns` | `mdns-net` | `mdns-repeater` | mDNS across network segments |
@@ -134,7 +134,7 @@ networks:
 - Reads/writes to MariaDB → add `mariadb`
 - Publishes or subscribes to MQTT topics → add `mqtt`
 - Integrates with Home Assistant → add `hass`
-- Reads/writes to InfluxDB → add `influxdb`
+- Queries Prometheus or needs to be scraped by it without a proxy route → add `prometheus`
 - Uses local AI/LLM → add `llama`
 - Needs camera feeds from Frigate → add `frigate`
 - Needs to advertise itself via mDNS → add `mdns`

@@ -1,0 +1,3 @@
+lib/unifi-occupancy/data/occupancy.sqlite3
+lib/unifi-occupancy/data/occupancy.sqlite3-wal
+lib/unifi-occupancy/data/occupancy.sqlite3-shm

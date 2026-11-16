@@ -1,6 +1,6 @@
 # AMD Strix Halo (Ryzen AI Max, gfx1151) on Linux, x86_64 only. The image bundles
 # ROCm; the host only needs the amdgpu kernel driver.
-#   COMPOSE_FILE=docker-compose.yml:docker-compose.rocm.yml
+#   COMPOSE_HARDWARE=:docker-compose.rocm.yml
 services:
   comfyui:
     image: ghcr.io/romkey/comfyui-docker:${IMAGE_VERSION:-latest}-rocm-gfx1151

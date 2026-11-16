@@ -1,11 +1,12 @@
-name: Update .rsync.exlude
+name: Update .rsync.exclude
 
 on:
   push:
     paths:
-      - "**/.rsync.exclude"
+      - "apps/**/.rsync.exclude"
+      - "experiments/**/.rsync.exclude"
       - ".rsync.exclude.initial"
-      - ".github/actions/concatenate_rsync_exclude.yml"
+      - ".github/workflows/concatenate_rsync_exclude.yml"
   workflow_dispatch:
 
 permissions:
@@ -19,16 +20,28 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
 
-      - name: Concatenate .rsync.exclude files with directory paths
+      - name: Concatenate .rsync.exclude files
         run: |
           # Start with the .rsync.exclude.initial file
           cp .rsync.exclude.initial .rsync.exclude
-          
-          # Find all .rsync.exclude files one level down, process each with its path prefix
-          find . -mindepth 2 -maxdepth 2 -name ".rsync.exclude" | while read -r rsync_excludes; do
-            dir_path=$(dirname "$rsync_excludes" | sed 's|^\./||')
-            echo -e "\n# Patterns from $dir_path/.rsync.exclude" >> .rsync.exclude
-            cat "$rsync_excludes" >> .rsync.exclude
+
+          # Per-app files already hold paths relative to the backup root
+          # (e.g. lib/<app>/app.db), so they're copied as-is.
+          for parent_dir in apps experiments; do
+            if [ ! -d "$parent_dir" ]; then
+              continue
+            fi
+
+            find "$parent_dir" -mindepth 2 -maxdepth 2 -name ".rsync.exclude" | sort | \
+            while read -r rsync_exclude; do
+              echo "" >> .rsync.exclude
+              echo "# [$parent_dir] $rsync_exclude" >> .rsync.exclude
+              cat "$rsync_exclude" >> .rsync.exclude
+              # Guard against a file without a trailing newline
+              if [ -n "$(tail -c1 "$rsync_exclude")" ]; then
+                echo "" >> .rsync.exclude
+              fi
+            done
           done
 
       - name: Check for changes
@@ -46,5 +59,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .rsync.exclude
-          git commit -m "Update top-level .rsync.exclude with directory paths"
+          git commit -m "Update top-level .rsync.exclude from per-app files"
           git push origin HEAD:${GITHUB_REF_NAME}

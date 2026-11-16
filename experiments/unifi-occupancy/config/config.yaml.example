@@ -1,0 +1,68 @@
+# ---------------------------------------------------------------------------
+# unifi-occupancy: camera groups and daily occupancy sheets
+#
+# Copy to config/config.yaml (mounted at /config/config.yaml in the
+# container) and edit. Protect and MQTT are configured in .env, not here.
+#
+# This file existing is what switches the sheets on. Without it the service
+# behaves exactly as it always has: MQTT only, nothing written to disk.
+# ---------------------------------------------------------------------------
+
+# IANA zone name. Days, midnights and the periods below are all local to it.
+# Defaults to $TZ, or UTC.
+timezone: America/Los_Angeles
+
+reports:
+  # Set false to keep the config file but stop writing sheets.
+  enabled: true
+
+  # Where the HTML goes. index.html and one YYYY-MM-DD.html per day.
+  output_dir: /var/www/html
+
+  # The detection history. Must be on a writable volume.
+  database: /var/lib/unifi-occupancy/occupancy.sqlite3
+
+  # Heading on every page.
+  title: Occupancy
+
+  # How often the current day's sheet is rewritten. 60 means on the hour; the
+  # last write of a day always lands on local midnight, which is what starts
+  # the next day's sheet.
+  refresh_minutes: 60
+
+  # Width of one bucket on the density strip. 10 gives 144 buckets a day.
+  bucket_minutes: 10
+
+  # Days of detection history to keep. 0 keeps everything -- a busy household
+  # is on the order of a megabyte a month. Pruning never removes a sheet or
+  # its counts, only the per-event detail behind them.
+  retention_days: 0
+
+# Times of day, shaded as bands behind every timeline. Any number of them,
+# with any names; each runs until the next one starts, and the last wraps
+# around midnight. Quote the times.
+periods:
+  - name: Night
+    start: "00:00"
+  - name: Morning
+    start: "06:00"
+  - name: Afternoon
+    start: "12:00"
+  - name: Evening
+    start: "18:00"
+
+# Cameras that cover one area, reported together. Name them as they are named
+# in Protect; a slug (front_door) or a Protect id works too. Any camera not
+# listed here gets a section of its own. Delete this whole block to treat
+# every camera separately.
+groups:
+  - name: Front of house
+    cameras:
+      - Front Door
+      - Driveway
+      - Porch
+
+  - name: Back yard
+    cameras:
+      - Back Yard
+      - Garage

@@ -155,6 +155,8 @@ Persistent runtime files stored in `../../lib/APPNAME` are automatically backed 
 
 Unfortunately backing up live database storage doesn't work as the files may easily be in an inconsistent state.
 
+List an app's live database files in its own `.rsync.exclude`, one path per line relative to `/opt` (for example `lib/myapp/app.db`), so the file backup skips them; back them up with `BACKUP_DATABASE_URLS` below or the app's own dump feature instead. A GitHub Action collects the `apps/*/.rsync.exclude` and `experiments/*/.rsync.exclude` files into the top-level `.rsync.exclude`, which you shouldn't edit by hand.
+
 The `db-backup` program looks for a  `.env` file in each application directory. If it finds one, it looks for a variable called `BACKUP_DATABASE_URLS`. This variable should contain a comma-separated list of quoted database URLs. It does a simple database dump for each database URL it finds, keeping the five most recent backups. This doesn't work well for very large databases; in that case we recommend rolling a custom backup solution that's appropriate for the specific database.
 
 In our case, our server is named `chaos`; backups are done to `/backups/chaos/databases` and look something like this:
