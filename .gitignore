@@ -123,12 +123,11 @@ experiments/headscale/config/config.yaml
 experiments/headscale/config/headplane.yaml
 experiments/headscale/config/acl.hujson
 
-# [experiments] experiments/homebox/.gitignore
-experiments/homebox/.env
-experiments/homebox/config/config.yml
+# [experiments] experiments/laser-cutterd/.gitignore
+experiments/laser-cutterd/.env
 
-# [experiments] experiments/influxdb/.gitignore
-experiments/influxdb/config/influx-configs
+# [experiments] experiments/library/.gitignore
+experiments/library/.env
 
 # [experiments] experiments/llama-router/.gitignore
 experiments/llama-router/.env
@@ -143,6 +142,11 @@ experiments/nextcloud/.env
 experiments/olah/.env
 experiments/olah/config/configs.toml
 
+# [experiments] experiments/prometheus/.gitignore
+experiments/prometheus/.env
+experiments/prometheus/config/prometheus.yml
+experiments/prometheus/config/secrets/
+
 # [experiments] experiments/rtlamr2mqtt/.gitignore
 experiments/rtlamr2mqtt/.env
 experiments/rtlamr2mqtt/config/rtlamr2mqtt.yaml
@@ -150,12 +154,16 @@ experiments/rtlamr2mqtt/config/rtlamr2mqtt.yaml
 # [experiments] experiments/tailscale/.gitignore
 experiments/tailscale/.env
 
-# [experiments] experiments/telegraf/.gitignore
-experiments/telegraf/config/telegraf.conf
-
 # [experiments] experiments/tranquil/.gitignore
 experiments/tranquil/.env
 experiments/tranquil/config/config.toml
+
+# [experiments] experiments/unifi-audit-daemon/.gitignore
+experiments/unifi-audit-daemon/.env
+
+# [experiments] experiments/unifi-occupancy/.gitignore
+experiments/unifi-occupancy/.env
+experiments/unifi-occupancy/config/config.yaml
 
 # [experiments] experiments/unified-audio-players/.gitignore
 experiments/unified-audio-players/.env
