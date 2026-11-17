@@ -31,6 +31,25 @@ Point nginx-proxy-manager at `komodo-core:9120`.
 
 Periphery has the Docker socket mounted and can control every container on the host.
 
+### Single sign-on (authentik)
+
+Create an OAuth2/OpenID provider and application in authentik with the slug `komodo`, and set its redirect URI to:
+
+```
+https://komodo.example.com/auth/oidc/callback
+```
+
+That's `KOMODO_HOST` followed by `/auth/oidc/callback`, so it must match `KOMODO_HOST` in `.env` exactly (scheme and host included). Then set in `.env`:
+
+| Variable | Value |
+|----------|-------|
+| `KOMODO_OIDC_ENABLED` | `true` |
+| `KOMODO_OIDC_PROVIDER` | `https://<authentik host>/application/o/komodo` (no trailing slash). Komodo Core must be able to reach this URL. |
+| `KOMODO_OIDC_CLIENT_ID` | the provider's client ID |
+| `KOMODO_OIDC_CLIENT_SECRET` | the provider's client secret |
+
+GitHub or Google login use `KOMODO_HOST/auth/github/callback` and `KOMODO_HOST/auth/google/callback` instead. See [Komodo's advanced setup docs](https://komo.do/docs/setup/advanced).
+
 ## Usage
 
 ### Starting the service
