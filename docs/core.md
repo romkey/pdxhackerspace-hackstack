@@ -53,8 +53,6 @@ Repeats mDNS traffic between a network interface and a Docker network. Allows co
 Nginx Proxy Manager is a simple web-based UI that manages reverse proxies using Nginx. It can automatically 
 
 
-### portainer
-
 ### postgresql
 
 Postgresql database

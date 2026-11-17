@@ -14,6 +14,31 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 
+class ComposeLoader(yaml.SafeLoader):
+    """SafeLoader that accepts Compose's merge tags (!override, !reset)."""
+
+
+def _compose_tag(loader, tag_suffix, node):
+    if isinstance(node, yaml.MappingNode):
+        return loader.construct_mapping(node, deep=True)
+    if isinstance(node, yaml.SequenceNode):
+        return loader.construct_sequence(node, deep=True)
+    return loader.construct_scalar(node)
+
+
+ComposeLoader.add_multi_constructor('!override', _compose_tag)
+ComposeLoader.add_multi_constructor('!reset', _compose_tag)
+
+
+def is_overlay(file_path: Path) -> bool:
+    """docker-compose.<name>.yml files are overlays merged onto docker-compose.yml.
+
+    Their services are fragments, so checks for keys the base file supplies
+    (restart, healthcheck, networks, names) don't apply to them.
+    """
+    return file_path.name != 'docker-compose.yml'
+
+
 @dataclass
 class ValidationResult:
     """Represents a validation finding."""
@@ -64,6 +89,11 @@ FORBIDDEN_DB_IMAGES = [
     r'mysql',
     r'mongo',
 ]
+
+# Apps that bundle a database the shared services can't provide: (app dir, image pattern)
+EMBEDDED_DB_EXCEPTIONS = {
+    ('komodo', 'mongo'),  # Komodo Core requires MongoDB; there is no shared MongoDB
+}
 
 # Exceptions for certain rules
 RESTART_EXCEPTIONS = {'bfg-repo-cleaner', 'mailq', 'postfix-base'}  # CLI tools and YAML anchors that shouldn't restart
@@ -149,7 +179,7 @@ def validate_compose_file(file_path: Path, report: ValidationReport):
     
     # Parse YAML
     try:
-        data = yaml.safe_load(raw_content)
+        data = yaml.load(raw_content, Loader=ComposeLoader)
     except yaml.YAMLError as e:
         report.error("yaml-syntax", f"Invalid YAML: {e}", file_str)
         return
@@ -229,8 +259,11 @@ def validate_service(service_name: str, config: dict, file_path: Path,
     
     file_str = str(file_path)
     service_dir = file_path.parent.name
-    
-    # Rule 3: Service name should match hostname and container_name
+    overlay = is_overlay(file_path)
+
+    # Rule 3: Service name should match hostname and container_name.
+    # The app's directory name, and <app>-<service> for its other services,
+    # are also accepted (see AGENTS.md).
     hostname = config.get('hostname')
     container_name = config.get('container_name')
     
@@ -244,6 +277,8 @@ def validate_service(service_name: str, config: dict, file_path: Path,
         if override is not None and actual == override:
             return True
         if allowed_prefix and (actual.startswith(allowed_prefix) or actual == allowed_prefix):
+            return True
+        if actual in (service_dir, f'{service_dir}-{service_name}'):
             return True
         return actual == expected
 
@@ -259,7 +294,7 @@ def validate_service(service_name: str, config: dict, file_path: Path,
     
     # Rule 4: restart: unless-stopped
     restart = config.get('restart')
-    if service_name not in RESTART_EXCEPTIONS:
+    if service_name not in RESTART_EXCEPTIONS and not overlay:
         if restart is None:
             report.error("restart-policy",
                 "Missing 'restart: unless-stopped'",
@@ -355,7 +390,7 @@ def validate_service(service_name: str, config: dict, file_path: Path,
                     check_volume_path(host_path, file_str, service_name, report)
                     
     # Rule 17: Healthcheck warning
-    if 'healthcheck' not in config:
+    if 'healthcheck' not in config and not overlay:
         report.warning("no-healthcheck",
             "Consider adding a healthcheck",
             file_str, service_name)
@@ -369,7 +404,7 @@ def validate_service(service_name: str, config: dict, file_path: Path,
     
     # Rule 19: No networks declared (and not host mode)
     networks = config.get('networks')
-    if network_mode != 'host' and not networks:
+    if network_mode != 'host' and not networks and not overlay:
         report.warning("no-networks",
             "No networks declared - consider adding proxy/db networks as needed",
             file_str, service_name)
@@ -380,6 +415,8 @@ def validate_service(service_name: str, config: dict, file_path: Path,
         for db_pattern in FORBIDDEN_DB_IMAGES:
             # Skip if this IS the shared database service
             if service_dir in ('postgresql', 'mariadb', 'redis'):
+                continue
+            if (service_dir, db_pattern) in EMBEDDED_DB_EXCEPTIONS:
                 continue
             # Check if image contains forbidden DB
             if re.search(rf'\b{db_pattern}\b', image_lower):

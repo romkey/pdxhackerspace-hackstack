@@ -1,6 +1,6 @@
 # Optional override: Hugging Face model cache on NFS; vLLM cache stays local.
-# Add it last in COMPOSE_FILE, e.g.
-#   COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml:docker-compose.nfs.yml
+# Enabled through COMPOSE_STORAGE in .env, which puts it before the hardware file
+# so arc.yml's by-path mount survives the volume override.
 
 services:
   vllm:

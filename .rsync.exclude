@@ -1,8 +1,53 @@
 # Do not edit .rsync.exclude
-# File is automatically built from .rsync.exclude.inital and */.rsync.exclude
+# Built by .github/workflows/concatenate_rsync_exclude.yml from
+# .rsync.exclude.initial and apps/*/.rsync.exclude, experiments/*/.rsync.exclude
 
 lost+found/
 containerd/
 docker/
 run/
 **/*.log
+
+# [apps] apps/calibre-web/.rsync.exclude
+lib/calibre-web/metadatab.db
+
+# [apps] apps/esphome/.rsync.exclude
+lib/esphome/.esphome
+
+# [apps] apps/home-assistant/.rsync.exclude
+lib/home-assistant/backups
+
+# [apps] apps/jellyfin/.rsync.exclude
+lib/jellyfin/data/jellyfin.db
+lib/jellyfin/data/jellyfin.db-shm
+lib/jellyfin/data/jellyfin.db-wal
+lib/jellyfin/data/library.db
+lib/jellyfin/data/library.db-shm
+lib/jellyfin/data/library.db-wal
+
+# [apps] apps/mariadb/.rsync.exclude
+lib/mariadb
+
+# [apps] apps/mosquitto/.rsync.exclude
+lib/mosquitto/mosquitto.db
+
+# [apps] apps/music-assistant/.rsync.exclude
+lib/music-assistant/cache.db
+lib/music-assistant/library.db
+
+# [apps] apps/nginx-proxy-manager/.rsync.exclude
+lib/nginx-proxy-manager/database.sqlite
+
+# [apps] apps/postgresql/.rsync.exclude
+lib/postgresql
+
+# [experiments] experiments/komodo/.rsync.exclude
+lib/komodo/mongo
+
+# [experiments] experiments/prometheus/.rsync.exclude
+lib/prometheus
+
+# [experiments] experiments/unifi-occupancy/.rsync.exclude
+lib/unifi-occupancy/data/occupancy.sqlite3
+lib/unifi-occupancy/data/occupancy.sqlite3-wal
+lib/unifi-occupancy/data/occupancy.sqlite3-shm

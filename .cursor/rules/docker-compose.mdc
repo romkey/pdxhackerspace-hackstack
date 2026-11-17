@@ -2,9 +2,11 @@
 alwaysApply: true
 ---
 
+Full conventions: AGENTS.md at the repo root. The person deploying an app must never have to edit a compose file; never commit secrets.
+
 Don't use version in docker-compose files
 Always use bind mounts instead of Docker volumes unless the volume is for NFS
-Put NFS mounts in docker-compose.nfs.yml; enable with COMPOSE_FILE=docker-compose.yml:docker-compose.nfs.yml in .env (document in .env.example)
+Put NFS mounts in docker-compose.nfs.yml; enable with COMPOSE_FILE in .env (document in .env.example)
 Put LAN macvlan in docker-compose.macvlan.yml; enable with COMPOSE_FILE=docker-compose.yml:docker-compose.macvlan.yml; IP/MAC/parent NIC only via .env (see docs/macvlan.md)
 Use the initial service name as the hostname and container name
 restart: unless-stopped
@@ -17,7 +19,7 @@ Persistent runtime state should go in ../../lib
 Log files should go in ../../log
 Transient runtime state (like .pid files) should go in ../../run
 Warning if no HEALTHCHECK
-Warning if host mode - warn that containers should not run in host unless absolutely necessary
+Warning if host mode - warn that containers should not run in host unless absolutely necessary; use a docker-compose.macvlan.yml overlay when the app must appear on the LAN
 Warning if not host mode and does not declare any networks - should have a db network if it needs a database, proxy if it needs reverse proxy
 Error if container has its own copy of Postgresql or Mariadb or Mysql - it should use the shared one
 Whenever possible configuration files should live in a config directory in the same place as docker-compose.yml and .env - must be config not other names

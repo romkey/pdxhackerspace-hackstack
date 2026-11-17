@@ -2,7 +2,7 @@
 
 OpenAI-compatible LLM serving using [vLLM](https://docs.vllm.ai/) (`vllm serve`). Models are loaded from [Hugging Face](https://huggingface.co/) (or local paths you mount) with weights cached under `../../lib/vllm/huggingface` on the host, mapped to `/root/.cache/huggingface` in the container.
 
-The service is attached to `llama-net` (and `nginx-proxy-net`) on port **8000** inside the container, similar to [llama-cpp](../llama-cpp/) and [ollama](../ollama/) for use with [openwebui](../openwebui/) and other clients.
+It serves on port **8000**, either on `llama-net` and `nginx-proxy-net` or published on the host (see [Reaching the service](#reaching-the-service)), similar to [llama-cpp](../llama-cpp/) and [ollama](../ollama/) for use with [openwebui](../openwebui/) and other clients.
 
 ## Configuration
 
@@ -23,17 +23,18 @@ cp .env.example .env
 
 ## Choosing compose files
 
-`docker-compose.yml` is hardware-neutral and runs the CPU image by itself. Pick
-the hardware override with `COMPOSE_FILE` in `.env` (the `.env.example` lists every line):
+`docker-compose.yml` is hardware-neutral and runs the CPU image by itself. Compose assembles `COMPOSE_FILE` in `.env` from three settings: `COMPOSE_HARDWARE` (below), `COMPOSE_ACCESS` (see [Reaching the service](#reaching-the-service)) and `COMPOSE_STORAGE` (NFS). Set those and leave the `COMPOSE_FILE` line alone; plain `docker compose up -d` then uses all three.
 
-| Hardware | `COMPOSE_FILE` | Image |
+Pick the hardware with `COMPOSE_HARDWARE` (the `.env.example` lists every line):
+
+| Hardware | `COMPOSE_HARDWARE` | Image |
 |----------|----------------|-------|
-| NVIDIA discrete GPUs, DGX Spark (GB10) | `docker-compose.yml:docker-compose.nvidia.yml` | `vllm/vllm-openai` (CUDA 13) |
-| DGX Spark, community GB10 build | `docker-compose.yml:docker-compose.nvidia.yml:docker-compose.spark.yml` | `ghcr.io/spark-arena/dgx-vllm-eugr-nightly` |
-| NVIDIA Jetson Thor | `docker-compose.yml:docker-compose.jetson.yml` | `vllm/vllm-openai`, `nvidia` runtime |
-| AMD Strix Halo / Strix Point | `docker-compose.yml:docker-compose.strix.yml` | `vllm/vllm-openai-rocm` |
-| Intel Arc | `docker-compose.yml:docker-compose.arc.yml` | `vllm/vllm-openai-xpu` |
-| CPU only | `docker-compose.yml` | `vllm/vllm-openai-cpu` |
+| NVIDIA discrete GPUs, DGX Spark (GB10) | `:docker-compose.nvidia.yml` | `vllm/vllm-openai` (CUDA 13) |
+| DGX Spark, community GB10 build | `:docker-compose.nvidia.yml:docker-compose.spark.yml` | `ghcr.io/spark-arena/dgx-vllm-eugr-nightly` |
+| NVIDIA Jetson Thor | `:docker-compose.jetson.yml` | `vllm/vllm-openai`, `nvidia` runtime |
+| AMD Strix Halo / Strix Point | `:docker-compose.strix.yml` | `vllm/vllm-openai-rocm` |
+| Intel Arc | `:docker-compose.arc.yml` | `vllm/vllm-openai-xpu` |
+| CPU only | *(empty)* | `vllm/vllm-openai-cpu` |
 
 `.env.example` has tuned, commented-out settings for each platform, including a `VLLM_ARGS` line per platform; uncomment the block for your hardware (only one `VLLM_ARGS` line).
 
@@ -44,8 +45,21 @@ Notes:
 - **Spark and Thor** share CPU and GPU memory, so lower `--gpu-memory-utilization` in `VLLM_ARGS` to leave room for the OS and other services.
 - **Jetson Thor**: the stock arm64 CUDA 13 image includes sm_110 kernels. The toolkit runs in CSV mode there and rejects GPU reservations, so `jetson.yml` uses `runtime: nvidia` and replaces `nvidia.yml` rather than layering on it.
 - **Strix**: vLLM supports Ryzen AI Max (gfx1151) and Ryzen AI 300 (gfx1150) on ROCm >= 7.0.2, which the official ROCm image bundles. Expect fewer optimized kernels than on Instinct or Radeon cards.
-- **Intel Arc**: Battlemage (B580, Arc Pro B-series) is what Intel tests; Alchemist may work but is slow. Needs Intel compute runtime >= 26.18 on the host. Upstream's example runs the container privileged; uncomment `privileged: true` in `arc.yml` if no XPU device is found. With NFS, put `docker-compose.nfs.yml` before `arc.yml` so the `/dev/dri/by-path` mount survives.
+- **Intel Arc**: Battlemage (B580, Arc Pro B-series) is what Intel tests; Alchemist may work but is slow. Needs Intel compute runtime >= 26.18 on the host. Upstream's example runs the container privileged; uncomment `privileged: true` in `arc.yml` if no XPU device is found.
 - **CPU**: works on x86_64 (AVX-512 recommended, AVX2 limited) and arm64, but is slow; it is mainly useful for testing. Size the KV cache with `VLLM_CPU_KVCACHE_SPACE` (GB). For real CPU inference in this stack, use [llama-cpp](../llama-cpp/) or [ollama](../ollama/).
+
+## Reaching the service
+
+How clients reach vllm is chosen with `COMPOSE_ACCESS` in `.env`, independently of the hardware:
+
+| `COMPOSE_ACCESS` | Effect |
+|------------------|--------|
+| `:docker-compose.networks.yml` | Joins `llama-net` and `nginx-proxy-net`. Other containers and the reverse proxy reach it as `vllm:8000`. The default, for Hackstack servers. |
+| `:docker-compose.ports.yml` | Publishes port 8000 on the host, for servers with no reverse proxy. `PUBLISHED_PORT` changes the host port and `PUBLISHED_ADDRESS` the address it binds (a LAN IP, or `127.0.0.1` for this machine only). |
+| `:docker-compose.networks.yml:docker-compose.ports.yml` | Both. |
+| *(empty)* | Neither; reachable only from inside the container. |
+
+`docker-compose.yml` itself has no networks and its `ports` are commented out, so nothing needs editing in any compose file.
 
 ## Starting and stopping
 
@@ -58,13 +72,13 @@ Logs: `docker compose logs -f`
 
 ## Health and API
 
-The healthcheck calls `http://127.0.0.1:8000/v1/models`. Expose port 8000 or use a reverse proxy on `nginx-proxy-net` to reach the service. Example:
+The healthcheck calls `http://127.0.0.1:8000/v1/models`. From another container on `llama-net` or the proxy network:
 
 ```bash
 curl -sS http://vllm:8000/v1/models
 ```
 
-(From another container on `llama-net` or the proxy network.)
+With `docker-compose.ports.yml`, use `http://<host>:8000/v1/models` instead.
 
 ## Notes
 
@@ -76,11 +90,9 @@ curl -sS http://vllm:8000/v1/models
 Large data defaults to bind mounts under `../../lib/` in `docker-compose.yml`. To use a NAS export instead, set in **`.env`** (see **`.env.example`**):
 
 ```bash
-COMPOSE_FILE=docker-compose.yml:docker-compose.nvidia.yml:docker-compose.nfs.yml
+COMPOSE_STORAGE=:docker-compose.nfs.yml
 ```
 
-(use your hardware line, with `docker-compose.nfs.yml` last, except on Intel Arc)
-
-plus the `*_NFS_HOST`, `*_NFS_PATH`, and `NFS_MOUNT_OPTS` variables documented in `.env.example`. Compose reads `COMPOSE_FILE` from `.env`, so plain `docker compose up -d` picks up the override.
+plus the `*_NFS_HOST`, `*_NFS_PATH`, and `NFS_MOUNT_OPTS` variables documented in `.env.example`. `COMPOSE_FILE` puts the NFS file before the hardware file, so the Intel Arc `/dev/dri/by-path` mount survives its volume override.
 
 Prefer **`hard`** NFS mounts, not `soft`. Docker creates named NFS volumes on first start; if the server or export path is wrong, fix `.env` and remove the project volume before retrying (`docker volume ls`, then `docker volume rm …`).

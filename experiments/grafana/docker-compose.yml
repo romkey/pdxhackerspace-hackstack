@@ -1,6 +1,6 @@
 services:
   grafana:
-    image: grafana/grafana-enterprise:${IMAGE_VERSION:-latest}
+    image: grafana/grafana:${IMAGE_VERSION:-latest}
     container_name: grafana
     hostname: grafana
     restart: unless-stopped
@@ -8,11 +8,14 @@ services:
       - ../../lib/grafana:/var/lib/grafana
       - ../../log/grafana:/var/log/grafana
       - ./config:/etc/grafana
+    env_file:
+      - .env
 #    ports:
 #      - 3000:3000
     networks:
       - proxy
-      - influxdb
+      - db
+      - prometheus
     healthcheck:
       test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:3000/api/health || exit 1"]
       interval: 30s
@@ -24,6 +27,9 @@ networks:
   proxy:
     external: true
     name: nginx-proxy-net
-  influxdb:
+  db:
     external: true
-    name: influxdb-net
+    name: postgres-net
+  prometheus:
+    external: true
+    name: prometheus-net

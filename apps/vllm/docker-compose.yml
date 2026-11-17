@@ -1,10 +1,13 @@
 # Hardware-neutral base. On its own this runs the CPU-only image; layer one of
-# the hardware overrides on top via COMPOSE_FILE in .env (see README):
+# the hardware overrides on top via COMPOSE_HARDWARE in .env (see README):
 #   docker-compose.nvidia.yml  NVIDIA discrete GPUs and DGX Spark, CUDA 13 (driver >= 580)
 #   docker-compose.spark.yml   DGX Spark community build, on top of nvidia.yml (optional)
 #   docker-compose.jetson.yml  NVIDIA Jetson Thor (nvidia runtime, instead of nvidia.yml)
 #   docker-compose.strix.yml   AMD Strix Halo / Strix Point APUs (ROCm), x86_64 only
 #   docker-compose.arc.yml     Intel Arc (XPU), x86_64 only
+# and how clients reach it:
+#   docker-compose.networks.yml  join llama-net and nginx-proxy-net (Hackstack)
+#   docker-compose.ports.yml     publish the port on the host (no reverse proxy)
 services:
   vllm:
     image: vllm/vllm-openai-cpu:${IMAGE_VERSION:-latest}
@@ -19,22 +22,11 @@ services:
     entrypoint: ["/bin/sh", "/vllm-entrypoint.sh"]
     env_file:
       - .env
-    ports:
-      - 8000:8000
+#    ports:
+#      - 8000:8000
     healthcheck:
       test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:8000/v1/models >/dev/null || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 300s
-#    networks:
-#      - llama
-#      - proxy
-
-networks:
-  llama:
-    external: true
-    name: llama-net
-  proxy:
-    external: true
-    name: nginx-proxy-net

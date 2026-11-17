@@ -1,0 +1,11 @@
+; Grafana configuration. Copy to grafana.ini.
+;
+; Most settings are set in .env as GF_<SECTION>_<KEY> environment variables,
+; which override anything here. Full reference and defaults:
+; https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/
+;
+; This directory is mounted at /etc/grafana. Put provisioning files
+; (datasources, dashboards) under config/provisioning/.
+
+[paths]
+provisioning = /etc/grafana/provisioning

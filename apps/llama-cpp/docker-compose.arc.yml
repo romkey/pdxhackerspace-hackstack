@@ -1,7 +1,7 @@
 # Intel Arc (Battlemage B580 / Arc Pro B-series, Alchemist A-series) on Linux,
 # x86_64 only. Uses the SYCL (oneAPI) build; IMAGE_VERSION=server-vulkan also
 # works with this file. Needs the xe (or i915) kernel driver.
-#   COMPOSE_FILE=docker-compose.yml:docker-compose.arc.yml
+#   COMPOSE_HARDWARE=:docker-compose.arc.yml
 services:
   llama-cpp:
     restart: unless-stopped

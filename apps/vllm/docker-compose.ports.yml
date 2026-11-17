@@ -1,0 +1,7 @@
+# Optional: publish the port on the host, for servers without a reverse proxy.
+# Enabled through COMPOSE_ACCESS in .env (see .env.example).
+services:
+  vllm:
+    # hackstack: ports required - this overlay exists to publish the port
+    ports:
+      - "${PUBLISHED_ADDRESS:-0.0.0.0}:${PUBLISHED_PORT:-8000}:8000"

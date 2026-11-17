@@ -1,0 +1,74 @@
+services:
+  redis:
+    image: redis:${REDIS_IMAGE_VERSION:-8-alpine}
+    container_name: library-redis
+    hostname: library-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - ../../lib/library/redis:/data
+    networks:
+      - redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    image: ghcr.io/pdxhackerspace/library:${IMAGE_VERSION:-latest}
+    container_name: library
+    hostname: library
+    command: ./bin/rails server -b 0.0.0.0 -p 3000
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ../../lib/library/storage:/rails/storage
+#    ports:
+#      - 3000:3000
+    networks:
+      - db
+      - proxy
+      - redis
+      - mail
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3000/up || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  sidekiq:
+    image: ghcr.io/pdxhackerspace/library:${IMAGE_VERSION:-latest}
+    container_name: library-sidekiq
+    hostname: library-sidekiq
+    command: bundle exec sidekiq
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ../../lib/library/storage:/rails/storage
+    networks:
+      - db
+      - redis
+      - mail
+    depends_on:
+      redis:
+        condition: service_healthy
+
+networks:
+  redis:
+    name: library-redis-net
+  proxy:
+    external: true
+    name: nginx-proxy-net
+  db:
+    external: true
+    name: postgres-net
+  mail:
+    external: true
+    name: postfix-net

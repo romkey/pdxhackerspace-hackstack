@@ -48,7 +48,6 @@ esac
 #   member-manager        needs: proxy, db, mail
 #   partdb                needs: proxy, db
 #   planka                needs: proxy, db
-#   statping              needs: proxy, db
 #   vaultwarden           needs: proxy, db
 #   matomo                creates: matomo-net     needs: proxy, mariadb
 #   mosquitto-management-center  needs: proxy, mqtt
@@ -91,7 +90,6 @@ invidious
 member-manager
 partdb
 planka
-statping
 vaultwarden
 matomo
 mosquitto-management-center

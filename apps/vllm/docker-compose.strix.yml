@@ -1,7 +1,7 @@
 # AMD Strix Halo (Ryzen AI Max, gfx1151) and Strix Point (Ryzen AI 300, gfx1150)
 # on Linux, x86_64 only. The official ROCm image ships gfx1150/gfx1151 kernels
 # (ROCm >= 7.0.2); the host only needs the amdgpu kernel driver.
-#   COMPOSE_FILE=docker-compose.yml:docker-compose.strix.yml
+#   COMPOSE_HARDWARE=:docker-compose.strix.yml
 services:
   vllm:
     restart: unless-stopped

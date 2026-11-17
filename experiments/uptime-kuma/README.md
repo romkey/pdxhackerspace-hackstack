@@ -2,7 +2,7 @@
 
 [Uptime Kuma](https://github.com/louislam/uptime-kuma) is a self-hosted uptime monitor and status page. It probes HTTP(S), TCP, ping, DNS, MQTT and Docker container targets on a schedule, keeps history, and sends notifications (email, Matrix, MQTT, ntfy, webhooks, and many more) when something goes down.
 
-This overlaps with **`apps/statping`**; it is here as an experiment so the two can be compared before either becomes part of the core stack.
+It replaces **`deprecated/statping`**.
 
 ## Prerequisites
 
@@ -26,7 +26,7 @@ Everything else (monitors, notifications, status pages, the admin account) is co
 
 ### Database
 
-**PostgreSQL is not an option here.** Uptime Kuma supports only SQLite and MariaDB/MySQL; anything else is rejected at startup with `Unknown Database type`. MariaDB support is what shipped in 2.0, and Postgres was deferred to a future major release because it needs parts of the query layer rewritten — see [PR #3748](https://github.com/louislam/uptime-kuma/pull/3748) (closed) and [issue #959](https://github.com/louislam/uptime-kuma/issues/959) (open, no target release). If a Postgres-backed monitor is a requirement, **`apps/statping`** already uses `postgres-net`.
+**PostgreSQL is not an option here.** Uptime Kuma supports only SQLite and MariaDB/MySQL; anything else is rejected at startup with `Unknown Database type`. MariaDB support is what shipped in 2.0, and Postgres was deferred to a future major release because it needs parts of the query layer rewritten — see [PR #3748](https://github.com/louislam/uptime-kuma/pull/3748) (closed) and [issue #959](https://github.com/louislam/uptime-kuma/issues/959) (open, no target release). The (now deprecated) **`deprecated/statping`** used `postgres-net`.
 
 By default Uptime Kuma keeps everything in SQLite under **`../../lib/uptime-kuma`**, which is fine for a few dozen monitors and needs no setup.
 
@@ -55,7 +55,7 @@ If the UI loads but the dashboard stays disconnected, the websocket origin check
 ## Networks
 
 - **`nginx-proxy-net`** — browser access via proxy
-- optional, commented out — `mariadb-net`, `postgres-net`, `mosquitto-net`, `hass-net`, `influxdb-net` for monitoring those services by container name
+- optional, commented out — `mariadb-net`, `postgres-net`, `mosquitto-net`, `hass-net` for monitoring those services by container name
 
 ## Usage
 
