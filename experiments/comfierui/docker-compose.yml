@@ -21,7 +21,7 @@ x-app: &app
 
 services:
   redis:
-    image: redis:8.10-alpine
+    image: redis:8.12-alpine
     restart: unless-stopped
     hostname: redis
     volumes:
